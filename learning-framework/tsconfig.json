@@ -1,0 +1,130 @@
+{
+  /**
+   * TypeScript 配置文件
+   * 
+   * 这个文件定义了 TypeScript 编译器的行为
+   * 文档：https://www.typescriptlang.org/tsconfig
+   * 
+   * Claude Code 也有类似的 tsconfig.json
+   */
+  "compilerOptions": {
+    /**
+     * target: 编译目标 JavaScript 版本
+     * ES2022: 支持最新的 JavaScript 特性
+     * Bun 原生支持 ES2022，所以不需要降级编译
+     */
+    "target": "ES2022",
+    
+    /**
+     * module: 模块系统
+     * ESNext: 使用最新的 ES 模块语法（import/export）
+     * Bun 原生支持 ES modules
+     */
+    "module": "ESNext",
+    
+    /**
+     * lib: 包含的类型定义库
+     * ES2022: 包含 ES2022 的内置类型
+     */
+    "lib": ["ES2022"],
+    
+    /**
+     * jsx: JSX 处理方式
+     * react-jsx: 使用 React 17+ 的新 JSX 转换
+     * 不需要在文件中 import React
+     */
+    "jsx": "react-jsx",
+    
+    /**
+     * moduleResolution: 模块解析策略
+     * bundler: 适合现代打包工具（Bun、Vite、esbuild）
+     * 比 node 策略更快更准确
+     */
+    "moduleResolution": "bundler",
+    
+    /**
+     * strict: 启用所有严格类型检查选项
+     * true: 推荐始终启用，提高代码质量
+     * 包括：strictNullChecks, noImplicitAny 等
+     */
+    "strict": true,
+    
+    /**
+     * esModuleInterop: 启用 ES 模块互操作性
+     * true: 允许 import commonjs 模块
+     * 例如：import chalk from 'chalk'（而不是 import * as chalk）
+     */
+    "esModuleInterop": true,
+    
+    /**
+     * skipLibCheck: 跳过声明文件的类型检查
+     * true: 加快编译速度
+     * 第三方库的类型定义通常没问题，可以跳过
+     */
+    "skipLibCheck": true,
+    
+    /**
+     * forceConsistentCasingInFileNames: 强制文件名大小写一致
+     * true: 避免在不同操作系统上的问题
+     * macOS/Windows 不区分大小写，Linux 区分
+     */
+    "forceConsistentCasingInFileNames": true,
+    
+    /**
+     * resolveJsonModule: 允许导入 JSON 文件
+     * true: 可以 import data from './data.json'
+     */
+    "resolveJsonModule": true,
+    
+    /**
+     * isolatedModules: 确保每个文件可以独立编译
+     * true: 与 Bun、esbuild 等工具兼容
+     * 不能使用某些 TypeScript 特性（如 const enum）
+     */
+    "isolatedModules": true,
+    
+    /**
+     * noEmit: 不生成输出文件
+     * true: 只做类型检查，不编译成 JS
+     * Bun 直接运行 TypeScript，不需要预编译
+     */
+    "noEmit": true,
+    
+    /**
+     * baseUrl: 模块解析的基础路径
+     * ".": 当前目录（项目根目录）
+     */
+    "baseUrl": ".",
+    
+    /**
+     * paths: 路径别名配置
+     * @/*: 映射到 src/*
+     * 
+     * 使用示例：
+     * import App from '@/components/App'
+     * 而不是
+     * import App from './components/App' 或 '../../../components/App'
+     * 
+     * 好处：
+     * 1. 避免相对路径混乱
+     * 2. 移动文件时不需要修改导入路径
+     * 3. 代码更清晰
+     */
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  
+  /**
+   * include: 包含的文件模式
+   * src/**/*: 包含 src 目录下的所有文件
+   */
+  "include": ["src/**/*"],
+  
+  /**
+   * exclude: 排除的文件模式
+   * node_modules: 不包含依赖包
+   * dist: 不包含构建输出
+   */
+  "exclude": ["node_modules", "dist"]
+}

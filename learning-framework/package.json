@@ -1,0 +1,27 @@
+{
+  "name": "learning-framework",
+  "version": "0.1.0",
+  "description": "基于 Claude Code 项目架构的学习框架",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/main.tsx",
+    "build": "bun build src/main.tsx --target=bun --outdir=dist",
+    "test": "bun test",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "ink": "^4.4.0",
+    "lodash-es": "^4.17.21",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^18.2.0",
+    "bun": "^1.3.11",
+    "eslint": "^8.50.0",
+    "typescript": "^5.3.0"
+  }
+}
