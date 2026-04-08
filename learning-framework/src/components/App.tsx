@@ -1,59 +1,79 @@
 /**
  * App - 主应用组件
- * 
+ *
  * 这是应用的根组件，负责渲染整个终端界面。
- * 
+ *
  * 对应 Claude Code: claudecode-project/src/components/App.tsx
- * （实际在 src/state/AppStateStore.tsx 中定义）
- * 
- * 关键概念：
- * - React.FC: React Function Component 类型
- * - Box: Ink 的布局组件（类似 HTML 的 div）
- * - Text: Ink 的文本组件（类似 HTML 的 span）
+ * 在真实项目里，App 更像一个"顶层容器"：
+ * - 接收外部注入的数据
+ * - 组合多个 provider / hook / 子组件
+ * - 决定主界面布局
+ *
+ * 这次我们把 App 稍微升级，让它开始接收 service 层产出的 session 数据。
  */
 
 import React from 'react';
+import { Box, Text } from 'ink';
+import { APP_INFO } from '../constants/appInfo.js';
+import { useSessionRuntime } from '../hooks/useSessionRuntime.js';
+import type { SessionSnapshot } from '../types/session.js';
 
-// Ink 提供的终端 UI 组件
-// Box:  flexbox 布局容器
-// Text: 文本显示组件
-// Claude Code 使用自定义封装：import { Box, Text } from '../ink.js'
-import { Text, Box } from 'ink';
+/**
+ * AppProps: 根组件输入
+ *
+ * 当组件开始变复杂时，先把 props 类型抽清楚，是非常好的习惯。
+ */
+type AppProps = {
+  session: SessionSnapshot;
+};
 
 /**
  * 主应用组件
- * 
- * @returns React 元素，将在终端中渲染
- * 
- * Claude Code 的 App 组件更复杂：
- * - 管理全局状态（useState, useReducer）
- * - 处理用户输入（useInput hook）
- * - 显示消息列表（Messages 组件）
- * - 显示工具输出（Tools 组件）
- * - 主题支持（ThemeProvider）
+ *
+ * 这次的学习重点：
+ * 1. 从 props 读取数据，而不是把所有内容写死
+ * 2. 调用自定义 Hook 获取动态状态
+ * 3. 把界面拆成几个"信息块"，更接近真实终端应用
  */
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ session }) => {
+  /**
+   * runtimeLabel 来自自定义 Hook。
+   *
+   * 组件不关心"定时器怎么实现"，只关心"现在要显示什么"，
+   * 这就是 Hook 解耦逻辑和视图的价值。
+   */
+  const runtimeLabel = useSessionRuntime(session.startedAtIso);
+
   return (
-    // Box: 布局容器
-    // flexDirection: 'column' - 垂直排列子元素
-    // padding: 1 - 内边距为 1 个字符
     <Box flexDirection="column" padding={1}>
-      {/* Text: 文本组件 */}
-      {/* bold: 粗体 */}
-      {/* color: 文本颜色（支持 ansi 颜色名） */}
       <Text bold color="green">
-        🎓 Learning Framework
+        Learning Framework
       </Text>
-      
-      {/* 普通文本 */}
-      <Text>
-        基于 Claude Code 项目架构的学习框架
-      </Text>
-      
-      {/* dimColor: 暗淡的文本颜色（用于次要信息） */}
-      <Text dimColor>
-        按 Ctrl+C 退出
-      </Text>
+
+      <Text>{APP_INFO.description}</Text>
+
+      <Box marginTop={1} flexDirection="column" borderStyle="round" paddingX={1}>
+        <Text bold color="cyan">
+          Session Overview
+        </Text>
+        <Text>title: {session.title}</Text>
+        <Text>topic: {session.currentTopic}</Text>
+        <Text>cwd: {session.workingDirectory}</Text>
+      </Box>
+
+      <Box marginTop={1} flexDirection="column" borderStyle="round" paddingX={1}>
+        <Text bold color="yellow">
+          Runtime State
+        </Text>
+        <Text>startedAt: {session.startedAtIso}</Text>
+        <Text>runningFor: {runtimeLabel}</Text>
+        <Text>commandCount: {session.commandCount}</Text>
+      </Box>
+
+      <Box marginTop={1} flexDirection="column">
+        <Text dimColor>学习提示：先读 main.tsx，再读 commands/ 和 services/。</Text>
+        <Text dimColor>按 Ctrl+C 退出交互式界面。</Text>
+      </Box>
     </Box>
   );
 };
