@@ -1,0 +1,10 @@
+{
+  "sessionId": "session_1776929488030",
+  "title": "Interactive Learning Session",
+  "workingDirectory": "/Users/gengyu/github/claudecode/learning-framework",
+  "startedAtIso": "2026-04-23T07:31:28.030Z",
+  "commandCount": 1,
+  "currentTopic": "理解命令系统与 UI 数据流",
+  "savedAtIso": "2026-04-23T07:31:28.030Z",
+  "lastCommand": "start"
+}
