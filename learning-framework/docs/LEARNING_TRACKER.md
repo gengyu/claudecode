@@ -186,7 +186,28 @@
 ### 已创建的文档
 - [x] README.md - 项目说明
 - [x] ARCHITECTURE_GUIDE.md - 架构指南
+- [x] SYSTEMATIC_COURSE.md - Claude Code 源码系统课程
+- [x] chapters/01-source-map.md - 第 1 章源码全景与学习地图讲义
+- [x] chapters/02-cli-entry-commander.md - 第 2 章 CLI 启动入口与 Commander 命令解析讲义
+- [x] chapters/03-initialization-config.md - 第 3 章初始化系统与配置加载讲义
+- [x] chapters/04-react-ink-tui.md - 第 4 章 React + Ink 终端 UI 讲义
 - [ ] 学习笔记（待创建）
+
+### 系统课程讲义进度
+- [x] 第 1 章：源码全景与学习地图
+- [x] 第 2 章：CLI 启动入口与 Commander 命令解析
+- [x] 第 3 章：初始化系统与配置加载
+- [x] 第 4 章：React + Ink 终端 UI
+- [ ] 第 5 章：REPL 主交互界面源码导读
+- [ ] 第 6 章：AppState 状态管理机制
+- [ ] 第 7 章：消息系统与对话上下文
+- [ ] 第 8 章：Agent 查询循环
+- [ ] 第 9 章：Tool 抽象层设计
+- [ ] 第 10 章：内置工具系统
+- [ ] 第 11 章：权限系统与安全边界
+- [ ] 第 12 章：Slash Commands 命令体系
+- [ ] 第 13 章：MCP、插件与 Skills 扩展系统
+- [ ] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化
 
 ### 外部资源
 - [Ink GitHub](https://github.com/vadimdemedes/ink)
