@@ -1,5 +1,102 @@
 # 学习进度追踪
 
+## 当前课程任务
+
+目标：把 `learning-framework/docs/SYSTEMATIC_COURSE.md` 的 14 章主线课全部扩写为面向高级前端工程师的源码导读型讲义，并把 `docs/` 目录下已有架构、依赖、快速开始、项目对比、注释规范等内容合并为补充专题或附录。
+
+本任务不重新规划 14 章课程体系，不修改 4 个阶段项目和 95 个知识点清单，不修改 `claudecode-project/src/assistant/sessionHistory.ts`。
+
+### 整体执行节奏
+
+```text
+先写完全部内容
+  -> 整体检查第 1 轮
+  -> 根据第 1 轮结果整体修改
+  -> 整体检查第 2 轮
+  -> 根据第 2 轮结果整体修改
+  -> 整体检查第 3 轮
+  -> 根据第 3 轮结果最终修改
+  -> 输出课程总目录、附录索引、验收报告
+```
+
+### 全量写作任务
+
+- [x] 写完全部 14 章源码导读型讲义
+  - [x] 第 1 章：源码全景与学习地图
+  - [x] 第 2 章：CLI 启动入口与 Commander 命令解析
+  - [x] 第 3 章：初始化系统与配置加载
+  - [x] 第 4 章：React + Ink 终端 UI
+  - [x] 第 5 章：REPL 主交互界面源码导读
+  - [x] 第 6 章：AppState 状态管理机制
+  - [x] 第 7 章：消息系统与对话上下文
+  - [x] 第 8 章：Agent 查询循环
+  - [x] 第 9 章：Tool 抽象层设计
+  - [x] 第 10 章：内置工具系统
+  - [x] 第 11 章：权限系统与安全边界
+  - [x] 第 12 章：Slash Commands 命令体系
+  - [x] 第 13 章：MCP、插件与 Skills 扩展系统
+  - [x] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化
+- [x] 生成补充专题 / 附录
+  - [x] 附录 A：运行时依赖地图
+  - [x] 附录 B：源码检索与证据链方法
+  - [x] 附录 C：learning-framework 复刻路线
+  - [x] 附录 D：高级专题索引
+  - [x] 附录 E：常见源码误判清单
+- [x] 合并既有 docs 内容
+  - [x] `ARCHITECTURE_GUIDE.md` 合并到第 1 章附录和阶段复盘
+  - [x] `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` 拆分到第 1、2、4、9、13 章补充阅读
+  - [x] `PROJECT_COMPARISON.md` 合并到 4 个阶段项目复刻方法
+  - [x] `QUICKSTART.md` 合并到课前准备和第一阶段项目
+  - [x] `DEPENDENCIES.md` 合并到附录 A
+  - [x] `COMMENTS_GUIDE.md` 合并到附录 B 和学习笔记规范
+
+### 三轮整体检查与修改
+
+- [ ] 第 1 轮整体检查
+  - [ ] 检查 14 章是否全部存在且命名一致
+  - [ ] 检查每章是否保留 `SYSTEMATIC_COURSE.md` 的主题、知识点、重点源码、教学形式和实践任务
+  - [ ] 检查每章是否面向高级前端工程师，不讲基础语法
+  - [ ] 检查每章是否有真实源码符号、调用链、`rg` 命令和 5 分钟速验
+  - [ ] 检查每章是否有 learning-framework 复刻任务和进阶分析题
+- [ ] 第 1 轮整体修改
+  - [ ] 修正路径错误、符号错误、过浅说明、缺失调用链
+  - [ ] 补充 docs 合并入口和附录引用
+  - [ ] 标明未确认源码点
+- [ ] 第 2 轮整体检查
+  - [ ] 检查章节之间是否能串成完整主链路
+  - [ ] 检查 4 个阶段项目是否能覆盖 14 章能力
+  - [ ] 检查 95 个知识点是否都能映射到章节或附录
+  - [ ] 检查重复内容是否被合并为补充专题
+- [ ] 第 2 轮整体修改
+  - [ ] 调整跨章衔接
+  - [ ] 补充阶段项目验收标准
+  - [ ] 清理重复或过泛内容
+- [ ] 第 3 轮整体检查
+  - [ ] 检查所有 `rg` 命令是否仍能在当前源码中命中
+  - [ ] 检查所有文件路径是否真实存在或明确标注为蓝图旧路径
+  - [ ] 检查是否误改源码文件，尤其是 `claudecode-project/src/assistant/sessionHistory.ts`
+  - [ ] 检查最终目录、附录索引、验收报告是否完整
+- [ ] 第 3 轮最终修改
+  - [ ] 修复最后一轮发现的问题
+  - [ ] 输出最终课程交付清单
+  - [ ] 输出未确认源码点清单
+
+### 本轮修改记录
+
+- [x] 将课程任务从“逐章局部完成”调整为“全量写作 + 三轮整体检查修改”
+- [x] 明确 14 章主线之外需要补充附录和专题
+- [x] 明确 docs 目录已有内容的合并位置
+- [x] 保持第 1-5 章已完成状态
+- [x] 补齐第 6-14 章主线讲义
+- [x] 新增课程总目录 `COURSE_INDEX.md`
+- [x] 新增附录 A-E，完成 docs 旧内容整理入口
+
+---
+
+## 旧版三阶段学习计划（待合并）
+
+下面内容来自早期 21 天学习模板，保留为阶段项目和附录素材。后续整体修改时，应把它拆入 14 章主线、4 个阶段项目和补充专题，不再作为当前课程的主进度口径。
+
 ## 📊 整体进度
 
 - [ ] 第一阶段：基础架构 (0%)
@@ -187,10 +284,27 @@
 - [x] README.md - 项目说明
 - [x] ARCHITECTURE_GUIDE.md - 架构指南
 - [x] SYSTEMATIC_COURSE.md - Claude Code 源码系统课程
+- [x] COURSE_INDEX.md - 课程总目录与附录索引
+- [x] COURSE_COMPLETION_TASK.md - 14 章全量写作与三轮整体检查任务书
 - [x] chapters/01-source-map.md - 第 1 章源码全景与学习地图讲义
 - [x] chapters/02-cli-entry-commander.md - 第 2 章 CLI 启动入口与 Commander 命令解析讲义
 - [x] chapters/03-initialization-config.md - 第 3 章初始化系统与配置加载讲义
 - [x] chapters/04-react-ink-tui.md - 第 4 章 React + Ink 终端 UI 讲义
+- [x] chapters/05-repl-runtime-coordinator.md - 第 5 章 REPL 主交互界面源码导读讲义
+- [x] chapters/06-appstate-store.md - 第 6 章 AppState 状态管理机制讲义
+- [x] chapters/07-message-context.md - 第 7 章消息系统与对话上下文讲义
+- [x] chapters/08-agent-query-loop.md - 第 8 章 Agent 查询循环讲义
+- [x] chapters/09-tool-abstraction.md - 第 9 章 Tool 抽象层设计讲义
+- [x] chapters/10-built-in-tools.md - 第 10 章内置工具系统讲义
+- [x] chapters/11-permission-boundary.md - 第 11 章权限系统与安全边界讲义
+- [x] chapters/12-slash-commands.md - 第 12 章 Slash Commands 命令体系讲义
+- [x] chapters/13-mcp-plugin-skills.md - 第 13 章 MCP、插件与 Skills 扩展系统讲义
+- [x] chapters/14-advanced-systems.md - 第 14 章高级系统讲义
+- [x] appendices/A-runtime-dependencies.md - 附录 A 运行时依赖地图
+- [x] appendices/B-source-evidence-method.md - 附录 B 源码检索与证据链方法
+- [x] appendices/C-rebuild-roadmap.md - 附录 C learning-framework 复刻路线
+- [x] appendices/D-advanced-topic-index.md - 附录 D 高级专题索引
+- [x] appendices/E-common-misreadings.md - 附录 E 常见源码误判清单
 - [ ] 学习笔记（待创建）
 
 ### 系统课程讲义进度
@@ -198,16 +312,16 @@
 - [x] 第 2 章：CLI 启动入口与 Commander 命令解析
 - [x] 第 3 章：初始化系统与配置加载
 - [x] 第 4 章：React + Ink 终端 UI
-- [ ] 第 5 章：REPL 主交互界面源码导读
-- [ ] 第 6 章：AppState 状态管理机制
-- [ ] 第 7 章：消息系统与对话上下文
-- [ ] 第 8 章：Agent 查询循环
-- [ ] 第 9 章：Tool 抽象层设计
-- [ ] 第 10 章：内置工具系统
-- [ ] 第 11 章：权限系统与安全边界
-- [ ] 第 12 章：Slash Commands 命令体系
-- [ ] 第 13 章：MCP、插件与 Skills 扩展系统
-- [ ] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化
+- [x] 第 5 章：REPL 主交互界面源码导读
+- [x] 第 6 章：AppState 状态管理机制
+- [x] 第 7 章：消息系统与对话上下文
+- [x] 第 8 章：Agent 查询循环
+- [x] 第 9 章：Tool 抽象层设计
+- [x] 第 10 章：内置工具系统
+- [x] 第 11 章：权限系统与安全边界
+- [x] 第 12 章：Slash Commands 命令体系
+- [x] 第 13 章：MCP、插件与 Skills 扩展系统
+- [x] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化
 
 ### 外部资源
 - [Ink GitHub](https://github.com/vadimdemedes/ink)

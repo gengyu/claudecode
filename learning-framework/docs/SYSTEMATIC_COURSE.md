@@ -2,14 +2,18 @@
 
 ## 课程定位
 
-这门课面向已经具备 TypeScript、React 或 CLI 开发基础的学习者，目标不是把 Claude Code 的每个文件逐行读完，而是建立一套可迁移的源码理解能力：
+这门课面向已经具备 TypeScript、React、工程化和复杂前端架构经验的高级前端工程师。课程不会重复讲 TypeScript 语法、React Hooks 基础、Commander API 入门或 Ink 基础组件用法，而是把 Claude Code 当作一个真实的 AI CLI runtime 来读。
+
+目标不是把 Claude Code 的每个文件逐行读完，而是建立一套可迁移的源码理解能力：
 
 - 看懂一个大型 AI CLI 项目的运行主线
 - 理解终端 UI、Agent 循环、工具调用、权限控制如何协作
 - 学会用“入口 -> 状态 -> 消息 -> 查询循环 -> 工具 -> 扩展”的方式拆解复杂源码
 - 最终能在 `learning-framework` 中复刻一个简化版 Claude Code 架构
 
-建议课程节奏为 **14 章主线课 + 4 个阶段项目**。每章都包含源码导读、调用链追踪、概念拆解和实践任务。
+建议课程节奏为 **14 章主线课 + 4 个阶段项目 + 补充专题附录**。14 章只承担主链路教学，不代表 Claude Code 的全部知识只需 14 章讲完；大量横切知识会进入附录、专题讲义和阶段项目复盘。
+
+每章都必须包含源码导读、调用链追踪、概念拆解和实践任务，并尽量落到真实源码符号、文件路径、`rg` 检索命令和可验证证据链。
 
 ---
 
@@ -17,19 +21,27 @@
 
 ### 必备基础
 
-1. TypeScript 类型系统
-2. React 组件、Hooks、Context
-3. Node.js 或 Bun 运行时基础
-4. CLI 参数、环境变量、进程退出码
-5. async/await、AsyncGenerator、流式处理
+1. TypeScript 类型系统和大型项目类型阅读能力
+2. React 组件、Hooks、Context、external store、渲染性能经验
+3. Node.js 或 Bun 运行时、进程、文件系统、环境变量经验
+4. CLI 参数、环境变量、进程退出码和终端交互经验
+5. async/await、AsyncGenerator、流式处理和取消控制经验
 
 ### 建议补充
 
-1. Commander.js 命令解析
-2. Ink 终端 UI
-3. Zod schema 校验
-4. LLM tool use 基本概念
-5. WebSocket、MCP、插件系统基础
+1. Commander.js 命令解析源码阅读经验
+2. Ink 终端 UI 与 React reconciler 心智模型
+3. Zod schema 校验与 runtime protocol 设计
+4. LLM tool use、tool result、permission flow 基本概念
+5. WebSocket、MCP、插件系统、远程会话基础
+
+### 本课程不展开的基础内容
+
+- TypeScript/React/Commander/Ink 的入门语法
+- 普通 Web 表单、普通组件通信、普通状态管理教程
+- “照着 API 文档用库”的说明
+
+这些内容如果需要补课，应放在附录或课前材料；主线讲义只讨论它们在 Claude Code 源码里的工程作用。
 
 ---
 
@@ -297,8 +309,8 @@ Tool.ts / tools/* 具体工具执行
 ### 重点源码
 
 - `claudecode-project/src/screens/REPL.tsx`
-- `claudecode-project/src/utils/handlePromptSubmit.js`
-- `claudecode-project/src/hooks/useQueueProcessor.js`
+- `claudecode-project/src/utils/handlePromptSubmit.ts`
+- `claudecode-project/src/hooks/useQueueProcessor.ts`
 - `claudecode-project/src/hooks/useCommandQueue.ts`
 
 ### 教学表现形式
@@ -370,9 +382,9 @@ Tool.ts / tools/* 具体工具执行
 
 ### 重点源码
 
-- `claudecode-project/src/types/message.js`
-- `claudecode-project/src/utils/messages.js`
-- `claudecode-project/src/utils/attachments.js`
+- `claudecode-project/src/types/message.js`（当前源码大量 import 的类型入口；扩写第 7 章时需要先校验物理文件/生成入口）
+- `claudecode-project/src/utils/messages.ts`
+- `claudecode-project/src/utils/attachments.ts`
 - `claudecode-project/src/services/compact/*`
 
 ### 教学表现形式
@@ -526,8 +538,8 @@ Tool.ts / tools/* 具体工具执行
 
 ### 重点源码
 
-- `claudecode-project/src/types/permissions.js`
-- `claudecode-project/src/hooks/useCanUseTool.js`
+- `claudecode-project/src/types/permissions.ts`
+- `claudecode-project/src/hooks/useCanUseTool.tsx`
 - `claudecode-project/src/components/permissions/*`
 - `claudecode-project/src/tools/BashTool/*`
 
@@ -564,10 +576,10 @@ Tool.ts / tools/* 具体工具执行
 ### 重点源码
 
 - `claudecode-project/src/commands.ts`
-- `claudecode-project/src/types/command.js`
+- `claudecode-project/src/types/command.ts`
 - `claudecode-project/src/commands/help/*`
 - `claudecode-project/src/commands/model/*`
-- `claudecode-project/src/skills/loadSkillsDir.js`
+- `claudecode-project/src/skills/loadSkillsDir.ts`
 
 ### 教学表现形式
 
@@ -647,7 +659,7 @@ Tool.ts / tools/* 具体工具执行
 - `claudecode-project/src/tools/AgentTool/*`
 - `claudecode-project/src/services/compact/*`
 - `claudecode-project/src/services/lsp/*`
-- `claudecode-project/src/utils/startupProfiler.js`
+- `claudecode-project/src/utils/startupProfiler.ts`
 
 ### 教学表现形式
 
@@ -790,31 +802,52 @@ Tool.ts / tools/* 具体工具执行
 
 ## 每章讲义模板
 
-后续扩展每章时，建议统一使用下面模板：
+后续扩展每章时，统一使用下面模板。这个模板服务高级前端工程师的源码导读，不写成入门教程：
 
 ```markdown
 # 第 X 章：标题
 
-## 本章目标
+## 本章定位
 
-## 先看现象
+## 面向高级前端工程师的学习价值
 
-## 源码地图
+## 学习目标
 
-## 核心调用链
+## 前置知识
 
-## 关键源码精读
+## 核心概念讲解
 
-## 概念解释
+## 核心源码地图
 
-## 常见误区
+## 主调用链 / 主数据流
+
+## 源码阅读路线
+
+## 5 分钟源码速验
+
+## 关键模块逐段导读
+
+## 与前后章节的关系
+
+## 教学可视化表达方式
 
 ## 实践任务
 
-## 课后作业
+## 常见误区
 
-## 本章小结
+## 本章总结
+
+## 下一章衔接
 ```
+
+每章写作约束：
+
+1. 保持本文件中 14 章主线、4 个阶段项目和 95 个知识点清单不变。
+2. 每章只扩写当前章节，不在章节讲义中重新规划课程体系。
+3. 所有判断尽量落到真实文件、真实符号、真实调用链和 `rg` 命令。
+4. 每章都要说明该模块为什么存在、在 AI CLI 主链路中的位置、和前后章节如何串起来。
+5. 每章都要包含可以在 `learning-framework` 中复刻的能力，不只停留在阅读。
+6. 不修改 `claudecode-project/src/assistant/sessionHistory.ts`。
 
 ---
 
@@ -848,6 +881,56 @@ Tool.ts / tools/* 具体工具执行
 - 先理解数据流，再理解异常流
 - 先看接口，再看实现
 - 先做简化复刻，再回看原源码
+
+---
+
+## 补充专题与既有 docs 合并策略
+
+14 章主线解决“如何沿着 AI CLI 主链路读懂源码”。但 `claudecode-project` 的知识密度远超 14 章，以下内容不应该硬塞进单章主线，而应作为补充专题、附录或阶段项目复盘合并进课程。
+
+| 既有文档 | 合并位置 | 使用方式 | 不直接照搬的原因 |
+| --- | --- | --- | --- |
+| `learning-framework/docs/ARCHITECTURE_GUIDE.md` | 第 1 章附录、阶段总复盘 | 提取目录地图、核心模块、学习方法 | 原文偏概览，需要改成源码证据链 |
+| `learning-framework/docs/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` | 第 1、2、4、9、13 章补充阅读 | 提取启动、TUI、工具、MCP 的架构图素材 | 原文覆盖面大，需按 14 章拆分 |
+| `learning-framework/docs/PROJECT_COMPARISON.md` | 每个阶段项目的复刻方法论 | 提取“简化版 vs 生产版”对比框架 | 原文是通用策略，需要绑定每章实践产出 |
+| `learning-framework/docs/QUICKSTART.md` | 课前准备、学习环境、第一阶段项目 | 提取运行命令和首次任务 | 对高级前端来说基础讲解要压缩 |
+| `learning-framework/docs/DEPENDENCIES.md` | 附录 A：依赖与运行时地图 | 提取 Ink、Commander、React、TypeScript、Bun 角色 | 主线不讲依赖入门，只讲源码中承担的工程位置 |
+| `learning-framework/docs/COMMENTS_GUIDE.md` | 附录 B：源码注释与笔记规范 | 提取注释风格和学习记录模板 | 需改成高级源码阅读笔记模板 |
+
+建议新增附录方向：
+
+1. 附录 A：运行时依赖地图，解释 Ink、Commander、Zod、React、Bun 在 Claude Code 中的真实边界。
+2. 附录 B：源码检索与证据链方法，沉淀 `rg`、调用链、符号追踪、路径校正方法。
+3. 附录 C：learning-framework 复刻路线，把 4 个阶段项目拆成可验收的工程任务。
+4. 附录 D：高级专题索引，收录 remote、bridge、IDE、voice、background task、telemetry、startup profiler 等主线外分支。
+5. 附录 E：常见源码误判清单，专门纠正高级前端开发者容易套用 Web 项目经验造成的误读。
+
+---
+
+## 整课写作与三轮质量闭环
+
+课程扩写采用整体任务制，而不是“每章写完就局部收工”：
+
+```text
+任务 1：写完全部 14 章源码导读型讲义
+  -> 任务 2：整体检查第 1 轮
+  -> 任务 3：按第 1 轮结果整体修改
+  -> 任务 4：整体检查第 2 轮
+  -> 任务 5：按第 2 轮结果整体修改
+  -> 任务 6：整体检查第 3 轮
+  -> 任务 7：按第 3 轮结果最终修改
+  -> 任务 8：生成课程总目录、附录索引和验收报告
+```
+
+每轮整体检查至少覆盖：
+
+1. 是否保持 14 章主线、4 个阶段项目、95 个知识点清单不变。
+2. 每章是否面向高级前端工程师，而不是初学者。
+3. 每章是否有真实源码符号、文件路径、调用链和 `rg` 命令。
+4. 每章是否说明“为什么存在”“在主链路哪里”“和前后章节如何连接”。
+5. 每章是否有 5 分钟源码速验、实践任务、进阶分析题和 learning-framework 复刻任务。
+6. 是否把 `docs/` 下既有内容合并为补充专题，而不是散落成重复文档。
+7. 是否标明未确认源码点，不把推断伪装成已验证事实。
 
 ---
 
