@@ -1,5 +1,23 @@
 # Claude Code 源码系统课程总目录
 
+## 目录约定
+
+`docs/` 根目录只放课程主控文件：
+
+- `COURSE_INDEX.md`：课程入口和阅读顺序。
+- `SYSTEMATIC_COURSE.md`：14 章主线、4 个阶段项目、95 个知识点清单。
+- `LEARNING_TRACKER.md`：课程扩写、检查和修订进度。
+- `COURSE_COMPLETION_TASK.md`：最终完成任务与三轮检查要求。
+- `COURSE_FINAL_REVIEW.md`：最终验收记录。
+
+具体内容按职责分区：
+
+| 目录 | 作用 | 是否作为学习主线 |
+| --- | --- | --- |
+| `chapters/` | 14 章源码导读型讲义 | 是 |
+| `appendices/` | 依赖地图、证据链方法、复刻路线、高级专题和误区补充 | 是，作为章节补充 |
+| `legacy/` | 旧版散乱资料归档，已合并进章节和附录 | 否，仅作为历史来源 |
+
 ## 主线课
 
 | 阶段 | 章节 | 讲义 |
@@ -23,10 +41,10 @@
 
 | 附录 | 文件 | 合并来源 |
 | --- | --- | --- |
-| 附录 A：运行时依赖地图 | `appendices/A-runtime-dependencies.md` | `DEPENDENCIES.md` |
-| 附录 B：源码检索与证据链方法 | `appendices/B-source-evidence-method.md` | `ARCHITECTURE_GUIDE.md`、`COMMENTS_GUIDE.md` |
-| 附录 C：learning-framework 复刻路线 | `appendices/C-rebuild-roadmap.md` | `PROJECT_COMPARISON.md`、`QUICKSTART.md` |
-| 附录 D：高级专题索引 | `appendices/D-advanced-topic-index.md` | `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` |
+| 附录 A：运行时依赖地图 | `appendices/A-runtime-dependencies.md` | `legacy/DEPENDENCIES.md` |
+| 附录 B：源码检索与证据链方法 | `appendices/B-source-evidence-method.md` | `legacy/ARCHITECTURE_GUIDE.md`、`legacy/COMMENTS_GUIDE.md` |
+| 附录 C：learning-framework 复刻路线 | `appendices/C-rebuild-roadmap.md` | `legacy/PROJECT_COMPARISON.md`、`legacy/QUICKSTART.md` |
+| 附录 D：高级专题索引 | `appendices/D-advanced-topic-index.md` | `legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` |
 | 附录 E：常见源码误判清单 | `appendices/E-common-misreadings.md` | 已完成章节与整体验收 |
 
 ## 阅读顺序

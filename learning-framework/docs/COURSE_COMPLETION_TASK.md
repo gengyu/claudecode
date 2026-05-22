@@ -38,10 +38,10 @@
 
 | 专题 | 来源文档 | 输出建议 |
 | --- | --- | --- |
-| 运行时依赖地图 | `DEPENDENCIES.md` | `appendices/A-runtime-dependencies.md` |
-| 源码检索与证据链方法 | `ARCHITECTURE_GUIDE.md`、`COMMENTS_GUIDE.md` | `appendices/B-source-evidence-method.md` |
-| learning-framework 复刻路线 | `PROJECT_COMPARISON.md`、`QUICKSTART.md` | `appendices/C-rebuild-roadmap.md` |
-| 高级专题索引 | `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` | `appendices/D-advanced-topic-index.md` |
+| 运行时依赖地图 | `legacy/DEPENDENCIES.md` | `appendices/A-runtime-dependencies.md` |
+| 源码检索与证据链方法 | `legacy/ARCHITECTURE_GUIDE.md`、`legacy/COMMENTS_GUIDE.md` | `appendices/B-source-evidence-method.md` |
+| learning-framework 复刻路线 | `legacy/PROJECT_COMPARISON.md`、`legacy/QUICKSTART.md` | `appendices/C-rebuild-roadmap.md` |
+| 高级专题索引 | `legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` | `appendices/D-advanced-topic-index.md` |
 | 常见源码误判清单 | 已完成章节与检查结果 | `appendices/E-common-misreadings.md` |
 
 ## 三轮整体循环

@@ -45,10 +45,10 @@
 
 | 附录 | 文件 | 合并来源 |
 | --- | --- | --- |
-| 附录 A：运行时依赖地图 | `appendices/A-runtime-dependencies.md` | `DEPENDENCIES.md` |
-| 附录 B：源码检索与证据链方法 | `appendices/B-source-evidence-method.md` | `ARCHITECTURE_GUIDE.md`、`COMMENTS_GUIDE.md` |
-| 附录 C：learning-framework 复刻路线 | `appendices/C-rebuild-roadmap.md` | `PROJECT_COMPARISON.md`、`QUICKSTART.md` |
-| 附录 D：高级专题索引 | `appendices/D-advanced-topic-index.md` | `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` |
+| 附录 A：运行时依赖地图 | `appendices/A-runtime-dependencies.md` | `legacy/DEPENDENCIES.md` |
+| 附录 B：源码检索与证据链方法 | `appendices/B-source-evidence-method.md` | `legacy/ARCHITECTURE_GUIDE.md`、`legacy/COMMENTS_GUIDE.md` |
+| 附录 C：learning-framework 复刻路线 | `appendices/C-rebuild-roadmap.md` | `legacy/PROJECT_COMPARISON.md`、`legacy/QUICKSTART.md` |
+| 附录 D：高级专题索引 | `appendices/D-advanced-topic-index.md` | `legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` |
 | 附录 E：常见源码误判清单 | `appendices/E-common-misreadings.md` | 14 章讲义与检查结果 |
 
 ## 三轮检查记录
@@ -128,7 +128,7 @@ RemoteSessionManager / AgentTool / profileCheckpoint
   - 消息循环
   - 工具与权限
   - 插件与高级系统
-- `ARCHITECTURE_GUIDE.md`、`CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md`、`PROJECT_COMPARISON.md`、`QUICKSTART.md`、`DEPENDENCIES.md`、`COMMENTS_GUIDE.md` 已有合并入口。
+- `legacy/ARCHITECTURE_GUIDE.md`、`legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md`、`legacy/PROJECT_COMPARISON.md`、`legacy/QUICKSTART.md`、`legacy/DEPENDENCIES.md`、`legacy/COMMENTS_GUIDE.md` 已有合并入口。
 - 课程写作标准保持为源码证据链、调用链、`rg` 命令、实践任务、进阶分析。
 
 ## 最终阅读入口

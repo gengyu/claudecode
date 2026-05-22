@@ -1,6 +1,6 @@
 # 附录 C：learning-framework 复刻路线
 
-本附录合并 `PROJECT_COMPARISON.md` 和 `QUICKSTART.md`，把“简化版 vs 生产版”的学习方式落到 4 个阶段项目。
+本附录合并 `legacy/PROJECT_COMPARISON.md` 和 `legacy/QUICKSTART.md`，把“简化版 vs 生产版”的学习方式落到 4 个阶段项目。
 
 ## 复刻原则
 

@@ -1,6 +1,6 @@
 # 附录 D：高级专题索引
 
-本附录整理自 `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md`，把宽泛架构说明拆成可继续深挖的专题索引。
+本附录整理自 `legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md`，把宽泛架构说明拆成可继续深挖的专题索引。
 
 ## 专题索引
 

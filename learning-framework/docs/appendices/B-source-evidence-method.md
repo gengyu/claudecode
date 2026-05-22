@@ -1,6 +1,6 @@
 # 附录 B：源码检索与证据链方法
 
-本附录合并 `ARCHITECTURE_GUIDE.md` 和 `COMMENTS_GUIDE.md` 中的方法论内容，改成高级源码导读的实操规范。
+本附录合并 `legacy/ARCHITECTURE_GUIDE.md` 和 `legacy/COMMENTS_GUIDE.md` 中的方法论内容，改成高级源码导读的实操规范。
 
 ## 证据链优先级
 

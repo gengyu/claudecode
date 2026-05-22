@@ -43,12 +43,12 @@
   - [x] 附录 D：高级专题索引
   - [x] 附录 E：常见源码误判清单
 - [x] 合并既有 docs 内容
-  - [x] `ARCHITECTURE_GUIDE.md` 合并到第 1 章附录和阶段复盘
-  - [x] `CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` 拆分到第 1、2、4、9、13 章补充阅读
-  - [x] `PROJECT_COMPARISON.md` 合并到 4 个阶段项目复刻方法
-  - [x] `QUICKSTART.md` 合并到课前准备和第一阶段项目
-  - [x] `DEPENDENCIES.md` 合并到附录 A
-  - [x] `COMMENTS_GUIDE.md` 合并到附录 B 和学习笔记规范
+  - [x] `legacy/ARCHITECTURE_GUIDE.md` 合并到第 1 章附录和阶段复盘
+  - [x] `legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` 拆分到第 1、2、4、9、13 章补充阅读
+  - [x] `legacy/PROJECT_COMPARISON.md` 合并到 4 个阶段项目复刻方法
+  - [x] `legacy/QUICKSTART.md` 合并到课前准备和第一阶段项目
+  - [x] `legacy/DEPENDENCIES.md` 合并到附录 A
+  - [x] `legacy/COMMENTS_GUIDE.md` 合并到附录 B 和学习笔记规范
 
 ### 三轮整体检查与修改
 
@@ -284,11 +284,17 @@
 
 ### 已创建的文档
 - [x] README.md - 项目说明
-- [x] ARCHITECTURE_GUIDE.md - 架构指南
 - [x] SYSTEMATIC_COURSE.md - Claude Code 源码系统课程
 - [x] COURSE_INDEX.md - 课程总目录与附录索引
 - [x] COURSE_COMPLETION_TASK.md - 14 章全量写作与三轮整体检查任务书
 - [x] COURSE_FINAL_REVIEW.md - 课程最终验收报告
+- [x] legacy/README.md - 旧版资料归档说明
+- [x] legacy/ARCHITECTURE_GUIDE.md - 旧版架构指南，已合并到附录
+- [x] legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md - 旧版架构预览，已合并到附录
+- [x] legacy/COMMENTS_GUIDE.md - 旧版注释指南，已合并到附录
+- [x] legacy/DEPENDENCIES.md - 旧版依赖说明，已合并到附录
+- [x] legacy/PROJECT_COMPARISON.md - 旧版项目对比，已合并到附录
+- [x] legacy/QUICKSTART.md - 旧版快速开始，已合并到附录
 - [x] chapters/01-source-map.md - 第 1 章源码全景与学习地图讲义
 - [x] chapters/02-cli-entry-commander.md - 第 2 章 CLI 启动入口与 Commander 命令解析讲义
 - [x] chapters/03-initialization-config.md - 第 3 章初始化系统与配置加载讲义

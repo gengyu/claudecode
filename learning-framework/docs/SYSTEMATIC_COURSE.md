@@ -890,12 +890,12 @@ Tool.ts / tools/* 具体工具执行
 
 | 既有文档 | 合并位置 | 使用方式 | 不直接照搬的原因 |
 | --- | --- | --- | --- |
-| `learning-framework/docs/ARCHITECTURE_GUIDE.md` | 第 1 章附录、阶段总复盘 | 提取目录地图、核心模块、学习方法 | 原文偏概览，需要改成源码证据链 |
-| `learning-framework/docs/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` | 第 1、2、4、9、13 章补充阅读 | 提取启动、TUI、工具、MCP 的架构图素材 | 原文覆盖面大，需按 14 章拆分 |
-| `learning-framework/docs/PROJECT_COMPARISON.md` | 每个阶段项目的复刻方法论 | 提取“简化版 vs 生产版”对比框架 | 原文是通用策略，需要绑定每章实践产出 |
-| `learning-framework/docs/QUICKSTART.md` | 课前准备、学习环境、第一阶段项目 | 提取运行命令和首次任务 | 对高级前端来说基础讲解要压缩 |
-| `learning-framework/docs/DEPENDENCIES.md` | 附录 A：依赖与运行时地图 | 提取 Ink、Commander、React、TypeScript、Bun 角色 | 主线不讲依赖入门，只讲源码中承担的工程位置 |
-| `learning-framework/docs/COMMENTS_GUIDE.md` | 附录 B：源码注释与笔记规范 | 提取注释风格和学习记录模板 | 需改成高级源码阅读笔记模板 |
+| `learning-framework/docs/legacy/ARCHITECTURE_GUIDE.md` | 第 1 章附录、阶段总复盘 | 提取目录地图、核心模块、学习方法 | 原文偏概览，需要改成源码证据链 |
+| `learning-framework/docs/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md` | 第 1、2、4、9、13 章补充阅读 | 提取启动、TUI、工具、MCP 的架构图素材 | 原文覆盖面大，需按 14 章拆分 |
+| `learning-framework/docs/legacy/PROJECT_COMPARISON.md` | 每个阶段项目的复刻方法论 | 提取“简化版 vs 生产版”对比框架 | 原文是通用策略，需要绑定每章实践产出 |
+| `learning-framework/docs/legacy/QUICKSTART.md` | 课前准备、学习环境、第一阶段项目 | 提取运行命令和首次任务 | 对高级前端来说基础讲解要压缩 |
+| `learning-framework/docs/legacy/DEPENDENCIES.md` | 附录 A：依赖与运行时地图 | 提取 Ink、Commander、React、TypeScript、Bun 角色 | 主线不讲依赖入门，只讲源码中承担的工程位置 |
+| `learning-framework/docs/legacy/COMMENTS_GUIDE.md` | 附录 B：源码注释与笔记规范 | 提取注释风格和学习记录模板 | 需改成高级源码阅读笔记模板 |
 
 建议新增附录方向：
 

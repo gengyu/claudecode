@@ -54,7 +54,7 @@ bun run dev
    cat README.md
    
    # 再读架构指南
-   cat docs/ARCHITECTURE_GUIDE.md
+   cat docs/legacy/ARCHITECTURE_GUIDE.md
    
    # 查看学习进度
    cat docs/LEARNING_TRACKER.md
@@ -304,7 +304,7 @@ bun add -d <package-name>
 现在你已经准备好了！
 
 1. ✅ 阅读 `README.md` 了解项目
-2. ✅ 阅读 `docs/ARCHITECTURE_GUIDE.md` 理解架构
+2. ✅ 阅读 `docs/legacy/ARCHITECTURE_GUIDE.md` 理解架构
 3. ✅ 打开 `docs/LEARNING_TRACKER.md` 开始追踪进度
 4. ✅ 运行 `bun run dev` 查看效果
 5. ✅ 开始 Day 1 的学习任务
@@ -314,6 +314,6 @@ bun add -d <package-name>
 ---
 
 **需要帮助？**
-- 查看 `docs/ARCHITECTURE_GUIDE.md` 获取详细指导
+- 查看 `docs/legacy/ARCHITECTURE_GUIDE.md` 获取详细指导
 - 参考 `claudecode-project/src/` 中的实现
 - 在 `docs/notes/` 中记录问题和解决方案
