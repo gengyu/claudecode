@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://claudecode.midtell.com/COURSE_INDEX.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/SYSTEMATIC_COURSE.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/LEARNING_TRACKER.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/COURSE_COMPLETION_TASK.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/COURSE_FINAL_REVIEW.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/01-source-map.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/02-cli-entry-commander.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/03-initialization-config.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/04-react-ink-tui.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/05-repl-runtime-coordinator.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/06-appstate-store.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/07-message-context.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/08-agent-query-loop.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/09-tool-abstraction.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/10-built-in-tools.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/11-permission-boundary.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/12-slash-commands.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/13-mcp-plugin-skills.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/chapters/14-advanced-systems.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/appendices/A-runtime-dependencies.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/appendices/B-source-evidence-method.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/appendices/C-rebuild-roadmap.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/appendices/D-advanced-topic-index.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/appendices/E-common-misreadings.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/ARCHITECTURE_GUIDE.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/COMMENTS_GUIDE.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/DEPENDENCIES.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/PROJECT_COMPARISON.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/QUICKSTART.html</loc></url>
+  <url><loc>https://claudecode.midtell.com/legacy/README.html</loc></url>
+</urlset>

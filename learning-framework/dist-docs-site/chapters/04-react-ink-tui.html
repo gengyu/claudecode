@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 4 章：React + Ink 终端 UI - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option selected value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a aria-current="page" href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-4-章-react-ink-终端-ui">第 4 章：React + Ink 终端 UI</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 4 章承接第 3 章的初始化结果，进入第一个真正可见的运行时层：React + Ink 终端 UI。前面三章已经建立了这条链路：</p>
+<pre><code class="language-text">main.tsx
+  -&gt; preAction
+  -&gt; init()
+  -&gt; launchRepl(...)</code></pre>
+<p>本章从 <code>launchRepl(...)</code> 继续往下看：</p>
+<pre><code class="language-text">launchRepl
+  -&gt; App
+  -&gt; REPL
+  -&gt; Messages / PromptInput / Dialog / Spinner / Status UI</code></pre>
+<p>对高级前端工程师来说，本章不讲 React 组件或 Flexbox 基础。重点是：Claude Code 如何把你熟悉的组件、状态、输入和布局模型放进一个终端渲染环境里，并为第 5 章 <code>REPL.tsx</code> 的复杂协调职责做铺垫。</p>
+<p>本章保持 <code>SYSTEMATIC_COURSE.md</code> 第 4 章主题不变，覆盖这些知识点：</p>
+<ol><li>Ink 的 <code>Box</code>、<code>Text</code></li><li>终端 Flexbox 布局</li><li><code>useInput</code> 键盘事件</li><li>终端尺寸变化</li><li>Dialog 与全屏布局</li><li>消息列表渲染</li><li>Spinner、状态栏、提示信息</li></ol>
+<p>第 4 章不是 REPL 主逻辑精读。它只讲“终端 UI 基础设施如何组织”，第 5 章再进入输入、队列、query、权限弹窗如何集中协作。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>你已经熟悉 React 组件树、Provider、memo、虚拟列表、输入框、footer、modal。Claude Code 的 TUI 层值得关注的不是这些概念本身，而是它们在终端环境中产生的新约束：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>Web 前端 UI</th><th>Claude Code TUI</th></tr></thead><tbody><tr><td>DOM + CSS</td><td>Ink reconciler + terminal frame</td></tr><tr><td>CSS flexbox</td><td>Ink/terminal flex layout</td></tr><tr><td>click/input/browser focus</td><td>raw stdin、key event、terminal focus</td></tr><tr><td>viewport resize</td><td>terminal columns/rows</td></tr><tr><td>modal overlay</td><td>root.render / dialog slot / fullscreen layout</td></tr><tr><td>list virtualization</td><td>terminal scroll box / VirtualMessageList</td></tr><tr><td>loading indicator</td><td>SpinnerWithVerb、streaming text、tool progress</td></tr><tr><td>browser tab title</td><td>terminal title / tab status</td></tr></tbody></table></div>
+<p>本章的核心价值是建立一个判断：Claude Code 的 UI 层不是“把 Web React 改成终端组件”这么简单，而是把长期运行的 Agent 会话渲染成一个可滚动、可输入、可中断、可弹权限、可显示流式进度的终端应用。</p>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本章后，你应该能够：</p>
+<ol><li>用源码证明 <code>ink.ts</code> 是 Claude Code TUI 的统一导出层，而不是直接裸用 Ink。</li><li>追踪 <code>main.tsx -&gt; launchRepl -&gt; App -&gt; REPL</code> 的 UI 挂载链路。</li><li>找到 <code>App</code> 如何给交互会话注入 AppState、Stats、FPS provider。</li><li>说明 <code>Box</code>、<code>Text</code>、<code>useInput</code>、terminal focus/title/status 这些 TUI primitive 在 REPL 中的位置。</li><li>追踪 <code>Messages</code> 如何使用 <code>VirtualMessageList</code> 渲染消息列表。</li><li>追踪 <code>PromptInput</code> 如何把 TextInput/VimTextInput、queued commands、mode indicator、footer 组合成输入区域。</li><li>在 <code>learning-framework</code> 中复刻一个两栏/上下布局 TUI，支持消息列表、输入框、状态栏和 <code>/clear</code> 命令。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>本章默认你已经理解：</p>
+<ul><li>第 2 章的 <code>launchRepl(...)</code> 是 interactive runtime 出口</li><li>第 3 章完成了配置、env、shutdown、网络准备</li><li>React provider、memo、controlled input、虚拟列表这些前端模式</li><li>终端程序通过 stdin/stdout/stderr 与用户交互</li></ul>
+<p>本章不会重复讲：</p>
+<ul><li>React 组件语法</li><li>Flexbox 基础</li><li>useState/useEffect 入门</li><li>Ink 的 hello world</li></ul>
+<p>你要把注意力放在源码链路和设计边界：哪些是 TUI 基础设施，哪些是第 5 章 REPL runtime 编排。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-ink-ts-是统一-tui-facade">1. <code>ink.ts</code> 是统一 TUI facade</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;withTheme|export async function render|export async function createRoot|export \\{ default as Box \\}|export \\{ default as Text \\}|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/ink.ts</code></pre>
+<p><code>ink.ts</code> 没有让业务组件直接从底层 Ink 到处 import，而是做了一个 facade：</p>
+<pre><code class="language-text">ink.ts
+  -&gt; wrap ThemeProvider
+  -&gt; export render/createRoot
+  -&gt; export themed Box/Text
+  -&gt; export terminal hooks
+  -&gt; export lower-level ink primitives</code></pre>
+<p>为什么存在：</p>
+<ul><li>所有 render 都自动包 ThemeProvider，业务组件不用重复挂主题。</li><li><code>Box</code>/<code>Text</code> 默认走 design-system 的 ThemedBox/ThemedText，而不是裸底层组件。</li><li>终端 hooks、events、layout primitives 通过一个稳定入口暴露。</li></ul>
+<p>在主链路中的位置：</p>
+<pre><code class="language-text">main.tsx getRenderContext/createRoot
+  -&gt; ink.ts createRoot/render
+  -&gt; ThemeProvider
+  -&gt; App/REPL tree</code></pre>
+<h3 id="2-launchrepl-是-ui-tree-的切入点">2. <code>launchRepl</code> 是 UI tree 的切入点</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export async function launchRepl|import\\(&#39;./components/App|import\\(&#39;./screens/REPL|renderAndRun&quot; claudecode-project/src/replLauncher.tsx</code></pre>
+<p><code>launchRepl</code> 动态 import <code>App</code> 和 <code>REPL</code>，再交给 <code>renderAndRun</code>：</p>
+<pre><code class="language-text">launchRepl(root, appProps, replProps, renderAndRun)
+  -&gt; import App
+  -&gt; import REPL
+  -&gt; renderAndRun(root, &lt;App {...appProps}&gt;&lt;REPL {...replProps}/&gt;&lt;/App&gt;)</code></pre>
+<p>设计意图：</p>
+<ul><li>入口层不需要静态加载完整 REPL 和 UI tree。</li><li><code>App</code> 和 <code>REPL</code> 的职责分开：<code>App</code> 挂 provider，<code>REPL</code> 做交互运行时。</li><li>这一层是第 2 章 <code>main.tsx</code> 和第 5 章 <code>REPL.tsx</code> 的连接点。</li></ul>
+<h3 id="3-app-是交互会话的-provider-shell">3. <code>App</code> 是交互会话的 Provider shell</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export function App|FpsMetricsProvider|StatsProvider|AppStateProvider|onChangeAppState&quot; claudecode-project/src/components/App.tsx</code></pre>
+<p><code>App</code> 不是视觉组件，而是交互 session 的 provider shell：</p>
+<pre><code class="language-text">App
+  -&gt; FpsMetricsProvider
+  -&gt; StatsProvider
+  -&gt; AppStateProvider(initialState, onChangeAppState)
+  -&gt; children(REPL)</code></pre>
+<p>为什么存在：</p>
+<ul><li>REPL 和子组件需要共享 AppState。</li><li>统计和 FPS 是 UI/runtime 横切关注点。</li><li><code>onChangeAppState</code> 把状态变更与外部副作用连接起来。</li></ul>
+<p>这也解释了为什么第 6 章 AppState 要单独讲：第 4 章只确认 Provider shell，状态模型本身后面再拆。</p>
+<h3 id="4-box-text-是-tui-的-layout-和-typography-primitive">4. <code>Box</code>/<code>Text</code> 是 TUI 的 layout 和 typography primitive</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;import \\{ Box, Text|&lt;Box|&lt;Text&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/components/App.tsx claudecode-project/src/components/Messages.tsx claudecode-project/src/components/PromptInput/PromptInput.tsx</code></pre>
+<p><code>Box</code> 和 <code>Text</code> 在 TUI 中承担 Web 里的 layout container 和 text node，但边界不同：</p>
+<ul><li>宽高来自终端 rows/columns。</li><li>布局变化会影响整帧输出。</li><li>文本 wrapping、ANSI、selection、cursor 都是终端问题。</li><li>不能假设浏览器 DOM、CSS、mouse、scroll 行为存在。</li></ul>
+<p>本章不展开所有 layout 实现，只要建立这个判断：TUI layout 是“按终端帧重绘”的 UI，不是浏览器 DOM patch。</p>
+<h3 id="5-useinput-和-terminal-hooks-是-tui-的事件入口">5. <code>useInput</code> 和 terminal hooks 是 TUI 的事件入口</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;useInput|useTerminalFocus|useTerminalTitle|useTabStatus|useStdin|useTerminalSize&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/components/PromptInput/PromptInput.tsx claudecode-project/src/components -g &#39;*.{tsx,ts}&#39;</code></pre>
+<p>与 Web 前端的事件系统不同，Claude Code 的 TUI 事件来自：</p>
+<ul><li>stdin 字符输入</li><li>key event</li><li>terminal focus</li><li>terminal title/tab status</li><li>terminal viewport/size</li></ul>
+<p><code>REPL.tsx</code> 和 <code>PromptInput.tsx</code> 都会注册输入相关逻辑。第 4 章只建立事件入口地图，第 5 章再追踪输入如何进入消息和 query。</p>
+<h3 id="6-messages-是消息渲染层-不是消息状态层">6. <code>Messages</code> 是消息渲染层，不是消息状态层</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;MessagesImpl|VirtualMessageList|React\\.memo\\(MessagesImpl|shouldRenderStatically|renderableMessages&quot; claudecode-project/src/components/Messages.tsx</code></pre>
+<p><code>Messages</code> 的职责是把消息投影成可渲染列表，里面出现了：</p>
+<ul><li><code>MessagesImpl</code></li><li><code>VirtualMessageList</code></li><li><code>React.memo</code></li><li><code>shouldRenderStatically</code></li><li>message lookup / renderable messages</li></ul>
+<p>这说明消息列表是性能敏感区域。它不是“messages.map 渲染一下”这么简单，因为终端会话可能很长，还有 streaming tool、thinking、compact boundary、collapsed content、static/dynamic render 等差异。</p>
+<p>状态和消息模型本身在第 6、7 章讲；本章只确认消息如何进入 TUI 渲染层。</p>
+<h3 id="7-promptinput-是输入区域组合体-不只是文本框">7. <code>PromptInput</code> 是输入区域组合体，不只是文本框</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;function PromptInput|onSubmit|TextInput|VimTextInput|PromptInputFooter|PromptInputQueuedCommands|PromptInputModeIndicator|export default React\\.memo\\(PromptInput\\)&quot; claudecode-project/src/components/PromptInput/PromptInput.tsx</code></pre>
+<p><code>PromptInput</code> 组合了：</p>
+<ul><li>TextInput / VimTextInput</li><li>onSubmit</li><li>PromptInputQueuedCommands</li><li>PromptInputModeIndicator</li><li>PromptInputFooter</li><li>suggestions、history、paste、footer navigation、mode</li></ul>
+<p>这不是普通 form input，而是 Agent CLI 的交互控制台。它既要接收自然语言 prompt，也要支持 slash command、队列提示、模式指示、粘贴、历史、任务/团队/bridge 状态。</p>
+<p>第 5 章会追踪 <code>onSubmit</code> 如何进入 <code>handlePromptSubmit</code> 和 query，本章先看它作为 UI 组合边界。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>本章不看什么</th><th>后续章节</th></tr></thead><tbody><tr><td><code>claudecode-project/src/ink.ts</code></td><td>TUI facade、ThemeProvider、Box/Text/hooks 导出</td><td>底层 reconciler 完整实现</td><td>第 14 章可回看性能/终端底层</td></tr><tr><td><code>claudecode-project/src/replLauncher.tsx</code></td><td>App + REPL 的挂载链路</td><td>REPL 内部逻辑</td><td>第 5 章深入 REPL</td></tr><tr><td><code>claudecode-project/src/components/App.tsx</code></td><td>Provider shell：AppState/Stats/FPS</td><td>AppState 字段和 selector</td><td>第 6 章深入状态</td></tr><tr><td><code>claudecode-project/src/screens/REPL.tsx</code></td><td>TUI 组件如何被组合：Messages、PromptInput、Spinner、terminal hooks</td><td>query、权限、队列具体逻辑</td><td>第 5 章重点</td></tr><tr><td><code>claudecode-project/src/components/Messages.tsx</code></td><td>消息列表渲染、VirtualMessageList、memo、static/dynamic render</td><td>message 类型和 API normalize</td><td>第 7 章深入消息</td></tr><tr><td><code>claudecode-project/src/components/PromptInput/PromptInput.tsx</code></td><td>输入区域组合、TextInput/VimTextInput、footer、queued commands、onSubmit 边界</td><td><code>handlePromptSubmit</code> 具体业务</td><td>第 5 章深入输入提交</td></tr><tr><td><code>claudecode-project/src/components/Spinner.tsx</code></td><td>loading/progress 的 UI 表达</td><td>query progress 的完整状态机</td><td>第 5、8 章会连接</td></tr><tr><td><code>claudecode-project/src/components/FullscreenLayout.tsx</code></td><td>fullscreen/dialog 布局边界</td><td>所有 dialog 业务实现</td><td>第 5、11 章连接权限弹窗</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<h3 id="交互-ui-挂载链路">交互 UI 挂载链路</h3>
+<pre><code class="language-text">main.tsx interactive branch
+  -&gt; launchRepl(root, appProps, replProps, renderAndRun)
+  -&gt; dynamic import App
+  -&gt; dynamic import REPL
+  -&gt; renderAndRun(root, &lt;App&gt;&lt;REPL /&gt;&lt;/App&gt;)
+  -&gt; AppStateProvider / StatsProvider / FpsMetricsProvider
+  -&gt; REPL renders Messages + PromptInput + dialogs + spinner</code></pre>
+<h3 id="tui-primitive-数据流">TUI primitive 数据流</h3>
+<pre><code class="language-text">ink.ts
+  -&gt; createRoot/render wraps ThemeProvider
+  -&gt; exports themed Box/Text
+  -&gt; exports useInput/useStdin/useTerminalFocus/useTerminalTitle/useTabStatus
+  -&gt; components import from ../ink.js
+  -&gt; REPL/PromptInput/Messages render terminal frames</code></pre>
+<h3 id="消息渲染流">消息渲染流</h3>
+<pre><code class="language-text">REPL messages state
+  -&gt; displayed/deferred/renderable messages
+  -&gt; &lt;Messages ... /&gt;
+  -&gt; MessagesImpl
+  -&gt; VirtualMessageList
+  -&gt; MessageRow / message-specific renderers
+  -&gt; terminal output</code></pre>
+<h3 id="输入-ui-流">输入 UI 流</h3>
+<pre><code class="language-text">REPL passes onSubmit and UI state
+  -&gt; PromptInput
+  -&gt; TextInput or VimTextInput
+  -&gt; PromptInputQueuedCommands / ModeIndicator / Footer
+  -&gt; onSubmit boundary
+  -&gt; 第 5 章 handlePromptSubmit / queue / query</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-确认-tui-facade">路线一：确认 TUI facade</h3>
+<p>阅读目标：确认业务组件不是直接裸用底层 Ink，而是通过 <code>ink.ts</code>。</p>
+<pre><code class="language-bash">rg -n &quot;withTheme|render\\(|createRoot\\(|default as Box|default as Text|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/ink.ts</code></pre>
+<p>应该看到：</p>
+<ul><li><code>withTheme</code></li><li><code>render</code></li><li><code>createRoot</code></li><li>themed <code>Box</code> / <code>Text</code></li><li>terminal hooks exports</li></ul>
+<p>形成判断：</p>
+<p><code>ink.ts</code> 是 UI 基础设施边界，主题和 primitive 都从这里统一进入业务组件。</p>
+<h3 id="路线二-追踪-ui-挂载链路">路线二：追踪 UI 挂载链路</h3>
+<p>阅读目标：确认第 2、3 章后的 interactive runtime 如何变成 React tree。</p>
+<pre><code class="language-bash">rg -n &quot;launchRepl\\(&quot; claudecode-project/src/main.tsx
+rg -n &quot;export async function launchRepl|&lt;App|&lt;REPL|renderAndRun&quot; claudecode-project/src/replLauncher.tsx
+rg -n &quot;export function App|AppStateProvider|StatsProvider|FpsMetricsProvider&quot; claudecode-project/src/components/App.tsx</code></pre>
+<p>应该看到：</p>
+<ul><li><code>main.tsx</code> 多个分支调用 <code>launchRepl</code></li><li><code>launchRepl</code> 动态 import <code>App</code> / <code>REPL</code></li><li><code>App</code> 挂 provider</li></ul>
+<p>形成判断：</p>
+<p><code>launchRepl</code> 是 CLI runtime 和 TUI tree 的分界线。</p>
+<h3 id="路线三-定位-repl-中的-tui-元件">路线三：定位 REPL 中的 TUI 元件</h3>
+<p>阅读目标：不深入 REPL 业务，只确认 UI 结构入口。</p>
+<pre><code class="language-bash">rg -n &quot;import \\{ Box, Text|PromptInput|Messages|SpinnerWithVerb|useTerminalSize|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>应该看到：</p>
+<ul><li>REPL 使用 terminal hooks</li><li>REPL 组合 Messages / PromptInput / Spinner</li><li>REPL 使用 Box/Text 构建布局</li></ul>
+<p>形成判断：</p>
+<p>REPL 是第 5 章的运行时协调器，但它在 UI 层已经可以看出三块：消息、输入、状态/进度/弹窗。</p>
+<h3 id="路线四-验证消息列表不是简单-map">路线四：验证消息列表不是简单 map</h3>
+<p>阅读目标：确认 Messages 的性能和渲染策略。</p>
+<pre><code class="language-bash">rg -n &quot;MessagesImpl|VirtualMessageList|React\\.memo\\(MessagesImpl|shouldRenderStatically|renderableMessages&quot; claudecode-project/src/components/Messages.tsx</code></pre>
+<p>应该看到：</p>
+<ul><li><code>MessagesImpl</code></li><li><code>VirtualMessageList</code></li><li><code>React.memo</code></li><li><code>shouldRenderStatically</code></li></ul>
+<p>形成判断：</p>
+<p>长会话消息列表需要虚拟化、静态/动态渲染判断和 memo，不是普通列表渲染。</p>
+<h3 id="路线五-验证-promptinput-是组合控制台">路线五：验证 PromptInput 是组合控制台</h3>
+<p>阅读目标：确认输入区域包含哪些交互能力。</p>
+<pre><code class="language-bash">rg -n &quot;function PromptInput|onSubmit|TextInput|VimTextInput|PromptInputFooter|PromptInputQueuedCommands|PromptInputModeIndicator|useInput\\(|export default React\\.memo\\(PromptInput\\)&quot; claudecode-project/src/components/PromptInput/PromptInput.tsx</code></pre>
+<p>应该看到：</p>
+<ul><li><code>PromptInput</code> props 包含 <code>onSubmit</code></li><li>TextInput / VimTextInput 分支</li><li>queued commands、mode indicator、footer</li><li><code>React.memo</code></li></ul>
+<p>形成判断：</p>
+<p>PromptInput 是输入控制台，不是普通文本框；第 5 章会继续追踪它的提交边界。</p>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<h3 id="验证-1-统一-ink-入口">验证 1：统一 Ink 入口</h3>
+<pre><code class="language-bash">sed -n &#39;1,120p&#39; claudecode-project/src/ink.ts</code></pre>
+<p>确认 <code>ThemeProvider</code> 包装、<code>render/createRoot</code>、<code>Box/Text/useInput</code> 导出。</p>
+<h3 id="验证-2-app-repl-挂载">验证 2：App + REPL 挂载</h3>
+<pre><code class="language-bash">sed -n &#39;1,80p&#39; claudecode-project/src/replLauncher.tsx</code></pre>
+<p>确认 <code>launchRepl</code> 动态加载 <code>App</code> 和 <code>REPL</code>，并通过 <code>renderAndRun</code> 渲染。</p>
+<h3 id="验证-3-provider-shell">验证 3：Provider shell</h3>
+<pre><code class="language-bash">rg -n &quot;FpsMetricsProvider|StatsProvider|AppStateProvider&quot; claudecode-project/src/components/App.tsx</code></pre>
+<p>确认交互 UI tree 的 provider 层。</p>
+<h3 id="验证-4-消息列表虚拟化">验证 4：消息列表虚拟化</h3>
+<pre><code class="language-bash">rg -n &quot;VirtualMessageList|React\\.memo\\(MessagesImpl|shouldRenderStatically&quot; claudecode-project/src/components/Messages.tsx</code></pre>
+<p>确认消息渲染有虚拟列表和静态渲染判断。</p>
+<h3 id="验证-5-输入区域组合">验证 5：输入区域组合</h3>
+<pre><code class="language-bash">rg -n &quot;TextInput|VimTextInput|PromptInputFooter|PromptInputQueuedCommands|PromptInputModeIndicator|onSubmit&quot; claudecode-project/src/components/PromptInput/PromptInput.tsx</code></pre>
+<p>确认 PromptInput 的组合结构和提交边界。</p>
+<h3 id="验证-6-repl-引用-ui-元件">验证 6：REPL 引用 UI 元件</h3>
+<pre><code class="language-bash">rg -n &quot;Messages|PromptInput|SpinnerWithVerb|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>确认第 5 章要继续深入的 REPL UI/事件入口。</p>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<h3 id="1-ink-ts-ui-primitive-的统一门面">1. <code>ink.ts</code>：UI primitive 的统一门面</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">render/createRoot
+  -&gt; withTheme
+  -&gt; themed Box/Text
+  -&gt; terminal hooks</code></pre>
+<p>设计意图：</p>
+<ul><li>让业务组件稳定从 <code>../ink.js</code> import。</li><li>把主题注入集中化。</li><li>保留底层 Ink 能力，同时默认使用 design-system 组件。</li></ul>
+<p>边界：</p>
+<ul><li>本章看 facade，不深入 <code>ink/root.js</code> reconciler。</li><li>终端底层渲染和性能问题留到高级工程化专题。</li></ul>
+<h3 id="2-repllauncher-tsx-runtime-到-ui-tree-的桥">2. <code>replLauncher.tsx</code>：runtime 到 UI tree 的桥</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">launchRepl(root, appProps, replProps, renderAndRun)
+  -&gt; import App
+  -&gt; import REPL
+  -&gt; render tree</code></pre>
+<p>设计意图：</p>
+<ul><li>避免主入口静态拉入 REPL 大模块。</li><li>让 <code>main.tsx</code> 只负责准备 appProps/replProps。</li><li>让 REPL 真正成为 interactive runtime 的入口。</li></ul>
+<p>上下游：</p>
+<ul><li>上游：第 2 章 <code>main.tsx</code> 分支。</li><li>下游：第 5 章 <code>REPL.tsx</code>。</li></ul>
+<h3 id="3-app-tsx-provider-shell">3. <code>App.tsx</code>：Provider shell</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">FpsMetricsProvider
+  -&gt; StatsProvider
+  -&gt; AppStateProvider
+  -&gt; REPL</code></pre>
+<p>设计意图：</p>
+<ul><li>FPS/stats 是 UI 和性能横切数据。</li><li>AppState 是 REPL 与子组件共享状态。</li><li><code>onChangeAppState</code> 把 state mutation 和外部副作用连接。</li></ul>
+<p>边界：</p>
+<ul><li>本章只确认 provider 注入。</li><li>第 6 章再讲 AppState store、selector、onChangeAppState。</li></ul>
+<h3 id="4-messages-tsx-长会话消息列表的渲染层">4. <code>Messages.tsx</code>：长会话消息列表的渲染层</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">messages input
+  -&gt; renderableMessages
+  -&gt; VirtualMessageList
+  -&gt; message row/renderers</code></pre>
+<p>设计意图：</p>
+<ul><li>长会话不能简单全量重绘。</li><li>streaming tool/thinking/compact/collapsed 状态需要不同渲染策略。</li><li><code>React.memo</code> 和 <code>shouldRenderStatically</code> 说明这里有明确性能边界。</li></ul>
+<p>边界：</p>
+<ul><li>本章不解释每种 message 类型。</li><li>第 7 章会讲消息模型和 API normalize。</li></ul>
+<h3 id="5-promptinput-tsx-输入控制台">5. <code>PromptInput.tsx</code>：输入控制台</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">TextInput/VimTextInput
+  + queued commands
+  + mode indicator
+  + footer
+  + suggestions/history/paste
+  -&gt; onSubmit</code></pre>
+<p>设计意图：</p>
+<ul><li>输入不仅是 prompt，还可能是 slash command、队列、模式切换、粘贴内容、历史导航。</li><li>footer 和 mode indicator 是运行时状态的 UI 投影。</li><li>TextInput focus 和 overlay/dialog 会影响 key handling。</li></ul>
+<p>边界：</p>
+<ul><li>本章只定位 <code>onSubmit</code> 边界。</li><li>第 5 章继续追踪 <code>onSubmit -&gt; handlePromptSubmit -&gt; query</code>。</li></ul>
+<h3 id="6-spinner-状态栏-提示信息-agent-运行状态的-ui-投影">6. Spinner、状态栏、提示信息：Agent 运行状态的 UI 投影</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">isLoading / streamMode / spinnerMessage / toolJSX / progress
+  -&gt; SpinnerWithVerb / status notices / footer indicators</code></pre>
+<p>设计意图：</p>
+<ul><li>Agent turn 不是即时完成，需要持续反馈。</li><li>tool execution、hooks、compact、thinking、background tasks 都可能改变可见状态。</li><li>状态提示不能只靠一个 loading boolean。</li></ul>
+<p>边界：</p>
+<ul><li>本章只看 UI 表达入口。</li><li>第 8 章 query 和第 10 章 tool orchestration 会解释状态来源。</li></ul>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<h3 id="承接第-3-章">承接第 3 章</h3>
+<p>第 3 章准备了配置、env、shutdown 和网络环境。本章假设这些已经完成，开始把 interactive runtime 渲染成终端 UI。</p>
+<pre><code class="language-text">init completed
+  -&gt; main action chooses interactive path
+  -&gt; launchRepl
+  -&gt; Ink/React tree</code></pre>
+<h3 id="连接第-5-章-repl">连接第 5 章 REPL</h3>
+<p>第 4 章只建立 REPL 周围的 UI 基础设施。第 5 章会深入：</p>
+<ul><li>用户输入如何提交</li><li>message queue 如何处理</li><li>query 如何被调用</li><li>permission UI 如何阻塞/恢复工具执行</li><li>cancel/interruption 如何影响 UI 和运行时</li></ul>
+<h3 id="连接-appstate-message-query-tool-permission-command-mcp">连接 AppState、Message、query、tool、permission、command、MCP</h3>
+<ul><li>AppState：<code>App</code> 注入 Provider，第 6 章深入。</li><li>Message：<code>Messages</code> 渲染消息，第 7 章深入 message model。</li><li>query：Spinner/streaming/progress 的来源，第 8 章深入。</li><li>tool：tool progress/tool JSX 最终进入 UI，第 10 章深入。</li><li>permission：dialog/fullscreen layout 后续会展示权限请求，第 11 章深入。</li><li>command：PromptInput 和 queued commands 连接 slash command，第 12 章深入。</li><li>MCP：PromptInput footer/MCP 状态、tools/resources 后续会进入第 13 章。</li></ul>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<h3 id="1-tui-挂载图">1. TUI 挂载图</h3>
+<pre><code class="language-text">main.tsx
+  -&gt; launchRepl
+       -&gt; App
+            ├─ FpsMetricsProvider
+            ├─ StatsProvider
+            └─ AppStateProvider
+                 -&gt; REPL
+                      ├─ Messages
+                      ├─ PromptInput
+                      ├─ Dialogs
+                      ├─ Spinner
+                      └─ Status UI</code></pre>
+<h3 id="2-tui-primitive-facade-图">2. TUI primitive facade 图</h3>
+<pre><code class="language-text">ink/root.js
+  -&gt; ink.ts
+       ├─ withTheme
+       ├─ render/createRoot
+       ├─ ThemedBox / ThemedText
+       ├─ useInput / useStdin
+       ├─ useTerminalFocus / useTerminalTitle / useTabStatus
+       └─ lower-level terminal primitives</code></pre>
+<h3 id="3-消息与输入双区域图">3. 消息与输入双区域图</h3>
+<pre><code class="language-text">┌──────────────────────────────┐
+│ Messages                     │
+│  VirtualMessageList          │
+│  static/dynamic render rows  │
+├──────────────────────────────┤
+│ Spinner / notices / status   │
+├──────────────────────────────┤
+│ PromptInput                  │
+│  TextInput / VimTextInput    │
+│  queued commands / footer    │
+└──────────────────────────────┘</code></pre>
+<h3 id="4-第-4-到第-5-章边界图">4. 第 4 到第 5 章边界图</h3>
+<pre><code class="language-text">第 4 章：UI infrastructure
+  PromptInput exists
+  Messages renders
+  Spinner displays
+  Dialog slots exist
+
+第 5 章：REPL runtime coordination
+  onSubmit -&gt; handlePromptSubmit
+  messages -&gt; query
+  tool_use -&gt; permission UI
+  stream events -&gt; UI updates</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<h3 id="任务-1-定位-tui-facade-符号">任务 1：定位 TUI facade 符号</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;withTheme|render\\(|createRoot\\(|default as Box|default as Text|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/ink.ts</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">| 符号 | 行号 | 作用 | 为什么要统一从 ink.ts 导出 |
+| --- | --- | --- | --- |
+| `withTheme` | ... | ... | ... |</code></pre>
+<h3 id="任务-2-画-launchrepl-app-repl-证据链">任务 2：画 <code>launchRepl -&gt; App -&gt; REPL</code> 证据链</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;launchRepl\\(&quot; claudecode-project/src/main.tsx
+sed -n &#39;1,80p&#39; claudecode-project/src/replLauncher.tsx
+rg -n &quot;FpsMetricsProvider|StatsProvider|AppStateProvider&quot; claudecode-project/src/components/App.tsx</code></pre>
+<p>产出：</p>
+<pre><code class="language-text">main.tsx:...
+  -&gt; replLauncher.tsx: launchRepl
+  -&gt; App.tsx: providers
+  -&gt; REPL.tsx: runtime UI</code></pre>
+<h3 id="任务-3-记录-repl-ui-入口行号">任务 3：记录 REPL UI 入口行号</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;Messages|PromptInput|SpinnerWithVerb|useInput|useTerminalFocus|useTerminalTitle|useTabStatus&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">| UI/Hook | 行号 | 本章判断 | 第 5 章要继续追的问题 |
+| --- | --- | --- | --- |
+| `PromptInput` | ... | 输入区域入口 | onSubmit 如何进入 query？ |</code></pre>
+<h3 id="任务-4-分析-messages-的性能边界">任务 4：分析 Messages 的性能边界</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;MessagesImpl|VirtualMessageList|React\\.memo\\(MessagesImpl|shouldRenderStatically|renderableMessages&quot; claudecode-project/src/components/Messages.tsx</code></pre>
+<p>产出：</p>
+<pre><code class="language-markdown">## Messages 渲染策略
+
+1. 虚拟列表证据：...
+2. memo 边界证据：...
+3. static/dynamic render 证据：...
+4. 为什么长会话需要这些设计：...</code></pre>
+<h3 id="任务-5-分析-promptinput-组合结构">任务 5：分析 PromptInput 组合结构</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;function PromptInput|onSubmit|TextInput|VimTextInput|PromptInputFooter|PromptInputQueuedCommands|PromptInputModeIndicator|export default React\\.memo\\(PromptInput\\)&quot; claudecode-project/src/components/PromptInput/PromptInput.tsx</code></pre>
+<p>产出一张结构图：</p>
+<pre><code class="language-text">PromptInput
+  -&gt; TextInput / VimTextInput
+  -&gt; QueuedCommands
+  -&gt; ModeIndicator
+  -&gt; Footer
+  -&gt; onSubmit boundary</code></pre>
+<p>并写 200 字解释为什么它不是普通表单输入。</p>
+<h3 id="任务-6-learning-framework-复刻任务">任务 6：learning-framework 复刻任务</h3>
+<p>在 <code>learning-framework</code> 中实现一个简化 TUI：</p>
+<p>建议文件：</p>
+<pre><code class="language-text">learning-framework/src/components/App.tsx
+learning-framework/src/components/Messages.tsx
+learning-framework/src/components/PromptInput.tsx
+learning-framework/src/main.tsx</code></pre>
+<p>要求：</p>
+<ul><li>使用 App shell 包住全局状态。</li><li>页面分成消息区、状态区、输入区。</li><li>支持输入普通消息并追加到列表。</li><li>支持 <code>/clear</code> 清空消息。</li><li>底部状态栏显示当前消息数和输入模式。</li></ul>
+<p>产出：</p>
+<pre><code class="language-markdown">## TUI 复刻说明
+
+1. 我复刻了哪些 Claude Code UI 边界：...
+2. 我省略了哪些复杂能力：...
+3. 哪些设计会在第 5 章继续补：...</code></pre>
+<h3 id="任务-7-进阶分析题">任务 7：进阶分析题</h3>
+<p>任选一题，写 300-500 字：</p>
+<ol><li>为什么 Claude Code 需要 <code>ink.ts</code> 作为 facade，而不是所有组件直接 import 底层 Ink？</li><li>为什么消息列表需要 <code>VirtualMessageList</code> 和 static/dynamic render 判断？</li><li><code>PromptInput</code> 为什么应该被看成交互控制台，而不是输入框组件？</li><li>TUI 中的 focus/key handling 和 Web DOM 事件系统最大的架构差异是什么？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<h3 id="误区-1-把-ink-ui-当成-web-react-的低配版">误区 1：把 Ink UI 当成 Web React 的低配版</h3>
+<p>Ink 不是浏览器 DOM 的替代皮肤。终端有自己的 frame、cursor、stdin、ANSI、viewport、focus、title/status 约束。Claude Code 的 UI 复杂度来自长期 Agent 会话，而不是组件写法不够简单。</p>
+<h3 id="误区-2-把-app-tsx-当视觉组件">误区 2：把 <code>App.tsx</code> 当视觉组件</h3>
+<p><code>App</code> 是 provider shell，不负责具体视觉布局。它的价值是把 AppState、stats、FPS 注入 REPL tree。第 6 章 AppState 的很多问题，从这里开始进入组件树。</p>
+<h3 id="误区-3-认为-messages-只是消息数组渲染">误区 3：认为 <code>Messages</code> 只是消息数组渲染</h3>
+<p>长会话、streaming、tool use、thinking、compact、collapsed content 都会影响渲染策略。<code>VirtualMessageList</code>、<code>React.memo</code>、<code>shouldRenderStatically</code> 都是性能和交互约束的证据。</p>
+<h3 id="误区-4-把-promptinput-当普通文本框">误区 4：把 <code>PromptInput</code> 当普通文本框</h3>
+<p>PromptInput 连接 slash command、队列、history、paste、vim mode、footer、状态提示和 submit boundary。它是 Agent CLI 的输入控制台。</p>
+<h3 id="误区-5-第-4-章过早分析-query-和权限">误区 5：第 4 章过早分析 query 和权限</h3>
+<p>本章只建立 UI 基础设施。query、permission、tool 的运行时协调在第 5、8、10、11 章再深入。不要把 UI 挂载链路和 Agent 执行链路混在第一遍读。</p>
+<h2 id="本章总结">本章总结</h2>
+<p>本章建立的源码心智模型：</p>
+<pre><code class="language-text">ink.ts
+  -&gt; TUI primitive facade
+main.tsx
+  -&gt; launchRepl
+replLauncher.tsx
+  -&gt; &lt;App&gt;&lt;REPL /&gt;&lt;/App&gt;
+App.tsx
+  -&gt; providers
+REPL.tsx
+  -&gt; Messages + PromptInput + Spinner + Dialogs
+Messages.tsx
+  -&gt; VirtualMessageList
+PromptInput.tsx
+  -&gt; TextInput/VimTextInput + footer + queued commands + onSubmit boundary</code></pre>
+<p>最重要的证据链：</p>
+<pre><code class="language-text">main.tsx launchRepl(...)
+  -&gt; replLauncher.tsx renderAndRun(&lt;App&gt;&lt;REPL /&gt;&lt;/App&gt;)
+  -&gt; App.tsx AppStateProvider
+  -&gt; REPL.tsx imports Messages and PromptInput
+  -&gt; Messages.tsx VirtualMessageList
+  -&gt; PromptInput.tsx onSubmit boundary</code></pre>
+<p>如果你能解释这条链路，就已经知道 Claude Code 的终端 UI 是如何从 CLI runtime 接到 React tree 的。</p>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 5 章会进入 <code>REPL.tsx</code>。下一章要继续追踪：</p>
+<ol><li><code>PromptInput</code> 的 <code>onSubmit</code> 如何进入 <code>handlePromptSubmit</code>？</li><li>REPL 如何维护 messages、loading、streaming、tool JSX、permission queue？</li><li>query 的 stream event 如何驱动 Messages、Spinner、PromptInput 的更新？</li></ol>
+<p>第 4 章回答“终端 UI 怎么挂起来”，第 5 章回答“这个 UI 如何成为 Agent runtime 的协调器”。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/03-initialization-config.html"><span>上一章</span><strong>第 3 章：初始化系统与配置加载</strong></a>
+    <a class="pager-next" href="/chapters/05-repl-runtime-coordinator.html"><span>下一章</span><strong>第 5 章：REPL 主交互界面源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-ink-ts-是统一-tui-facade">1. `ink.ts` 是统一 TUI facade</a><a class="toc-level-3" href="#2-launchrepl-是-ui-tree-的切入点">2. `launchRepl` 是 UI tree 的切入点</a><a class="toc-level-3" href="#3-app-是交互会话的-provider-shell">3. `App` 是交互会话的 Provider shell</a><a class="toc-level-3" href="#4-box-text-是-tui-的-layout-和-typography-primitive">4. `Box`/`Text` 是 TUI 的 layout 和 typography primitive</a><a class="toc-level-3" href="#5-useinput-和-terminal-hooks-是-tui-的事件入口">5. `useInput` 和 terminal hooks 是 TUI 的事件入口</a><a class="toc-level-3" href="#6-messages-是消息渲染层-不是消息状态层">6. `Messages` 是消息渲染层，不是消息状态层</a><a class="toc-level-3" href="#7-promptinput-是输入区域组合体-不只是文本框">7. `PromptInput` 是输入区域组合体，不只是文本框</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-3" href="#交互-ui-挂载链路">交互 UI 挂载链路</a><a class="toc-level-3" href="#tui-primitive-数据流">TUI primitive 数据流</a><a class="toc-level-3" href="#消息渲染流">消息渲染流</a><a class="toc-level-3" href="#输入-ui-流">输入 UI 流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-确认-tui-facade">路线一：确认 TUI facade</a><a class="toc-level-3" href="#路线二-追踪-ui-挂载链路">路线二：追踪 UI 挂载链路</a><a class="toc-level-3" href="#路线三-定位-repl-中的-tui-元件">路线三：定位 REPL 中的 TUI 元件</a><a class="toc-level-3" href="#路线四-验证消息列表不是简单-map">路线四：验证消息列表不是简单 map</a><a class="toc-level-3" href="#路线五-验证-promptinput-是组合控制台">路线五：验证 PromptInput 是组合控制台</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-3" href="#验证-1-统一-ink-入口">验证 1：统一 Ink 入口</a><a class="toc-level-3" href="#验证-2-app-repl-挂载">验证 2：App + REPL 挂载</a><a class="toc-level-3" href="#验证-3-provider-shell">验证 3：Provider shell</a><a class="toc-level-3" href="#验证-4-消息列表虚拟化">验证 4：消息列表虚拟化</a><a class="toc-level-3" href="#验证-5-输入区域组合">验证 5：输入区域组合</a><a class="toc-level-3" href="#验证-6-repl-引用-ui-元件">验证 6：REPL 引用 UI 元件</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-3" href="#1-ink-ts-ui-primitive-的统一门面">1. `ink.ts`：UI primitive 的统一门面</a><a class="toc-level-3" href="#2-repllauncher-tsx-runtime-到-ui-tree-的桥">2. `replLauncher.tsx`：runtime 到 UI tree 的桥</a><a class="toc-level-3" href="#3-app-tsx-provider-shell">3. `App.tsx`：Provider shell</a><a class="toc-level-3" href="#4-messages-tsx-长会话消息列表的渲染层">4. `Messages.tsx`：长会话消息列表的渲染层</a><a class="toc-level-3" href="#5-promptinput-tsx-输入控制台">5. `PromptInput.tsx`：输入控制台</a><a class="toc-level-3" href="#6-spinner-状态栏-提示信息-agent-运行状态的-ui-投影">6. Spinner、状态栏、提示信息：Agent 运行状态的 UI 投影</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-3" href="#承接第-3-章">承接第 3 章</a><a class="toc-level-3" href="#连接第-5-章-repl">连接第 5 章 REPL</a><a class="toc-level-3" href="#连接-appstate-message-query-tool-permission-command-mcp">连接 AppState、Message、query、tool、permission、command、MCP</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-3" href="#1-tui-挂载图">1. TUI 挂载图</a><a class="toc-level-3" href="#2-tui-primitive-facade-图">2. TUI primitive facade 图</a><a class="toc-level-3" href="#3-消息与输入双区域图">3. 消息与输入双区域图</a><a class="toc-level-3" href="#4-第-4-到第-5-章边界图">4. 第 4 到第 5 章边界图</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-3" href="#任务-1-定位-tui-facade-符号">任务 1：定位 TUI facade 符号</a><a class="toc-level-3" href="#任务-2-画-launchrepl-app-repl-证据链">任务 2：画 `launchRepl -&gt; App -&gt; REPL` 证据链</a><a class="toc-level-3" href="#任务-3-记录-repl-ui-入口行号">任务 3：记录 REPL UI 入口行号</a><a class="toc-level-3" href="#任务-4-分析-messages-的性能边界">任务 4：分析 Messages 的性能边界</a><a class="toc-level-3" href="#任务-5-分析-promptinput-组合结构">任务 5：分析 PromptInput 组合结构</a><a class="toc-level-3" href="#任务-6-learning-framework-复刻任务">任务 6：learning-framework 复刻任务</a><a class="toc-level-3" href="#任务-7-进阶分析题">任务 7：进阶分析题</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-3" href="#误区-1-把-ink-ui-当成-web-react-的低配版">误区 1：把 Ink UI 当成 Web React 的低配版</a><a class="toc-level-3" href="#误区-2-把-app-tsx-当视觉组件">误区 2：把 `App.tsx` 当视觉组件</a><a class="toc-level-3" href="#误区-3-认为-messages-只是消息数组渲染">误区 3：认为 `Messages` 只是消息数组渲染</a><a class="toc-level-3" href="#误区-4-把-promptinput-当普通文本框">误区 4：把 `PromptInput` 当普通文本框</a><a class="toc-level-3" href="#误区-5-第-4-章过早分析-query-和权限">误区 5：第 4 章过早分析 query 和权限</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

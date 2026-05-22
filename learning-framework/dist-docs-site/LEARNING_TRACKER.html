@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>学习进度追踪 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option selected value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a aria-current="page" href="LEARNING_TRACKER.html">学习进度追踪</a><a href="COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="legacy/DEPENDENCIES.html">项目依赖说明</a><a href="legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="legacy/QUICKSTART.html">快速开始指南</a><a href="legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="学习进度追踪">学习进度追踪</h1>
+<h2 id="当前课程任务">当前课程任务</h2>
+<p>目标：把 <code>learning-framework/docs/SYSTEMATIC_COURSE.md</code> 的 14 章主线课全部扩写为面向高级前端工程师的源码导读型讲义，并把 <code>docs/</code> 目录下已有架构、依赖、快速开始、项目对比、注释规范等内容合并为补充专题或附录。</p>
+<p>本任务不重新规划 14 章课程体系，不修改 4 个阶段项目和 95 个知识点清单，不修改 <code>claudecode-project/src/assistant/sessionHistory.ts</code>。</p>
+<h3 id="整体执行节奏">整体执行节奏</h3>
+<pre><code class="language-text">先写完全部内容
+  -&gt; 整体检查第 1 轮
+  -&gt; 根据第 1 轮结果整体修改
+  -&gt; 整体检查第 2 轮
+  -&gt; 根据第 2 轮结果整体修改
+  -&gt; 整体检查第 3 轮
+  -&gt; 根据第 3 轮结果最终修改
+  -&gt; 输出课程总目录、附录索引、验收报告</code></pre>
+<h3 id="全量写作任务">全量写作任务</h3>
+<ul><li>[x] 写完全部 14 章源码导读型讲义</li><li>[x] 第 1 章：源码全景与学习地图</li><li>[x] 第 2 章：CLI 启动入口与 Commander 命令解析</li><li>[x] 第 3 章：初始化系统与配置加载</li><li>[x] 第 4 章：React + Ink 终端 UI</li><li>[x] 第 5 章：REPL 主交互界面源码导读</li><li>[x] 第 6 章：AppState 状态管理机制</li><li>[x] 第 7 章：消息系统与对话上下文</li><li>[x] 第 8 章：Agent 查询循环</li><li>[x] 第 9 章：Tool 抽象层设计</li><li>[x] 第 10 章：内置工具系统</li><li>[x] 第 11 章：权限系统与安全边界</li><li>[x] 第 12 章：Slash Commands 命令体系</li><li>[x] 第 13 章：MCP、插件与 Skills 扩展系统</li><li>[x] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化</li><li>[x] 生成补充专题 / 附录</li><li>[x] 附录 A：运行时依赖地图</li><li>[x] 附录 B：源码检索与证据链方法</li><li>[x] 附录 C：learning-framework 复刻路线</li><li>[x] 附录 D：高级专题索引</li><li>[x] 附录 E：常见源码误判清单</li><li>[x] 合并既有 docs 内容</li><li>[x] <code>legacy/ARCHITECTURE_GUIDE.md</code> 合并到第 1 章附录和阶段复盘</li><li>[x] <code>legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md</code> 拆分到第 1、2、4、9、13 章补充阅读</li><li>[x] <code>legacy/PROJECT_COMPARISON.md</code> 合并到 4 个阶段项目复刻方法</li><li>[x] <code>legacy/QUICKSTART.md</code> 合并到课前准备和第一阶段项目</li><li>[x] <code>legacy/DEPENDENCIES.md</code> 合并到附录 A</li><li>[x] <code>legacy/COMMENTS_GUIDE.md</code> 合并到附录 B 和学习笔记规范</li></ul>
+<h3 id="三轮整体检查与修改">三轮整体检查与修改</h3>
+<ul><li>[x] 第 1 轮整体检查</li><li>[x] 检查 14 章是否全部存在且命名一致</li><li>[x] 检查每章是否保留 <code>SYSTEMATIC_COURSE.md</code> 的主题、知识点、重点源码、教学形式和实践任务</li><li>[x] 检查每章是否面向高级前端工程师，不讲基础语法</li><li>[x] 检查每章是否有真实源码符号、调用链、<code>rg</code> 命令和 5 分钟速验</li><li>[x] 检查每章是否有 learning-framework 复刻任务和进阶分析题</li><li>[x] 第 1 轮整体修改</li><li>[x] 修正路径错误、符号错误、过浅说明、缺失调用链</li><li>[x] 补充 docs 合并入口和附录引用</li><li>[x] 标明未确认源码点</li><li>[x] 第 2 轮整体检查</li><li>[x] 检查章节之间是否能串成完整主链路</li><li>[x] 检查 4 个阶段项目是否能覆盖 14 章能力</li><li>[x] 检查 95 个知识点是否都能映射到章节或附录</li><li>[x] 检查重复内容是否被合并为补充专题</li><li>[x] 第 2 轮整体修改</li><li>[x] 调整跨章衔接</li><li>[x] 补充阶段项目验收标准</li><li>[x] 清理重复或过泛内容</li><li>[x] 第 3 轮整体检查</li><li>[x] 检查所有 <code>rg</code> 命令是否仍能在当前源码中命中</li><li>[x] 检查所有文件路径是否真实存在或明确标注为蓝图旧路径</li><li>[x] 检查是否误改源码文件，尤其是 <code>claudecode-project/src/assistant/sessionHistory.ts</code></li><li>[x] 检查最终目录、附录索引、验收报告是否完整</li><li>[x] 第 3 轮最终修改</li><li>[x] 修复最后一轮发现的问题</li><li>[x] 输出最终课程交付清单</li><li>[x] 输出未确认源码点清单</li></ul>
+<h3 id="本轮修改记录">本轮修改记录</h3>
+<ul><li>[x] 将课程任务从“逐章局部完成”调整为“全量写作 + 三轮整体检查修改”</li><li>[x] 明确 14 章主线之外需要补充附录和专题</li><li>[x] 明确 docs 目录已有内容的合并位置</li><li>[x] 保持第 1-5 章已完成状态</li><li>[x] 补齐第 6-14 章主线讲义</li><li>[x] 新增课程总目录 <code>COURSE_INDEX.md</code></li><li>[x] 新增附录 A-E，完成 docs 旧内容整理入口</li><li>[x] 完成三轮整体检查与最终修改</li><li>[x] 新增 <code>COURSE_FINAL_REVIEW.md</code> 最终验收报告</li></ul>
+<p>---</p>
+<h2 id="旧版三阶段学习计划-待合并">旧版三阶段学习计划（待合并）</h2>
+<p>下面内容来自早期 21 天学习模板，保留为阶段项目和附录素材。后续整体修改时，应把它拆入 14 章主线、4 个阶段项目和补充专题，不再作为当前课程的主进度口径。</p>
+<h2 id="整体进度">📊 整体进度</h2>
+<ul><li>[ ] 第一阶段：基础架构 (0%)</li><li>[ ] 第二阶段：核心功能 (0%)</li><li>[ ] 第三阶段：高级特性 (0%)</li></ul>
+<p>---</p>
+<h2 id="第一阶段-基础架构">第一阶段：基础架构</h2>
+<h3 id="week-1-项目理解与基础搭建">Week 1: 项目理解与基础搭建</h3>
+<h4 id="day-1-2-项目概览">Day 1-2: 项目概览</h4>
+<ul><li>[ ] 阅读 main.tsx 入口文件</li><li>[ ] 理解应用初始化流程</li><li>[ ] 分析依赖关系</li><li>[ ] 记录关键函数</li><li>[ ] 查看 package.json</li><li>[ ] 理解每个依赖的作用</li><li>[ ] 学习 scripts 命令</li><li>[ ] 运行原始项目</li><li>[ ] 安装依赖</li><li>[ ] 启动开发模式</li><li>[ ] 体验基本功能</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day1-2-overview.md</code></p>
+<h4 id="day-3-4-命令系统">Day 3-4: 命令系统</h4>
+<ul><li>[ ] 研究 commands/ 目录结构</li><li>[ ] 选择一个简单命令（如 help）</li><li>[ ] 分析命令实现</li><li>[ ] 理解命令注册机制</li><li>[ ] 在 learning-framework 中实现命令系统</li><li>[ ] 创建命令接口</li><li>[ ] 实现命令注册器</li><li>[ ] 添加第一个命令</li><li>[ ] 测试命令执行</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day3-4-commands.md</code></p>
+<h4 id="day-5-7-ui-渲染">Day 5-7: UI 渲染</h4>
+<ul><li>[ ] 学习 Ink 基础</li><li>[ ] 阅读 Ink 文档</li><li>[ ] 运行示例代码</li><li>[ ] 理解布局系统</li><li>[ ] 分析 Claude Code 的组件</li><li>[ ] 研究 App 组件</li><li>[ ] 分析输入组件</li><li>[ ] 理解消息显示</li><li>[ ] 创建简单的终端 UI</li><li>[ ] 实现基础布局</li><li>[ ] 添加样式</li><li>[ ] 处理用户输入</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day5-7-ui.md</code></p>
+<p><strong>第一阶段验收</strong>:</p>
+<ul><li>[ ] 能够运行基本的 CLI 应用</li><li>[ ] 实现了至少 3 个命令</li><li>[ ] 创建了响应式终端 UI</li></ul>
+<p>---</p>
+<h2 id="第二阶段-核心功能">第二阶段：核心功能</h2>
+<h3 id="week-2-工具与状态管理">Week 2: 工具与状态管理</h3>
+<h4 id="day-8-10-工具系统">Day 8-10: 工具系统</h4>
+<ul><li>[ ] 理解 Tool 基类</li><li>[ ] 阅读 Tool.ts</li><li>[ ] 分析工具接口</li><li>[ ] 理解权限模型</li><li>[ ] 研究内置工具</li><li>[ ] read 工具实现</li><li>[ ] write 工具实现</li><li>[ ] bash 工具实现</li><li>[ ] 实现自定义工具</li><li>[ ] 设计工具接口</li><li>[ ] 实现工具逻辑</li><li>[ ] 添加工具测试</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day8-10-tools.md</code></p>
+<h4 id="day-11-12-状态管理">Day 11-12: 状态管理</h4>
+<ul><li>[ ] 学习 React Hooks</li><li>[ ] useState 使用</li><li>[ ] useEffect 使用</li><li>[ ] 自定义 Hook</li><li>[ ] 分析 Claude Code 的 Hooks</li><li>[ ] useInput</li><li>[ ] useSession</li><li>[ ] useCommand</li><li>[ ] 实现状态管理</li><li>[ ] 创建全局状态</li><li>[ ] 实现状态持久化</li><li>[ ] 测试状态更新</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day11-12-state.md</code></p>
+<h4 id="day-13-14-服务层">Day 13-14: 服务层</h4>
+<ul><li>[ ] 研究 services/ 目录</li><li>[ ] 认证服务</li><li>[ ] 会话服务</li><li>[ ] 配置服务</li><li>[ ] 理解服务架构</li><li>[ ] 服务接口设计</li><li>[ ] 依赖注入</li><li>[ ] 错误处理</li><li>[ ] 实现基础服务</li><li>[ ] 配置服务</li><li>[ ] 日志服务</li><li>[ ] 存储服务</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day13-14-services.md</code></p>
+<p><strong>第二阶段验收</strong>:</p>
+<ul><li>[ ] 实现了至少 5 个工具</li><li>[ ] 完整的状态管理系统</li><li>[ ] 模块化服务架构</li></ul>
+<p>---</p>
+<h2 id="第三阶段-高级特性">第三阶段：高级特性</h2>
+<h3 id="week-3-桥接与扩展">Week 3: 桥接与扩展</h3>
+<h4 id="day-15-17-桥接与远程">Day 15-17: 桥接与远程</h4>
+<ul><li>[ ] 理解 bridge/ 模块</li><li>[ ] 桥接架构设计</li><li>[ ] 消息协议</li><li>[ ] 通信机制</li><li>[ ] 研究 WebSocket 实现</li><li>[ ] 连接管理</li><li>[ ] 消息序列化</li><li>[ ] 重连机制</li><li>[ ] 实现简单的桥接</li><li>[ ] 本地进程通信</li><li>[ ] 消息路由</li><li>[ ] 错误处理</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day15-17-bridge.md</code></p>
+<h4 id="day-18-19-插件系统">Day 18-19: 插件系统</h4>
+<ul><li>[ ] 学习插件架构</li><li>[ ] 插件接口定义</li><li>[ ] 插件加载机制</li><li>[ ] 插件生命周期</li><li>[ ] 分析 MCP 协议</li><li>[ ] 协议规范</li><li>[ ] 实现方式</li><li>[ ] 应用场景</li><li>[ ] 创建插件系统</li><li>[ ] 插件管理器</li><li>[ ] 插件 API</li><li>[ ] 示例插件</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day18-19-plugins.md</code></p>
+<h4 id="day-20-21-优化与完善">Day 20-21: 优化与完善</h4>
+<ul><li>[ ] 性能优化</li><li>[ ] 识别瓶颈</li><li>[ ] 优化策略</li><li>[ ] 性能测试</li><li>[ ] 代码质量</li><li>[ ] 类型检查</li><li>[ ] 代码规范</li><li>[ ] 文档完善</li><li>[ ] 测试覆盖</li><li>[ ] 单元测试</li><li>[ ] 集成测试</li><li>[ ] E2E 测试</li></ul>
+<p><strong>学习笔记</strong>: <code>docs/notes/day20-21-optimization.md</code></p>
+<p><strong>第三阶段验收</strong>:</p>
+<ul><li>[ ] 完整的插件系统</li><li>[ ] 远程通信能力</li><li>[ ] 良好的性能和测试覆盖</li></ul>
+<p>---</p>
+<h2 id="学习资源">📚 学习资源</h2>
+<h3 id="已创建的文档">已创建的文档</h3>
+<ul><li>[x] README.md - 项目说明</li><li>[x] SYSTEMATIC_COURSE.md - Claude Code 源码系统课程</li><li>[x] COURSE_INDEX.md - 课程总目录与附录索引</li><li>[x] COURSE_COMPLETION_TASK.md - 14 章全量写作与三轮整体检查任务书</li><li>[x] COURSE_FINAL_REVIEW.md - 课程最终验收报告</li><li>[x] legacy/README.md - 旧版资料归档说明</li><li>[x] legacy/ARCHITECTURE_GUIDE.md - 旧版架构指南，已合并到附录</li><li>[x] legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md - 旧版架构预览，已合并到附录</li><li>[x] legacy/COMMENTS_GUIDE.md - 旧版注释指南，已合并到附录</li><li>[x] legacy/DEPENDENCIES.md - 旧版依赖说明，已合并到附录</li><li>[x] legacy/PROJECT_COMPARISON.md - 旧版项目对比，已合并到附录</li><li>[x] legacy/QUICKSTART.md - 旧版快速开始，已合并到附录</li><li>[x] chapters/01-source-map.md - 第 1 章源码全景与学习地图讲义</li><li>[x] chapters/02-cli-entry-commander.md - 第 2 章 CLI 启动入口与 Commander 命令解析讲义</li><li>[x] chapters/03-initialization-config.md - 第 3 章初始化系统与配置加载讲义</li><li>[x] chapters/04-react-ink-tui.md - 第 4 章 React + Ink 终端 UI 讲义</li><li>[x] chapters/05-repl-runtime-coordinator.md - 第 5 章 REPL 主交互界面源码导读讲义</li><li>[x] chapters/06-appstate-store.md - 第 6 章 AppState 状态管理机制讲义</li><li>[x] chapters/07-message-context.md - 第 7 章消息系统与对话上下文讲义</li><li>[x] chapters/08-agent-query-loop.md - 第 8 章 Agent 查询循环讲义</li><li>[x] chapters/09-tool-abstraction.md - 第 9 章 Tool 抽象层设计讲义</li><li>[x] chapters/10-built-in-tools.md - 第 10 章内置工具系统讲义</li><li>[x] chapters/11-permission-boundary.md - 第 11 章权限系统与安全边界讲义</li><li>[x] chapters/12-slash-commands.md - 第 12 章 Slash Commands 命令体系讲义</li><li>[x] chapters/13-mcp-plugin-skills.md - 第 13 章 MCP、插件与 Skills 扩展系统讲义</li><li>[x] chapters/14-advanced-systems.md - 第 14 章高级系统讲义</li><li>[x] appendices/A-runtime-dependencies.md - 附录 A 运行时依赖地图</li><li>[x] appendices/B-source-evidence-method.md - 附录 B 源码检索与证据链方法</li><li>[x] appendices/C-rebuild-roadmap.md - 附录 C learning-framework 复刻路线</li><li>[x] appendices/D-advanced-topic-index.md - 附录 D 高级专题索引</li><li>[x] appendices/E-common-misreadings.md - 附录 E 常见源码误判清单</li><li>[ ] 学习笔记（待创建）</li></ul>
+<h3 id="系统课程讲义进度">系统课程讲义进度</h3>
+<ul><li>[x] 第 1 章：源码全景与学习地图</li><li>[x] 第 2 章：CLI 启动入口与 Commander 命令解析</li><li>[x] 第 3 章：初始化系统与配置加载</li><li>[x] 第 4 章：React + Ink 终端 UI</li><li>[x] 第 5 章：REPL 主交互界面源码导读</li><li>[x] 第 6 章：AppState 状态管理机制</li><li>[x] 第 7 章：消息系统与对话上下文</li><li>[x] 第 8 章：Agent 查询循环</li><li>[x] 第 9 章：Tool 抽象层设计</li><li>[x] 第 10 章：内置工具系统</li><li>[x] 第 11 章：权限系统与安全边界</li><li>[x] 第 12 章：Slash Commands 命令体系</li><li>[x] 第 13 章：MCP、插件与 Skills 扩展系统</li><li>[x] 第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化</li></ul>
+<h3 id="外部资源">外部资源</h3>
+<ul><li><a href="https://github.com/vadimdemedes/ink">Ink GitHub</a></li><li><a href="https://github.com/tj/commander.js">Commander.js</a></li><li><a href="https://react.dev">React 官方文档</a></li><li><a href="https://www.typescriptlang.org/docs/">TypeScript 手册</a></li></ul>
+<p>---</p>
+<h2 id="每日学习模板">💡 每日学习模板</h2>
+<pre><code class="language-markdown"># Day X - [日期]
+
+## 今日目标
+- [ ] 目标1
+- [ ] 目标2
+
+## 学习内容
+### 看了什么代码
+[文件路径和关键发现]
+
+### 理解了什么概念
+[概念解释]
+
+### 实现了什么功能
+[功能描述和代码片段]
+
+## 遇到的问题
+[问题描述]
+[解决方案]
+
+## 明日计划
+[明天的学习目标]
+
+## 心得总结
+[今天的收获]</code></pre>
+<p>---</p>
+<h2 id="里程碑">🎯 里程碑</h2>
+<ul><li>[ ] <strong>Milestone 1</strong> (Week 1): 基础 CLI 应用</li><li>[ ] <strong>Milestone 2</strong> (Week 2): 完整的功能模块</li><li>[ ] <strong>Milestone 3</strong> (Week 3): 可扩展的框架</li></ul>
+<p>---</p>
+<p><strong>最后更新</strong>: 2026-04-07</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/SYSTEMATIC_COURSE.html"><span>上一章</span><strong>Claude Code 源码系统课程</strong></a>
+    <a class="pager-next" href="/COURSE_COMPLETION_TASK.html"><span>下一章</span><strong>Claude Code 源码系统课程完成任务书</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#当前课程任务">当前课程任务</a><a class="toc-level-3" href="#整体执行节奏">整体执行节奏</a><a class="toc-level-3" href="#全量写作任务">全量写作任务</a><a class="toc-level-3" href="#三轮整体检查与修改">三轮整体检查与修改</a><a class="toc-level-3" href="#本轮修改记录">本轮修改记录</a><a class="toc-level-2" href="#旧版三阶段学习计划-待合并">旧版三阶段学习计划（待合并）</a><a class="toc-level-2" href="#整体进度">📊 整体进度</a><a class="toc-level-2" href="#第一阶段-基础架构">第一阶段：基础架构</a><a class="toc-level-3" href="#week-1-项目理解与基础搭建">Week 1: 项目理解与基础搭建</a><a class="toc-level-2" href="#第二阶段-核心功能">第二阶段：核心功能</a><a class="toc-level-3" href="#week-2-工具与状态管理">Week 2: 工具与状态管理</a><a class="toc-level-2" href="#第三阶段-高级特性">第三阶段：高级特性</a><a class="toc-level-3" href="#week-3-桥接与扩展">Week 3: 桥接与扩展</a><a class="toc-level-2" href="#学习资源">📚 学习资源</a><a class="toc-level-3" href="#已创建的文档">已创建的文档</a><a class="toc-level-3" href="#系统课程讲义进度">系统课程讲义进度</a><a class="toc-level-3" href="#外部资源">外部资源</a><a class="toc-level-2" href="#每日学习模板">💡 每日学习模板</a><a class="toc-level-2" href="#里程碑">🎯 里程碑</a>
+    </aside>
+  </div>
+</body>
+</html>

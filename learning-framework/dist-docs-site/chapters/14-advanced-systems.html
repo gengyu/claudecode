@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option selected value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a aria-current="page" href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-14-章-高级系统-远程-子-agent-压缩-性能与工程化源码导读">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 14 章是专题收束，不强行串成单一路径。前 13 章已经建立主链路，本章看大型 AI CLI 如何支撑真实产品复杂度：远程会话、bridge、子 Agent、background tasks、compact/session memory、LSP feedback、telemetry、startup profiler。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>这章的重点不是背模块，而是训练大型源码取舍意识：主链路之外的系统如何接入 AppState、Message、query、Tool、permission，而不破坏核心循环。</p>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>建立高级系统索引，知道每类能力的源码入口。</li><li>解释 remote/bridge 如何改变 REPL 输入输出路径。</li><li>追踪 AgentTool 如何从工具调用扩展到子 Agent/background task。</li><li>说明 compact/microcompact/session memory 如何服务长上下文。</li><li>找到 LSP、telemetry、startup profiler 的工程位置。</li><li>在 learning-framework 中复刻 background task、compact、startup profiler。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>已理解第 1-13 章主线。本章不展开每个高级系统全部细节，只给源码导读入口和验证路径。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-remote-bridge-为什么存在">1. remote/bridge 为什么存在</h3>
+<pre><code class="language-bash">rg -n &quot;RemoteSessionManager|sendUserMessage|interrupt|connect|remotePermissionBridge|replBridge&quot; claudecode-project/src/remote claudecode-project/src/bridge claudecode-project/src/screens/REPL.tsx -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>远程能力让本地 REPL 不一定直接跑 query；输入、权限、消息、状态可能跨进程/网络传递。</p>
+<h3 id="2-agenttool-为什么是高级工具">2. AgentTool 为什么是高级工具</h3>
+<pre><code class="language-bash">rg -n &quot;AgentTool|runAgent|createSubagentContext|run_in_background|LocalAgentTask|background&quot; claudecode-project/src/tools/AgentTool claudecode-project/src/tasks -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>AgentTool 不是普通工具，它能启动子 Agent、创建独立上下文、产生进度消息、后台运行。</p>
+<h3 id="3-compact-是长上下文生命线">3. compact 是长上下文生命线</h3>
+<pre><code class="language-bash">rg -n &quot;autocompact|microcompact|sessionMemory|compact_boundary|buildPostCompactMessages&quot; claudecode-project/src/query.ts claudecode-project/src/services/compact claudecode-project/src/utils/messages.ts</code></pre>
+<p>长会话不是无限数组，而是通过 compact boundary、summary、microcompact、session memory 维持可继续性。</p>
+<h3 id="4-lsp-feedback-是异步环境输入">4. LSP feedback 是异步环境输入</h3>
+<pre><code class="language-bash">rg -n &quot;registerLSPNotificationHandlers|registerPendingLSPDiagnostic|checkForLSPDiagnostics|getLSPDiagnosticAttachments&quot; claudecode-project/src/services/lsp -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>LSP 不是用户主动输入，而是编辑器/语言服务器异步反馈，最终进入 Claude 可消费的诊断附件。</p>
+<h3 id="5-startup-profiler-解释启动性能">5. startup profiler 解释启动性能</h3>
+<pre><code class="language-bash">rg -n &quot;profileCheckpoint|profileReport|profiler_initialized|startupProfiler&quot; claudecode-project/src/utils/startupProfiler.ts claudecode-project/src -g &#39;*.{ts,tsx}&#39; | head -80</code></pre>
+<p>大型 CLI 需要知道启动耗时在哪里，尤其是 top-level imports、init、MCP/plugin loading 这类冷启动路径。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>专题</th><th>重点源码</th><th>看什么</th><th>不看什么</th></tr></thead><tbody><tr><td>remote</td><td><code>src/remote/RemoteSessionManager.ts</code>、<code>src/remote/sdkMessageAdapter.ts</code></td><td>WS/HTTP 输入输出、SDK message adapter</td><td>认证协议全量</td></tr><tr><td>bridge</td><td><code>src/bridge/*</code></td><td>REPL bridge/inbound/poll</td><td>产品端协议细节</td></tr><tr><td>AgentTool</td><td><code>src/tools/AgentTool/<em></code>、<code>src/tasks/</em></code></td><td>子 Agent、background task</td><td>每种 agent UI</td></tr><tr><td>compact</td><td><code>src/services/compact/*</code>、<code>src/query.ts</code></td><td>auto/micro/session memory</td><td>summarization prompt 全量</td></tr><tr><td>LSP</td><td><code>src/services/lsp/*</code></td><td>diagnostic registry 和 passive feedback</td><td>LSP 协议全文</td></tr><tr><td>telemetry</td><td><code>logEvent</code> 调用点</td><td>关键事件位置</td><td>数据平台细节</td></tr><tr><td>startup</td><td><code>src/utils/startupProfiler.ts</code></td><td>checkpoint/report</td><td>profilerBase 细节</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<h3 id="remote-路径">remote 路径</h3>
+<pre><code class="language-text">REPL remote mode
+  -&gt; RemoteSessionManager
+  -&gt; WebSocket events / HTTP user message
+  -&gt; sdkMessageAdapter
+  -&gt; internal Message / PermissionRequest</code></pre>
+<h3 id="agenttool-路径">AgentTool 路径</h3>
+<pre><code class="language-text">query tool_use Agent
+  -&gt; AgentTool.call
+  -&gt; runAgent / createSubagentContext
+  -&gt; LocalAgentTask or foreground run
+  -&gt; progress messages
+  -&gt; tool_result summary</code></pre>
+<h3 id="compact-路径">compact 路径</h3>
+<pre><code class="language-text">queryLoop
+  -&gt; token budget / microcompact / autocompact
+  -&gt; buildPostCompactMessages
+  -&gt; compact boundary message
+  -&gt; continue query with summarized context</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<pre><code class="language-bash">rg -n &quot;class RemoteSessionManager|sendUserMessage|sendInterrupt|sdkMessageAdapter&quot; claudecode-project/src/remote -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;AgentTool|runAgent|createSubagentContext|run_in_background&quot; claudecode-project/src/tools/AgentTool -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;LocalAgentTask|TaskState|updateTaskState|backgrounded&quot; claudecode-project/src/tasks -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;microcompactMessages|autoCompact|sessionMemory|buildPostCompactMessages&quot; claudecode-project/src/services/compact claudecode-project/src/query.ts
+rg -n &quot;registerPendingLSPDiagnostic|checkForLSPDiagnostics&quot; claudecode-project/src/services/lsp -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;profileCheckpoint|profileReport&quot; claudecode-project/src/utils/startupProfiler.ts</code></pre>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;RemoteSessionManager&quot; claudecode-project/src/remote
+rg -n &quot;AgentTool|run_in_background&quot; claudecode-project/src/tools/AgentTool -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;microcompact|autocompact|compact_boundary&quot; claudecode-project/src/query.ts claudecode-project/src/services/compact -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;LSPDiagnosticRegistry|passiveFeedback&quot; claudecode-project/src/services/lsp -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;profileCheckpoint|profileReport&quot; claudecode-project/src/utils/startupProfiler.ts</code></pre>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<p>本章按专题读：</p>
+<ol><li>remote/bridge：改变输入输出位置，但仍要转回 internal messages 和 permission flow。</li><li>AgentTool/tasks：把工具调用扩展成可持续任务，进度通过 messages/task state 回流。</li><li>compact：保护 query loop 在长上下文下继续运行。</li><li>LSP：异步诊断进入附件/上下文。</li><li>startup profiler：用 checkpoint 管理冷启动可观测性。</li></ol>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>本章回收前面所有概念：REPL 提供入口，AppState 保存运行时状态，Message 承载事件，query loop 调度，Tool/permission 保证执行边界，commands/MCP/plugins 提供扩展入口。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">main chain
+ 入口 -&gt; REPL -&gt; AppState -&gt; Message -&gt; query -&gt; Tool -&gt; permission
+
+advanced systems
+ remote / bridge / AgentTool / compact / LSP / profiler
+  -&gt; all plug into main chain</code></pre>
+<pre><code class="language-text">AgentTool as tool
+  -&gt; subagent runtime
+  -&gt; task state
+  -&gt; progress messages
+  -&gt; result summary</code></pre>
+<pre><code class="language-text">long context
+  -&gt; token pressure
+  -&gt; compact
+  -&gt; boundary
+  -&gt; continue</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>为 remote、AgentTool、compact、LSP、startup profiler 各记录 2 个入口文件和 2 个关键符号。</li><li>追踪 AgentTool 从 tool_use 到 background task 的调用链。</li><li>追踪 query 中 compact 触发后 messages 如何变化。</li><li>learning-framework 实现 background task registry、compact summary、startup checkpoint。</li><li>进阶分析：为什么这些高级系统不应该挤进 REPL 单文件里完成？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>把高级系统看成边角功能。它们是产品级 AI CLI 的复杂度来源。</li><li>试图把 remote/bridge 当普通 WebSocket。它还要处理 messages、permission、interrupt。</li><li>把 AgentTool 当普通工具。它创建新的执行上下文。</li><li>把 compact 当清空历史。它是上下文连续性机制。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>第 14 章的模型：</p>
+<pre><code class="language-text">高级系统不是新主线，而是主链路的扩展面</code></pre>
+<p>证据链：</p>
+<pre><code class="language-text">remote/bridge -&gt; message adapter/permission bridge
+AgentTool -&gt; task/subagent
+compact -&gt; query continuation
+LSP -&gt; async diagnostics
+profiler -&gt; startup checkpoints</code></pre>
+<h2 id="下一步">下一步</h2>
+<p>进入三轮整体检查：结构完整性、源码证据链、课程一致性。最终输出课程总目录、附录索引和验收报告。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/13-mcp-plugin-skills.html"><span>上一章</span><strong>第 13 章：MCP、插件与 Skills 扩展系统源码导读</strong></a>
+    <a class="pager-next" href="/appendices/A-runtime-dependencies.html"><span>下一章</span><strong>附录 A：运行时依赖地图</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-remote-bridge-为什么存在">1. remote/bridge 为什么存在</a><a class="toc-level-3" href="#2-agenttool-为什么是高级工具">2. AgentTool 为什么是高级工具</a><a class="toc-level-3" href="#3-compact-是长上下文生命线">3. compact 是长上下文生命线</a><a class="toc-level-3" href="#4-lsp-feedback-是异步环境输入">4. LSP feedback 是异步环境输入</a><a class="toc-level-3" href="#5-startup-profiler-解释启动性能">5. startup profiler 解释启动性能</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-3" href="#remote-路径">remote 路径</a><a class="toc-level-3" href="#agenttool-路径">AgentTool 路径</a><a class="toc-level-3" href="#compact-路径">compact 路径</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一步">下一步</a>
+    </aside>
+  </div>
+</body>
+</html>

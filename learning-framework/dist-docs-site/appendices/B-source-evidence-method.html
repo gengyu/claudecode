@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>附录 B：源码检索与证据链方法 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option selected value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="../chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="../chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="../chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="../chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="../chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="../chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="../chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="../chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="../chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="../chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="../chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="../chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="../chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="../chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a aria-current="page" href="B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="附录-b-源码检索与证据链方法">附录 B：源码检索与证据链方法</h1>
+<p>本附录合并 <code>legacy/ARCHITECTURE_GUIDE.md</code> 和 <code>legacy/COMMENTS_GUIDE.md</code> 中的方法论内容，改成高级源码导读的实操规范。</p>
+<h2 id="证据链优先级">证据链优先级</h2>
+<p>读 Claude Code 源码时，判断优先级如下：</p>
+<pre><code class="language-text">真实调用链
+  &gt; 真实符号引用
+  &gt; 文件职责推断
+  &gt; 注释说明
+  &gt; 文档描述</code></pre>
+<p>文档可以给方向，但讲义中的判断必须尽量落到源码符号。</p>
+<h2 id="标准阅读动作">标准阅读动作</h2>
+<ol><li>找入口：</li></ol>
+<pre><code class="language-bash">rg -n &quot;export function|export async function|program\\.action|function REPL|export type Tool&quot; claudecode-project/src</code></pre>
+<ol><li>找调用方：</li></ol>
+<pre><code class="language-bash">rg -n &quot;handlePromptSubmit|normalizeMessagesForAPI|assembleToolPool|useCanUseTool&quot; claudecode-project/src</code></pre>
+<ol><li>找数据结构：</li></ol>
+<pre><code class="language-bash">rg -n &quot;export type AppState|export type Command|export type PermissionDecision|export type ToolUseContext&quot; claudecode-project/src</code></pre>
+<ol><li>找边界：</li></ol>
+<pre><code class="language-bash">rg -n &quot;safeParse|PermissionRequest|for await|useSyncExternalStore|AbortController|onChangeAppState&quot; claudecode-project/src</code></pre>
+<h2 id="每章证据模板">每章证据模板</h2>
+<pre><code class="language-markdown">## 源码证据
+
+入口：
+- file:line symbol
+
+主调用链：
+file:line -&gt; file:line -&gt; file:line
+
+关键判断：
+- 判断 1：由 ... 证明
+- 判断 2：由 ... 证明
+
+未确认：
+- ...</code></pre>
+<h2 id="注释使用规范">注释使用规范</h2>
+<p>讲义可以引用源码注释的观点，但不能只靠注释。注释适合作为设计意图补充，调用链才是行为证据。</p>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>只看文件名推职责。</li><li>只看类型不看调用点。</li><li>只看 happy path，不看错误/权限/取消路径。</li><li>发现旧路径后直接修脑补，不做 <code>rg --files</code> 校验。</li></ol><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/appendices/A-runtime-dependencies.html"><span>上一章</span><strong>附录 A：运行时依赖地图</strong></a>
+    <a class="pager-next" href="/appendices/C-rebuild-roadmap.html"><span>下一章</span><strong>附录 C：learning-framework 复刻路线</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#证据链优先级">证据链优先级</a><a class="toc-level-2" href="#标准阅读动作">标准阅读动作</a><a class="toc-level-2" href="#每章证据模板">每章证据模板</a><a class="toc-level-2" href="#注释使用规范">注释使用规范</a><a class="toc-level-2" href="#常见误区">常见误区</a>
+    </aside>
+  </div>
+</body>
+</html>

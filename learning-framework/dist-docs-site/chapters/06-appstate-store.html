@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 6 章：AppState 状态管理机制源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option selected value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a aria-current="page" href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-6-章-appstate-状态管理机制源码导读">第 6 章：AppState 状态管理机制源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 6 章承接第 5 章的 REPL runtime coordinator。第 5 章已经看到 <code>REPL.tsx</code> 同时连接输入、消息、query、tool、permission、queue、remote、background tasks；本章要回答一个更底层的问题：</p>
+<pre><code class="language-text">这么多跨模块状态，为什么没有都塞进 REPL 的 useState？</code></pre>
+<p>本章进入 <code>src/state/*</code>，重点看：</p>
+<pre><code class="language-text">App.tsx
+  -&gt; AppStateProvider
+  -&gt; createStore(getDefaultAppState())
+  -&gt; useAppState(selector)
+  -&gt; useSetAppState()
+  -&gt; REPL / PromptInput / permission / MCP / remote / tasks</code></pre>
+<p>本章为第 7 章消息系统准备“状态容器”的心智模型：消息是 REPL 的高频数据流，但 AppState 是全局运行时环境。理解这个差异，后面读 message、query、tool、permission 才不会把所有状态都混成一个大对象。</p>
+<p>本章保持 <code>SYSTEMATIC_COURSE.md</code> 第 6 章主题不变，覆盖这些知识点：</p>
+<ol><li><code>AppStateProvider</code></li><li><code>createStore</code></li><li><code>useSyncExternalStore</code></li><li>selector 避免无效渲染</li><li><code>useSetAppState</code></li><li>设置变更同步到 AppState</li></ol>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>你不需要在这里学习 <code>useSyncExternalStore</code> 是什么。真正值得读的是：Claude Code 为什么在终端 UI 中采用这种状态形态。</p>
+<p>对高级前端来说，最容易犯的误判是把它看成“自己造了个 mini Zustand”。这个判断只对了一半。更准确地说，AppState 是一个 <strong>runtime control plane</strong>：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>前端经验里的概念</th><th>Claude Code 中的对应点</th></tr></thead><tbody><tr><td>app shell state</td><td><code>settings</code>、<code>verbose</code>、<code>mainLoopModel</code>、<code>expandedView</code></td></tr><tr><td>权限上下文</td><td><code>toolPermissionContext</code></td></tr><tr><td>插件/MCP 运行状态</td><td><code>mcp</code>、<code>plugins</code></td></tr><tr><td>后台任务状态</td><td><code>tasks</code>、<code>agentNameRegistry</code>、<code>foregroundedTaskId</code></td></tr><tr><td>UI 横切状态</td><td><code>notifications</code>、<code>elicitation</code>、<code>promptSuggestion</code></td></tr><tr><td>远程/桥接状态</td><td><code>remoteSessionUrl</code>、<code>replBridge*</code></td></tr><tr><td>非 React 运行时代码入口</td><td><code>useAppStateStore()</code> 暴露 <code>getState/setState</code></td></tr></tbody></table></div>
+<p>AI CLI 和普通前端应用的差异是：大量状态变化来自 React 组件之外，比如 query loop、tool execution、MCP connection、remote bridge、permission callback、settings watcher。AppState 必须同时服务 React 渲染和非 React 运行时。</p>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本章后，你应该能够：</p>
+<ol><li>用源码证明 <code>AppStateProvider</code> 只把稳定 store 放进 Context，而不是把整个 state 放进 Context。</li><li>追踪 <code>App -&gt; AppStateProvider -&gt; createStore -&gt; useAppState(selector)</code> 的状态订阅链路。</li><li>解释 <code>useSetAppState()</code> 为什么不订阅状态，以及它适合哪些写入场景。</li><li>说明 <code>REPL.tsx</code> 为什么同时使用 <code>useAppState(selector)</code> 和 <code>useAppStateStore()</code>。</li><li>找到 <code>onChangeAppState</code> 如何把 AppState 变化同步到外部系统，例如 permission mode、model settings、global config、managed env。</li><li>在 <code>learning-framework</code> 中复刻一个 external store，支持 selector 订阅、独立 updater、settings sync。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>本章默认你已经理解：</p>
+<ul><li>第 4 章的 <code>App -&gt; REPL</code> 组件挂载链路</li><li>第 5 章中 REPL 作为 runtime coordinator 的角色</li><li>React external store、selector、referential equality、render subscription 的工程含义</li><li>大型前端应用中 Context value 稳定性和局部订阅的性能意义</li></ul>
+<p>本章不会重复讲：</p>
+<ul><li><code>useState</code>、Context、React Hooks 基础语法</li><li>状态管理库横向对比</li><li>selector 的入门写法</li><li>TypeScript 类型系统基础</li></ul>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-appstate-为什么存在">1. AppState 为什么存在</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export type AppState|export function getDefaultAppState|toolPermissionContext|mcp:|plugins:|notifications:|elicitation:&quot; claudecode-project/src/state/AppStateStore.ts</code></pre>
+<p>AppState 存在的原因不是“全局状态方便共享”，而是 Claude Code 需要一个跨越多个运行时边界的控制平面：</p>
+<pre><code class="language-text">React TUI
+  &lt;-&gt; REPL
+  &lt;-&gt; query/tool runtime
+  &lt;-&gt; permission callbacks
+  &lt;-&gt; MCP/plugins
+  &lt;-&gt; remote/bridge
+  &lt;-&gt; settings watcher
+  &lt;-&gt; background tasks</code></pre>
+<p>如果这些状态全部分散在组件局部，后果会很直接：</p>
+<ul><li>tool permission mode 改了，remote/SDK/status stream 不一定同步。</li><li>MCP 工具刷新了，query 可能拿到旧工具池。</li><li>settings 文件变了，UI 和 headless path 可能不一致。</li><li>background task 状态更新时，REPL/footer/panel 要靠层层 props 传递。</li></ul>
+<p>所以 AppState 是“运行时事实来源”，不是普通 UI view model。</p>
+<h3 id="2-appstateprovider-为什么只提供-store">2. AppStateProvider 为什么只提供 store</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;AppStoreContext|AppStateProvider|createStore|useState\\(\\(\\) =&gt;|AppStoreContext.Provider&quot; claudecode-project/src/state/AppState.tsx claudecode-project/src/components/App.tsx</code></pre>
+<p><code>AppStateProvider</code> 的关键设计是：</p>
+<pre><code class="language-text">Context value = store
+store contains state + subscribe + setState</code></pre>
+<p>而不是：</p>
+<pre><code class="language-text">Context value = current AppState object</code></pre>
+<p>这样做解决两个问题：</p>
+<ol><li>Provider 自身不会因为每次 state 变化都广播整个 context。</li><li>消费者可以通过 selector 订阅局部切片，而不是被所有字段更新牵连。</li></ol>
+<p>从前端架构角度看，这是“稳定容器 + 外部订阅”的模式。它适合 Claude Code 这种状态字段多、更新来源多、渲染面复杂的终端应用。</p>
+<h3 id="3-createstore-是最小运行时状态内核">3. createStore 是最小运行时状态内核</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;type Listener|type OnChange|export type Store|export function createStore|Object\\.is|listeners&quot; claudecode-project/src/state/store.ts</code></pre>
+<p><code>createStore</code> 做的事情很少：</p>
+<pre><code class="language-text">state = initialState
+listeners = Set
+
+getState()
+setState(updater)
+subscribe(listener)</code></pre>
+<p>它没有 action、middleware、devtools、immer。这个克制很重要：Claude Code 的复杂性不在 store 框架本身，而在 AppState 连接的运行时系统。</p>
+<p><code>setState</code> 的关键边界：</p>
+<pre><code class="language-text">prev = state
+next = updater(prev)
+Object.is(next, prev) -&gt; skip
+state = next
+onChange({ newState, oldState })
+notify listeners</code></pre>
+<p>这意味着 AppState 的副作用同步不散落在每个调用点，而是可以进入 <code>onChangeAppState</code> 这样的差异处理入口。</p>
+<h3 id="4-useappstate-selector-是订阅边界">4. useAppState(selector) 是订阅边界</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export function useAppState|useSyncExternalStore|selector|Do NOT return new objects|Object\\.is&quot; claudecode-project/src/state/AppState.tsx</code></pre>
+<p><code>useAppState(selector)</code> 的核心不是“读取状态”，而是声明订阅边界：</p>
+<pre><code class="language-text">component
+  -&gt; useAppState(s =&gt; s.toolPermissionContext)
+  -&gt; get selected slice
+  -&gt; subscribe store
+  -&gt; re-render only if selected value changed</code></pre>
+<p>源码注释已经非常明确：不要从 selector 返回新对象。因为 <code>useSyncExternalStore</code> 最终依赖 snapshot 是否变化；如果 selector 每次都返回 <code>{ a: s.a }</code>，就会制造无意义重渲染。</p>
+<p>高级前端应该特别关注这里：Claude Code 的状态字段很多，如果 selector 粗暴返回对象，终端 UI 的高频刷新会非常难控。</p>
+<h3 id="5-usesetappstate-是写入但不订阅">5. useSetAppState() 是写入但不订阅</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export function useSetAppState|setState|without subscribing|never re-render&quot; claudecode-project/src/state/AppState.tsx</code></pre>
+<p><code>useSetAppState()</code> 只返回 stable <code>store.setState</code>，不订阅任何字段。</p>
+<p>这类 API 在普通前端应用里常被忽略，但在 REPL 这种 runtime coordinator 里非常关键。很多逻辑只需要写入状态，不需要读取状态，例如：</p>
+<ul><li>写入 permission 更新</li><li>写入 notification</li><li>写入 task 状态</li><li>写入 settings 同步结果</li><li>写入 remote/bridge 状态</li></ul>
+<p>如果这些写入点也订阅整个 AppState，就会把协调器变成重渲染热点。</p>
+<h3 id="6-useappstatestore-是非-react-运行时代码的桥">6. useAppStateStore() 是非 React 运行时代码的桥</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export function useAppStateStore|store\\.getState\\(\\)|getAppState: \\(\\) =&gt; store\\.getState\\(\\)&quot; claudecode-project/src/state/AppState.tsx claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>第 5 章已经看到 REPL 会把 <code>getAppState</code> 和 <code>setAppState</code> 传给 query/tool/permission context：</p>
+<pre><code class="language-text">REPL
+  -&gt; const store = useAppStateStore()
+  -&gt; getToolUseContext()
+  -&gt; getAppState: () =&gt; store.getState()
+  -&gt; setAppState</code></pre>
+<p>为什么不直接依赖闭包里的 <code>toolPermissionContext</code>、<code>mcp</code>、<code>plugins</code>？</p>
+<p>因为 query/tool 运行可能跨越多个异步边界。闭包值可能是旧的，<code>store.getState()</code> 可以在执行点读取最新状态。</p>
+<p>这就是 AppState 和 Agent runtime 的关键连接：React 组件负责创建上下文，但真正执行工具时要读取 runtime 最新状态。</p>
+<h3 id="7-onchangeappstate-是状态变化的外部同步出口">7. onChangeAppState 是状态变化的外部同步出口</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export function onChangeAppState|permission_mode|notifySessionMetadataChanged|notifyPermissionModeChanged|mainLoopModel|expandedView|settings&quot; claudecode-project/src/state/onChangeAppState.ts</code></pre>
+<p><code>onChangeAppState</code> 的设计意图是把跨系统同步集中在一个 diff 入口：</p>
+<pre><code class="language-text">oldState + newState
+  -&gt; permission mode changed?
+  -&gt; model changed?
+  -&gt; expanded view changed?
+  -&gt; verbose changed?
+  -&gt; settings changed?
+  -&gt; notify / persist / clear cache / apply env</code></pre>
+<p>这不是普通 reducer。它处理的是 AppState 变化对 CLI 外部世界的影响：</p>
+<ul><li>permission mode 同步到 CCR / SDK status stream</li><li>model 写回 settings / bootstrap override</li><li>expanded view 写回 global config</li><li>verbose 写回 global config</li><li>settings 变化清理 auth cache 并重新应用 env</li></ul>
+<p>这个文件告诉你：AppState 不只是 UI 状态，它还驱动外部副作用。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>本章不看什么</th><th>后续章节是否回看</th></tr></thead><tbody><tr><td><code>claudecode-project/src/components/App.tsx</code></td><td><code>App</code> 如何包裹 <code>AppStateProvider</code></td><td>子组件业务细节</td><td>第 14 章 remote/headless 时回看</td></tr><tr><td><code>claudecode-project/src/state/AppState.tsx</code></td><td>Provider、Context、<code>useAppState</code>、<code>useSetAppState</code>、<code>useAppStateStore</code></td><td>React compiler 输出细节、VoiceProvider 分支深挖</td><td>第 11、13、14 章持续回看</td></tr><tr><td><code>claudecode-project/src/state/store.ts</code></td><td>最小 external store 实现</td><td>状态管理库比较</td><td>本章重点文件</td></tr><tr><td><code>claudecode-project/src/state/AppStateStore.ts</code></td><td>AppState 类型、默认值、运行时状态分区</td><td>每个字段业务细节</td><td>第 7-14 章按主题回看</td></tr><tr><td><code>claudecode-project/src/state/onChangeAppState.ts</code></td><td>状态 diff 如何同步外部系统</td><td>CCR/SDK 内部实现</td><td>第 11、14 章回看</td></tr><tr><td><code>claudecode-project/src/screens/REPL.tsx</code></td><td>AppState 在 REPL 中的消费方式</td><td>REPL 全量逻辑</td><td>第 5 章已讲，第 7-14 章继续</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<h3 id="1-provider-初始化链路">1. Provider 初始化链路</h3>
+<pre><code class="language-text">main.tsx / cli handler
+  -&gt; &lt;App initialState={...} onChangeAppState={...}&gt;
+  -&gt; &lt;AppStateProvider initialState onChangeAppState&gt;
+  -&gt; createStore(initialState ?? getDefaultAppState(), onChangeAppState)
+  -&gt; AppStoreContext.Provider value={store}
+  -&gt; REPL / children</code></pre>
+<p>源码验证：</p>
+<pre><code class="language-bash">rg -n &quot;&lt;AppStateProvider|initialState|onChangeAppState&quot; claudecode-project/src/components/App.tsx claudecode-project/src/main.tsx claudecode-project/src/cli/handlers/util.tsx</code></pre>
+<h3 id="2-状态读取链路">2. 状态读取链路</h3>
+<pre><code class="language-text">REPL.tsx
+  -&gt; useAppState(s =&gt; s.toolPermissionContext)
+  -&gt; useAppStore()
+  -&gt; useSyncExternalStore(store.subscribe, get, get)
+  -&gt; selector(store.getState())
+  -&gt; selected slice drives render / memo / tool list</code></pre>
+<p>源码验证：</p>
+<pre><code class="language-bash">rg -n &quot;useAppState\\(s =&gt; s\\.toolPermissionContext|useSyncExternalStore|selector\\(state\\)&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/state/AppState.tsx</code></pre>
+<h3 id="3-状态写入链路">3. 状态写入链路</h3>
+<pre><code class="language-text">REPL / permission UI / hooks
+  -&gt; useSetAppState()
+  -&gt; store.setState(updater)
+  -&gt; createStore.setState
+  -&gt; onChangeAppState({ newState, oldState })
+  -&gt; listeners()
+  -&gt; subscribed selectors re-render if snapshot changed</code></pre>
+<p>源码验证：</p>
+<pre><code class="language-bash">rg -n &quot;useSetAppState\\(|setAppState\\(prev|onChangeAppState|for \\(const listener of listeners\\)&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/state/*.ts claudecode-project/src/state/*.tsx</code></pre>
+<h3 id="4-非-react-runtime-读取链路">4. 非 React runtime 读取链路</h3>
+<pre><code class="language-text">REPL
+  -&gt; const store = useAppStateStore()
+  -&gt; getToolUseContext()
+  -&gt; getAppState: () =&gt; store.getState()
+  -&gt; query / tool / permission callbacks
+  -&gt; read latest mcp/tools/permission/settings/tasks</code></pre>
+<p>源码验证：</p>
+<pre><code class="language-bash">rg -n &quot;useAppStateStore\\(|getToolUseContext|getAppState: \\(\\) =&gt; store\\.getState\\(\\)|assembleToolPool&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-确认-provider-不是普通-context-全量广播">路线一：确认 Provider 不是普通 Context 全量广播</h3>
+<p>阅读目标：证明 Context value 是稳定 store，而不是整个 AppState。</p>
+<p>检索命令：</p>
+<pre><code class="language-bash">rg -n &quot;AppStoreContext|useState\\(\\(\\) =&gt;|createStore|Provider value=\\{store\\}&quot; claudecode-project/src/state/AppState.tsx</code></pre>
+<p>你应该看到：</p>
+<ul><li><code>AppStoreContext</code> 保存 <code>AppStateStore | null</code></li><li><code>useState(() =&gt; createStore(...))</code></li><li>Provider 的 value 是 <code>store</code></li></ul>
+<p>读完判断：</p>
+<p>AppStateProvider 用稳定 store 避免 Context 全量广播，局部订阅交给 <code>useSyncExternalStore</code>。</p>
+<h3 id="路线二-确认-selector-是渲染边界">路线二：确认 selector 是渲染边界</h3>
+<p>阅读目标：证明组件只订阅自己选择的状态切片。</p>
+<p>检索命令：</p>
+<pre><code class="language-bash">rg -n &quot;export function useAppState|selector|useSyncExternalStore|Do NOT return new objects&quot; claudecode-project/src/state/AppState.tsx
+rg -n &quot;useAppState\\(s =&gt; s\\.&quot; claudecode-project/src/screens/REPL.tsx | head -40</code></pre>
+<p>你应该看到：</p>
+<ul><li><code>useAppState(selector)</code> 内部调用 selector</li><li><code>useSyncExternalStore(store.subscribe, get, get)</code></li><li>REPL 中多次独立订阅 <code>toolPermissionContext</code>、<code>verbose</code>、<code>mcp</code>、<code>plugins</code>、<code>tasks</code></li></ul>
+<p>读完判断：</p>
+<p>AppState 的性能策略不是拆 Provider，而是拆 selector。</p>
+<h3 id="路线三-确认-setappstate-是写入入口">路线三：确认 setAppState 是写入入口</h3>
+<p>阅读目标：理解 <code>useSetAppState</code> 如何让组件写入状态但不订阅状态。</p>
+<p>检索命令：</p>
+<pre><code class="language-bash">rg -n &quot;export function useSetAppState|without subscribing|setState&quot; claudecode-project/src/state/AppState.tsx
+rg -n &quot;const setAppState = useSetAppState|setAppState\\(prev&quot; claudecode-project/src/screens/REPL.tsx | head -60</code></pre>
+<p>你应该看到：</p>
+<ul><li><code>useSetAppState()</code> 直接返回 <code>store.setState</code></li><li>REPL 大量通过 updater 修改局部字段</li></ul>
+<p>读完判断：</p>
+<p>写入路径和订阅路径分离，是 REPL 能承载大量横切状态的基础。</p>
+<h3 id="路线四-追踪状态变化如何影响外部系统">路线四：追踪状态变化如何影响外部系统</h3>
+<p>阅读目标：确认 AppState 不是纯 UI state。</p>
+<p>检索命令：</p>
+<pre><code class="language-bash">rg -n &quot;export function onChangeAppState|notifySessionMetadataChanged|notifyPermissionModeChanged|saveGlobalConfig|updateSettingsForSource|applyConfigEnvironmentVariables&quot; claudecode-project/src/state/onChangeAppState.ts</code></pre>
+<p>你应该看到：</p>
+<ul><li>permission mode 改变会通知外部 metadata / SDK</li><li>model 改变会写 settings</li><li>expanded view / verbose 会写 global config</li><li>settings 改变会清理认证缓存并应用 env</li></ul>
+<p>读完判断：</p>
+<p>AppState 的变化会驱动 CLI 外部副作用，不能把它理解成单纯组件状态。</p>
+<h3 id="路线五-追踪-repl-为什么要读最新-store">路线五：追踪 REPL 为什么要读最新 store</h3>
+<p>阅读目标：确认 <code>store.getState()</code> 是异步 runtime 的最新状态读取点。</p>
+<p>检索命令：</p>
+<pre><code class="language-bash">rg -n &quot;useAppStateStore\\(|store\\.getState\\(\\)|getAppState: \\(\\) =&gt; store\\.getState\\(\\)|Compute tools fresh&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>你应该看到：</p>
+<ul><li>REPL 创建 <code>store</code></li><li>多处把 <code>getAppState: () =&gt; store.getState()</code> 传入上下文</li><li>源码注释强调 fresh state / fresh tools</li></ul>
+<p>读完判断：</p>
+<p>query/tool/permission 运行时不能只依赖 React render 时的闭包值，它们需要执行时的最新 AppState。</p>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<h3 id="验证-1-provider-链路">验证 1：Provider 链路</h3>
+<pre><code class="language-bash">rg -n &quot;&lt;AppStateProvider|AppStateProvider|initialState|onChangeAppState&quot; claudecode-project/src/components/App.tsx claudecode-project/src/main.tsx claudecode-project/src/cli/handlers/util.tsx</code></pre>
+<p>确认 <code>App</code> 和 CLI util 都通过 <code>AppStateProvider</code> 提供状态环境。</p>
+<h3 id="验证-2-store-最小内核">验证 2：store 最小内核</h3>
+<pre><code class="language-bash">sed -n &#39;1,120p&#39; claudecode-project/src/state/store.ts</code></pre>
+<p>确认 store 只有 <code>getState</code>、<code>setState</code>、<code>subscribe</code> 三个能力，复杂性不在框架层。</p>
+<h3 id="验证-3-selector-订阅">验证 3：selector 订阅</h3>
+<pre><code class="language-bash">rg -n &quot;useSyncExternalStore|selector\\(state\\)|Do NOT return new objects&quot; claudecode-project/src/state/AppState.tsx</code></pre>
+<p>确认 <code>useAppState(selector)</code> 是局部订阅机制。</p>
+<h3 id="验证-4-repl-消费-appstate">验证 4：REPL 消费 AppState</h3>
+<pre><code class="language-bash">rg -n &quot;useAppState\\(s =&gt; s\\.|useSetAppState\\(|useAppStateStore\\(&quot; claudecode-project/src/screens/REPL.tsx | head -80</code></pre>
+<p>确认 REPL 同时使用 selector、updater 和 direct store。</p>
+<h3 id="验证-5-外部同步">验证 5：外部同步</h3>
+<pre><code class="language-bash">rg -n &quot;permission_mode|mainLoopModel|expandedView|verbose|settings|applyConfigEnvironmentVariables&quot; claudecode-project/src/state/onChangeAppState.ts</code></pre>
+<p>确认 AppState diff 会同步 permission、model、配置和环境变量。</p>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<h3 id="1-app-tsx-appstate-的挂载边界">1. <code>App.tsx</code>：AppState 的挂载边界</h3>
+<p><code>App.tsx</code> 的职责很窄：把 <code>children</code> 放进 <code>AppStateProvider</code>。</p>
+<p>运行时意义：</p>
+<pre><code class="language-text">App
+  -&gt; 提供 AppState runtime
+  -&gt; children 可以是 REPL，也可以是 CLI handler 中的独立 UI</code></pre>
+<p>这说明 AppState 不是 REPL 私有机制，而是 Claude Code TUI 的基础运行环境。</p>
+<h3 id="2-appstate-tsx-react-与-external-store-的结合层">2. <code>AppState.tsx</code>：React 与 external store 的结合层</h3>
+<p>这一层有四个关键出口：</p>
+<pre><code class="language-text">AppStateProvider
+useAppState(selector)
+useSetAppState()
+useAppStateStore()</code></pre>
+<p>设计边界：</p>
+<ul><li>Provider 负责创建 store 和注入上下文。</li><li><code>useAppState</code> 负责读切片和触发渲染。</li><li><code>useSetAppState</code> 负责写入但不订阅。</li><li><code>useAppStateStore</code> 负责给非 React 运行时拿 <code>getState/setState</code>。</li></ul>
+<p>这是本章最重要的拆分。不要把这四个 API 都理解成“读写全局状态”，它们服务的是不同运行时边界。</p>
+<h3 id="3-store-ts-状态更新和通知顺序">3. <code>store.ts</code>：状态更新和通知顺序</h3>
+<p><code>createStore</code> 的更新顺序是：</p>
+<pre><code class="language-text">calculate next
+  -&gt; Object.is skip
+  -&gt; assign state
+  -&gt; onChange diff callback
+  -&gt; notify subscribers</code></pre>
+<p>这里有一个值得注意的设计取舍：<code>onChange</code> 发生在 listener 通知之前。也就是说外部同步可以先观察到完整 old/new state，再让 React 订阅者重渲染。</p>
+<p>这对 permission mode、settings sync、global config 这类外部副作用非常有价值。</p>
+<h3 id="4-appstatestore-ts-运行时状态分区">4. <code>AppStateStore.ts</code>：运行时状态分区</h3>
+<p><code>AppState</code> 类型很大，但不是无序堆砌。可以按运行时职责切成几类：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>状态类别</th><th>字段示例</th><th>后续章节</th></tr></thead><tbody><tr><td>基础配置</td><td><code>settings</code>、<code>verbose</code>、<code>mainLoopModel</code></td><td>第 3、8 章</td></tr><tr><td>权限上下文</td><td><code>toolPermissionContext</code></td><td>第 11 章</td></tr><tr><td>MCP/插件</td><td><code>mcp</code>、<code>plugins</code></td><td>第 13 章</td></tr><tr><td>任务/Agent</td><td><code>tasks</code>、<code>agentNameRegistry</code>、<code>foregroundedTaskId</code></td><td>第 14 章</td></tr><tr><td>UI 横切</td><td><code>expandedView</code>、<code>notifications</code>、<code>elicitation</code></td><td>第 4、5 章</td></tr><tr><td>远程/桥接</td><td><code>remoteSessionUrl</code>、<code>replBridge*</code></td><td>第 14 章</td></tr><tr><td>推测/建议</td><td><code>promptSuggestion</code>、<code>speculation</code></td><td>第 14 章</td></tr></tbody></table></div>
+<p>读这个文件不要从第一行逐字段背。更好的读法是：每遇到后续章节的模块，再回到 AppState 找它的状态入口。</p>
+<h3 id="5-getdefaultappstate-默认运行环境">5. <code>getDefaultAppState()</code>：默认运行环境</h3>
+<p><code>getDefaultAppState()</code> 是 AppState 的初始事实来源。</p>
+<p>它做了几件有工程意义的事：</p>
+<ul><li>根据 teammate/plan mode 决定初始 permission mode。</li><li>初始化 <code>toolPermissionContext</code>。</li><li>初始化 MCP、plugins、notifications、elicitation 等容器。</li><li>初始化 prompt suggestion、speculation、skill improvement 等高级能力状态。</li><li>把 <code>settings</code> 从 <code>getInitialSettings()</code> 接入。</li></ul>
+<p>这说明很多系统不是“用到时才随便创建”，而是在 AppState 初始态里占位。这样后续模块能假设结构存在，减少防御式分支。</p>
+<h3 id="6-onchangeappstate-ts-集中处理状态副作用">6. <code>onChangeAppState.ts</code>：集中处理状态副作用</h3>
+<p>这个文件体现的是“状态变化是一种事件”：</p>
+<pre><code class="language-text">toolPermissionContext.mode changed
+  -&gt; notifySessionMetadataChanged
+  -&gt; notifyPermissionModeChanged
+
+mainLoopModel changed
+  -&gt; updateSettingsForSource
+  -&gt; setMainLoopModelOverride
+
+settings changed
+  -&gt; clear auth cache
+  -&gt; apply env</code></pre>
+<p>如果没有这个集中点，同步逻辑会散落在 <code>/plan</code>、permission dialog、remote bridge、print mode、settings watcher 等调用点里，很容易漏掉某条路径。</p>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<h3 id="承接第-5-章-repl">承接第 5 章 REPL</h3>
+<p>第 5 章看到 REPL 是协调器。本章解释 REPL 为什么能协调这么多系统：它不是只靠局部 state，而是通过 AppState 读取和写入运行时状态。</p>
+<p>关键连接：</p>
+<pre><code class="language-text">REPL
+  -&gt; useAppState(s =&gt; s.toolPermissionContext)
+  -&gt; useAppState(s =&gt; s.mcp)
+  -&gt; useAppState(s =&gt; s.plugins)
+  -&gt; useSetAppState()
+  -&gt; useAppStateStore()</code></pre>
+<h3 id="连接第-7-章-message">连接第 7 章 Message</h3>
+<p>消息列表本身大量保留在 REPL 局部状态中，而不是全部放 AppState。这是一个重要边界：高频、会话内、渲染相关的数据不一定进入全局 AppState。</p>
+<p>第 7 章会继续回答：</p>
+<ul><li>哪些 message 是 API 上下文？</li><li>哪些 message 是 UI 可渲染事件？</li><li>哪些 message 会进入 session log / compact？</li></ul>
+<h3 id="连接第-8-章-query">连接第 8 章 query</h3>
+<p>query loop 需要读取 model、tools、MCP clients、permission context、settings、hooks。REPL 通过 <code>getToolUseContext</code> 和 <code>store.getState()</code> 把最新 AppState 暴露给 query/tool runtime。</p>
+<h3 id="连接第-9-11-章-tool-permission">连接第 9-11 章 tool / permission</h3>
+<p><code>toolPermissionContext</code> 是 AppState 中最核心的安全状态之一。第 11 章会专门讲 permission mode、allow/deny/ask rule、permission dialog 如何更新它。</p>
+<h3 id="连接第-13-14-章-mcp-remote-advanced-systems">连接第 13-14 章 MCP / remote / advanced systems</h3>
+<p><code>mcp</code>、<code>plugins</code>、<code>tasks</code>、<code>replBridge<em></code>、<code>remote</em></code>、<code>speculation</code> 等字段会在后续高级章节继续展开。本章只建立它们的状态入口位置。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<h3 id="1-appstate-分层图">1. AppState 分层图</h3>
+<pre><code class="language-text">React Context
+  AppStoreContext
+    value = stable store
+            |
+            v
+External Store
+  getState / setState / subscribe
+            |
+            v
+AppState
+  settings / permission / mcp / plugins / tasks / remote / notifications</code></pre>
+<h3 id="2-selector-订阅图">2. selector 订阅图</h3>
+<pre><code class="language-text">store state changes
+  |
+  +-&gt; REPL selector: s.toolPermissionContext -&gt; changed? -&gt; re-render permission dependent UI
+  |
+  +-&gt; Footer selector: s.expandedView -&gt; changed? -&gt; re-render footer state
+  |
+  +-&gt; Task panel selector: s.tasks -&gt; changed? -&gt; re-render task panel
+  |
+  +-&gt; unrelated selector -&gt; Object.is same -&gt; skip</code></pre>
+<h3 id="3-写入与副作用图">3. 写入与副作用图</h3>
+<pre><code class="language-text">setAppState(prev =&gt; next)
+  -&gt; createStore.setState
+  -&gt; onChangeAppState(old, new)
+       -&gt; permission metadata sync
+       -&gt; settings/global config sync
+       -&gt; env/cache side effects
+  -&gt; notify subscribers
+  -&gt; selected UI updates</code></pre>
+<h3 id="4-repl-与非-react-runtime-图">4. REPL 与非 React runtime 图</h3>
+<pre><code class="language-text">REPL render time
+  -&gt; useAppState slices for UI
+
+query/tool execution time
+  -&gt; getAppState() = store.getState()
+  -&gt; read fresh permission/mcp/tools/tasks</code></pre>
+<p>这张图适合强调闭包值和执行时最新状态的区别。</p>
+<h2 id="实践任务">实践任务</h2>
+<h3 id="任务-1-源码定位任务">任务 1：源码定位任务</h3>
+<p>目标：找出 AppState 的四个公开入口。</p>
+<p>命令：</p>
+<pre><code class="language-bash">rg -n &quot;export function AppStateProvider|export function useAppState|export function useSetAppState|export function useAppStateStore&quot; claudecode-project/src/state/AppState.tsx</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## AppState API 定位
+
+- AppStateProvider: line ...
+- useAppState: line ...
+- useSetAppState: line ...
+- useAppStateStore: line ...
+
+我的判断：
+这四个 API 分别服务 ...</code></pre>
+<h3 id="任务-2-调用链追踪任务">任务 2：调用链追踪任务</h3>
+<p>目标：追踪 AppState 从 App 挂载到 REPL 消费。</p>
+<p>命令：</p>
+<pre><code class="language-bash">rg -n &quot;&lt;AppStateProvider|useAppState\\(s =&gt; s\\.toolPermissionContext|useSetAppState\\(|useAppStateStore\\(&quot; claudecode-project/src/components/App.tsx claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## AppState 调用链
+
+App.tsx line ...
+  -&gt; AppStateProvider line ...
+  -&gt; REPL useAppState(toolPermissionContext) line ...
+  -&gt; REPL useSetAppState line ...
+  -&gt; REPL useAppStateStore line ...</code></pre>
+<h3 id="任务-3-记录-selector-反模式">任务 3：记录 selector 反模式</h3>
+<p>目标：解释为什么 selector 不能返回新对象。</p>
+<p>命令：</p>
+<pre><code class="language-bash">rg -n &quot;Do NOT return new objects|Object\\.is|useSyncExternalStore&quot; claudecode-project/src/state/AppState.tsx claudecode-project/src/state/store.ts</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## selector 反模式分析
+
+源码证据：
+- line ...
+- line ...
+
+错误写法：
+useAppState(s =&gt; ({ verbose: s.verbose }))
+
+原因：
+...</code></pre>
+<h3 id="任务-4-learning-framework-复刻任务">任务 4：learning-framework 复刻任务</h3>
+<p>目标：在 <code>learning-framework</code> 中实现最小 AppState store。</p>
+<p>建议文件：</p>
+<pre><code class="language-text">learning-framework/src/state/store.ts
+learning-framework/src/state/AppState.tsx
+learning-framework/src/state/AppStateStore.ts</code></pre>
+<p>要求：</p>
+<ul><li><code>createStore(initialState, onChange?)</code></li><li><code>AppStateProvider</code></li><li><code>useAppState(selector)</code></li><li><code>useSetAppState()</code></li><li><code>useAppStateStore()</code></li><li>AppState 至少包含：<code>messages</code>、<code>isLoading</code>、<code>settings</code>、<code>toolPermissionContext</code></li><li>用 selector 分别订阅 <code>messages.length</code> 和 <code>isLoading</code></li><li>写一个反例：selector 返回新对象导致重复渲染，并记录现象</li></ul>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## 第 6 章复刻结果
+
+新增文件：
+- ...
+
+支持能力：
+- ...
+
+验证方式：
+- ...
+
+与 Claude Code 差异：
+- ...</code></pre>
+<h3 id="任务-5-设置同步任务">任务 5：设置同步任务</h3>
+<p>目标：复刻 <code>onChangeAppState</code> 的思路。</p>
+<p>要求：</p>
+<ul><li>在 learning-framework 中新增 <code>onChangeAppState.ts</code></li><li>当 <code>settings.model</code> 改变时打印同步日志</li><li>当 <code>toolPermissionContext.mode</code> 改变时打印权限模式日志</li><li>不把日志写在每个调用点，而是集中在 store 的 <code>onChange</code></li></ul>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## onChangeAppState 复刻
+
+状态变化：
+- before:
+- after:
+
+触发日志：
+- ...
+
+我的结论：
+集中 diff 比分散调用的优势是 ...</code></pre>
+<h3 id="任务-6-进阶分析题">任务 6：进阶分析题</h3>
+<p>回答下面问题：</p>
+<ol><li>为什么 AppStateProvider 禁止嵌套？</li><li>为什么 REPL 既用 <code>useAppState(s =&gt; s.mcp)</code>，又用 <code>store.getState()</code> 读取最新 MCP？</li><li>如果把整个 AppState 放入 React Context value，会出现哪些性能和一致性问题？</li><li><code>onChangeAppState</code> 是不是 reducer？为什么？</li><li>哪些状态适合留在 REPL 局部 state，而不是进入 AppState？</li></ol>
+<p>产出格式：</p>
+<pre><code class="language-markdown">## 第 6 章进阶分析
+
+1. ...
+2. ...
+3. ...
+4. ...
+5. ...</code></pre>
+<h2 id="常见误区">常见误区</h2>
+<h3 id="误区-1-把-appstate-当成普通全局-ui-状态">误区 1：把 AppState 当成普通全局 UI 状态</h3>
+<p>AppState 同时承载 permission、MCP、plugins、remote、tasks、settings sync。它是 AI CLI runtime 的控制平面，不只是 UI view model。</p>
+<h3 id="误区-2-认为-useappstate-可以随便返回对象">误区 2：认为 useAppState 可以随便返回对象</h3>
+<p>selector 返回新对象会破坏 <code>Object.is</code> 判等，导致订阅组件无意义重渲染。源码注释已经明确禁止这个模式。</p>
+<h3 id="误区-3-认为-usesetappstate-和-useappstate-差不多">误区 3：认为 useSetAppState 和 useAppState 差不多</h3>
+<p><code>useSetAppState</code> 不订阅状态，只提供写入能力。这个差异对 REPL 这种高频协调器非常重要。</p>
+<h3 id="误区-4-把-store-getstate-看成反-react-模式">误区 4：把 store.getState() 看成反 React 模式</h3>
+<p>在纯 UI 组件里滥用 <code>getState()</code> 当然危险。但 query/tool/permission callback 跨异步边界执行，需要读取 runtime 最新状态。这里的 <code>getState()</code> 是刻意设计的桥。</p>
+<h3 id="误区-5-忽略-onchangeappstate">误区 5：忽略 onChangeAppState</h3>
+<p>如果只看 <code>setAppState(prev =&gt; ...)</code>，你会漏掉 permission mode、model、settings、global config 的外部同步。<code>onChangeAppState</code> 是理解状态副作用的关键入口。</p>
+<h3 id="误区-6-把-appstatestore-ts-当成字段字典背诵">误区 6：把 AppStateStore.ts 当成字段字典背诵</h3>
+<p>这个文件字段很多，逐字段背没有意义。应该按后续模块回看：权限看 <code>toolPermissionContext</code>，MCP 看 <code>mcp</code>，插件看 <code>plugins</code>，任务看 <code>tasks</code>，remote 看 <code>replBridge*</code>。</p>
+<h2 id="本章总结">本章总结</h2>
+<p>第 6 章建立的核心心智模型是：</p>
+<pre><code class="language-text">AppState = Claude Code interactive runtime 的控制平面
+
+AppStateProvider
+  -&gt; 提供稳定 store
+
+useAppState(selector)
+  -&gt; 局部订阅，控制渲染
+
+useSetAppState()
+  -&gt; 写入状态，不订阅
+
+useAppStateStore()
+  -&gt; 给 query/tool/permission 等非 React 运行时读最新状态
+
+onChangeAppState
+  -&gt; 把状态变化同步到外部系统</code></pre>
+<p>本章最重要的证据链：</p>
+<pre><code class="language-text">App.tsx wraps AppStateProvider
+  -&gt; AppStateProvider creates createStore(...)
+  -&gt; useAppState uses useSyncExternalStore(store.subscribe, get, get)
+  -&gt; REPL consumes slices and setAppState
+  -&gt; REPL passes store.getState into runtime contexts
+  -&gt; onChangeAppState syncs permission/settings/global config side effects</code></pre>
+<p>掌握这条链路后，第 7 章读消息系统时就能分清：哪些数据是 AppState 级别的 runtime state，哪些数据是消息流自身的上下文和持久化问题。</p>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 7 章进入“消息系统与对话上下文”。下一章要继续追踪：</p>
+<ol><li><code>Message</code>、<code>UserMessage</code>、<code>AssistantMessage</code>、<code>SystemMessage</code>、<code>ToolResultMessage</code> 的真实类型入口在哪里？</li><li>REPL 中的 <code>messages</code>、<code>messagesRef</code>、<code>deferredMessages</code> 如何转成 query/API 可消费的上下文？</li><li>tool_use 和 tool_result 如何在消息层成对出现，并影响后续 query loop？</li></ol>
+<p>未确认源码点：</p>
+<ul><li>当前源码大量从 <code>../types/message.js</code> import 类型，但本轮只通过调用点确认了 import 关系，尚未定位到该类型入口的物理源文件或生成机制。第 7 章扩写前必须先校验这个点。</li></ul><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/05-repl-runtime-coordinator.html"><span>上一章</span><strong>第 5 章：REPL 主交互界面源码导读</strong></a>
+    <a class="pager-next" href="/chapters/07-message-context.html"><span>下一章</span><strong>第 7 章：消息系统与对话上下文源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-appstate-为什么存在">1. AppState 为什么存在</a><a class="toc-level-3" href="#2-appstateprovider-为什么只提供-store">2. AppStateProvider 为什么只提供 store</a><a class="toc-level-3" href="#3-createstore-是最小运行时状态内核">3. createStore 是最小运行时状态内核</a><a class="toc-level-3" href="#4-useappstate-selector-是订阅边界">4. useAppState(selector) 是订阅边界</a><a class="toc-level-3" href="#5-usesetappstate-是写入但不订阅">5. useSetAppState() 是写入但不订阅</a><a class="toc-level-3" href="#6-useappstatestore-是非-react-运行时代码的桥">6. useAppStateStore() 是非 React 运行时代码的桥</a><a class="toc-level-3" href="#7-onchangeappstate-是状态变化的外部同步出口">7. onChangeAppState 是状态变化的外部同步出口</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-3" href="#1-provider-初始化链路">1. Provider 初始化链路</a><a class="toc-level-3" href="#2-状态读取链路">2. 状态读取链路</a><a class="toc-level-3" href="#3-状态写入链路">3. 状态写入链路</a><a class="toc-level-3" href="#4-非-react-runtime-读取链路">4. 非 React runtime 读取链路</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-确认-provider-不是普通-context-全量广播">路线一：确认 Provider 不是普通 Context 全量广播</a><a class="toc-level-3" href="#路线二-确认-selector-是渲染边界">路线二：确认 selector 是渲染边界</a><a class="toc-level-3" href="#路线三-确认-setappstate-是写入入口">路线三：确认 setAppState 是写入入口</a><a class="toc-level-3" href="#路线四-追踪状态变化如何影响外部系统">路线四：追踪状态变化如何影响外部系统</a><a class="toc-level-3" href="#路线五-追踪-repl-为什么要读最新-store">路线五：追踪 REPL 为什么要读最新 store</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-3" href="#验证-1-provider-链路">验证 1：Provider 链路</a><a class="toc-level-3" href="#验证-2-store-最小内核">验证 2：store 最小内核</a><a class="toc-level-3" href="#验证-3-selector-订阅">验证 3：selector 订阅</a><a class="toc-level-3" href="#验证-4-repl-消费-appstate">验证 4：REPL 消费 AppState</a><a class="toc-level-3" href="#验证-5-外部同步">验证 5：外部同步</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-3" href="#1-app-tsx-appstate-的挂载边界">1. `App.tsx`：AppState 的挂载边界</a><a class="toc-level-3" href="#2-appstate-tsx-react-与-external-store-的结合层">2. `AppState.tsx`：React 与 external store 的结合层</a><a class="toc-level-3" href="#3-store-ts-状态更新和通知顺序">3. `store.ts`：状态更新和通知顺序</a><a class="toc-level-3" href="#4-appstatestore-ts-运行时状态分区">4. `AppStateStore.ts`：运行时状态分区</a><a class="toc-level-3" href="#5-getdefaultappstate-默认运行环境">5. `getDefaultAppState()`：默认运行环境</a><a class="toc-level-3" href="#6-onchangeappstate-ts-集中处理状态副作用">6. `onChangeAppState.ts`：集中处理状态副作用</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-3" href="#承接第-5-章-repl">承接第 5 章 REPL</a><a class="toc-level-3" href="#连接第-7-章-message">连接第 7 章 Message</a><a class="toc-level-3" href="#连接第-8-章-query">连接第 8 章 query</a><a class="toc-level-3" href="#连接第-9-11-章-tool-permission">连接第 9-11 章 tool / permission</a><a class="toc-level-3" href="#连接第-13-14-章-mcp-remote-advanced-systems">连接第 13-14 章 MCP / remote / advanced systems</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-3" href="#1-appstate-分层图">1. AppState 分层图</a><a class="toc-level-3" href="#2-selector-订阅图">2. selector 订阅图</a><a class="toc-level-3" href="#3-写入与副作用图">3. 写入与副作用图</a><a class="toc-level-3" href="#4-repl-与非-react-runtime-图">4. REPL 与非 React runtime 图</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-3" href="#任务-1-源码定位任务">任务 1：源码定位任务</a><a class="toc-level-3" href="#任务-2-调用链追踪任务">任务 2：调用链追踪任务</a><a class="toc-level-3" href="#任务-3-记录-selector-反模式">任务 3：记录 selector 反模式</a><a class="toc-level-3" href="#任务-4-learning-framework-复刻任务">任务 4：learning-framework 复刻任务</a><a class="toc-level-3" href="#任务-5-设置同步任务">任务 5：设置同步任务</a><a class="toc-level-3" href="#任务-6-进阶分析题">任务 6：进阶分析题</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-3" href="#误区-1-把-appstate-当成普通全局-ui-状态">误区 1：把 AppState 当成普通全局 UI 状态</a><a class="toc-level-3" href="#误区-2-认为-useappstate-可以随便返回对象">误区 2：认为 useAppState 可以随便返回对象</a><a class="toc-level-3" href="#误区-3-认为-usesetappstate-和-useappstate-差不多">误区 3：认为 useSetAppState 和 useAppState 差不多</a><a class="toc-level-3" href="#误区-4-把-store-getstate-看成反-react-模式">误区 4：把 store.getState() 看成反 React 模式</a><a class="toc-level-3" href="#误区-5-忽略-onchangeappstate">误区 5：忽略 onChangeAppState</a><a class="toc-level-3" href="#误区-6-把-appstatestore-ts-当成字段字典背诵">误区 6：把 AppStateStore.ts 当成字段字典背诵</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

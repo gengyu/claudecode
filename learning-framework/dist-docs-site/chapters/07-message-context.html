@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 7 章：消息系统与对话上下文源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option selected value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a aria-current="page" href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-7-章-消息系统与对话上下文源码导读">第 7 章：消息系统与对话上下文源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 7 章承接第 6 章 AppState。AppState 是 runtime 控制平面，消息系统则是 Agent 能持续工作的上下文载体。</p>
+<p>本章主线：</p>
+<pre><code class="language-text">REPL messages
+  -&gt; createUserMessage / createAssistantMessage / createSystemMessage
+  -&gt; normalizeMessagesForAPI
+  -&gt; tool_use / tool_result pairing
+  -&gt; token estimation / context analysis
+  -&gt; compact boundary
+  -&gt; query()</code></pre>
+<p>本章为第 8 章 Agent 查询循环准备能力：你要先知道 query 消费的不是 UI 上的一串文本，而是一组带类型、来源、工具关系、压缩边界和 API 约束的消息。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>不要把 Claude Code 的 message 看成普通 chat item。它更接近一个运行时 event log：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>前端熟悉对象</th><th>Claude Code message 的差异</th></tr></thead><tbody><tr><td>chat list item</td><td>同时服务 UI、API、session log、tool pairing</td></tr><tr><td>optimistic message</td><td>可能带 <code>tool_use</code>、<code>tool_result</code>、compact boundary</td></tr><tr><td>event sourcing</td><td>消息可被 normalize、repair、compact、filter</td></tr><tr><td>render model</td><td>UI 可见消息不等于 API 上下文消息</td></tr></tbody></table></div>
+<p>AI CLI 的关键张力是：用户要看到完整过程，模型要拿到合法上下文，API 要求 tool_use/tool_result 成对，长期会话还要被压缩。</p>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>找到消息创建函数和 REPL 消息状态的连接点。</li><li>证明 <code>normalizeMessagesForAPI</code> 是 UI message 到 API message 的边界。</li><li>解释 tool_use/tool_result pairing 为什么是消息系统的硬约束。</li><li>找到 token estimation、context analysis、compact boundary 如何读消息。</li><li>在 <code>learning-framework</code> 中复刻简化 message model、normalize、tool result pairing 检查。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>需要理解 Anthropic Messages API 的 role/content block 概念、tool use 基本协议、流式 assistant message 的增量更新。本章不讲基础聊天 UI、React list 渲染、普通 JSON schema。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-消息为什么存在">1. 消息为什么存在</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;createUserMessage|createAssistantMessage|createSystemMessage|createCommandInputMessage&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>消息不是展示层 DTO，而是主链路中的共享事实：</p>
+<pre><code class="language-text">PromptInput
+  -&gt; UserMessage
+  -&gt; query
+  -&gt; AssistantMessage(tool_use?)
+  -&gt; runTools
+  -&gt; UserMessage(tool_result)
+  -&gt; query continues</code></pre>
+<h3 id="2-normalizemessagesforapi-是协议边界">2. normalizeMessagesForAPI 是协议边界</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;normalizeMessagesForAPI|ensureToolResultPairing|tool_use|tool_result&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts</code></pre>
+<p>UI 消息可以包含系统提示、compact boundary、progress、local command output 等信息。API 上下文必须满足模型协议。<code>normalizeMessagesForAPI</code> 的价值是把内部消息流整理成 API 能接受的结构。</p>
+<h3 id="3-tool-use-tool-result-是成对约束">3. tool_use/tool_result 是成对约束</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;ensureToolResultPairing|missing tool_result|orphaned tool_result|tool_use_id|yieldMissingToolResultBlocks&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts</code></pre>
+<p>如果 assistant 产生 tool_use，但后续没有对应 tool_result，API 会拒绝或会话会卡死。Claude Code 在消息层做防御修复：补 synthetic error result、移除 orphan result、去重重复 id。</p>
+<h3 id="4-token-与-compact-依赖消息结构">4. token 与 compact 依赖消息结构</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;tokenCountWithEstimation|tokenCountFromLastAPIResponse|compact_boundary|microcompact|isCompactBoundaryMessage|getMessagesAfterCompactBoundary&quot; claudecode-project/src/utils/tokens.ts claudecode-project/src/utils/messages.ts</code></pre>
+<p>上下文管理不是简单按数组长度裁剪，而是结合 API usage、tool_result、compact boundary、snip/microcompact/autocompact 的多层策略。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/utils/messages.ts</code></td><td>create/normalize/pairing/compact boundary</td><td>每个 formatter 细节</td><td>第 8、14 章回看</td></tr><tr><td><code>src/screens/REPL.tsx</code></td><td><code>messages</code>、<code>messagesRef</code>、stream event 如何 append</td><td>REPL 全部逻辑</td><td>第 5 章已讲</td></tr><tr><td><code>src/query.ts</code></td><td>query 如何消费 normalized messages，如何产生 tool_result continuation</td><td>query loop 全量</td><td>第 8 章深入</td></tr><tr><td><code>src/utils/tokens.ts</code></td><td>token estimation 与上下文大小</td><td>计费细节</td><td>第 8、14 章</td></tr><tr><td><code>src/utils/contextAnalysis.ts</code></td><td>按 block 类型统计上下文</td><td>指标上报细节</td><td>附录/高级专题</td></tr><tr><td><code>src/services/compact/*</code></td><td>compact 对消息的改写</td><td>compact 算法全量</td><td>第 14 章</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<pre><code class="language-text">PromptInput submit
+  -&gt; handlePromptSubmit
+  -&gt; processUserInput
+  -&gt; createUserMessage
+  -&gt; REPL.setMessages / messagesRef
+  -&gt; onQuery
+  -&gt; query(messages)
+  -&gt; normalizeMessagesForAPI(messages)
+  -&gt; API stream assistant message
+  -&gt; assistant tool_use?
+  -&gt; runTools
+  -&gt; createUserMessage(tool_result)
+  -&gt; next query turn</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-消息创建">路线一：消息创建</h3>
+<pre><code class="language-bash">rg -n &quot;createUserMessage|createAssistantMessage|createSystemMessage&quot; claudecode-project/src/utils/messages.ts
+rg -n &quot;createUserMessage|createAssistantMessage|setMessages&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/utils/handlePromptSubmit.ts</code></pre>
+<p>判断：消息从输入处理和 query stream 两端进入同一数组。</p>
+<h3 id="路线二-api-normalize">路线二：API normalize</h3>
+<pre><code class="language-bash">rg -n &quot;normalizeMessagesForAPI|ensureToolResultPairing&quot; claudecode-project/src/utils/messages.ts
+rg -n &quot;normalizeMessagesForAPI&quot; claudecode-project/src/query.ts claudecode-project/src/utils/contextAnalysis.ts</code></pre>
+<p>判断：normalize 是 API 边界，不是 UI 渲染逻辑。</p>
+<h3 id="路线三-工具消息配对">路线三：工具消息配对</h3>
+<pre><code class="language-bash">rg -n &quot;tool_use_id|missing tool_result|orphaned tool_result|yieldMissingToolResultBlocks&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts</code></pre>
+<p>判断：工具调用的正确性在消息层和 query 层都有防御。</p>
+<h3 id="路线四-上下文与压缩">路线四：上下文与压缩</h3>
+<pre><code class="language-bash">rg -n &quot;tokenCountWithEstimation|compact_boundary|getMessagesAfterCompactBoundary|createMicrocompactBoundaryMessage&quot; claudecode-project/src/utils/tokens.ts claudecode-project/src/utils/messages.ts</code></pre>
+<p>判断：上下文管理依赖 message metadata 和 content block。</p>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;createUserMessage|createAssistantMessage|createSystemMessage&quot; claudecode-project/src/utils/messages.ts
+rg -n &quot;normalizeMessagesForAPI&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts
+rg -n &quot;ensureToolResultPairing|yieldMissingToolResultBlocks&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts
+rg -n &quot;tokenCountWithEstimation|compact_boundary&quot; claudecode-project/src/utils/tokens.ts claudecode-project/src/utils/messages.ts
+rg -n &quot;messagesRef|deferredMessages|displayedMessages|&lt;Messages&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>依次确认：创建、normalize、工具配对、token/compact、UI 渲染五条链路都真实存在。</p>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<p><code>utils/messages.ts</code> 是消息系统的核心，不要逐行读。按职责看：</p>
+<ol><li>创建层：<code>createUserMessage</code>、<code>createAssistantMessage</code>、<code>createSystemMessage</code> 把不同来源包装成内部消息。</li><li>API 边界层：<code>normalizeMessagesForAPI</code> 处理 role/content block、thinking、tool result、compact 后的过滤。</li><li>修复层：<code>ensureToolResultPairing</code> 防止 tool_use/tool_result 协议破裂。</li><li>compact 边界层：<code>createCompactBoundaryMessage</code>、<code>isCompactBoundaryMessage</code>、<code>getMessagesAfterCompactBoundary</code> 标记上下文切片。</li><li>辅助分析层：tokens/context analysis 根据 block 类型估算成本和上下文压力。</li></ol>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>第 6 章解释了 AppState；本章说明消息为什么没有简单全部塞进 AppState。第 8 章会沿着 normalized messages 进入 <code>query()</code>。第 9-11 章会继续展开 tool_use/tool_result 与工具协议、权限的关系。第 14 章会回到 compact、session memory、remote message adapter。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">UI message stream
+  -&gt; normalize
+  -&gt; API messages
+  -&gt; assistant tool_use
+  -&gt; tool_result user message
+  -&gt; normalize again</code></pre>
+<pre><code class="language-text">assistant(tool_use id=A)
+  -&gt; runTools(A)
+  -&gt; user(tool_result tool_use_id=A)
+  -&gt; next assistant</code></pre>
+<pre><code class="language-text">long context
+  -&gt; token estimation
+  -&gt; microcompact / autocompact
+  -&gt; compact boundary
+  -&gt; getMessagesAfterCompactBoundary</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>源码定位：记录 <code>createUserMessage</code>、<code>normalizeMessagesForAPI</code>、<code>ensureToolResultPairing</code> 的文件名和行号。</li><li>调用链追踪：画出一次 tool_use 到 tool_result 的消息链，产出 <code>tool_use_id</code> 配对图。</li><li>行号任务：找出 <code>query.ts</code> 中调用 <code>normalizeMessagesForAPI</code> 和 <code>runTools</code> 的位置。</li><li>learning-framework 复刻：实现 <code>Message</code> union、<code>normalizeMessagesForAPI</code>、<code>ensureToolResultPairing</code>。</li><li>进阶分析：解释为什么 UI message 和 API message 不能共用完全相同的数据结构。</li></ol>
+<p>产出格式统一写入 <code>docs/notes/ch07-message-context.md</code>。</p>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>把 message 当 chat item。真实 message 同时服务 UI、API、tool、compact。</li><li>忽略 tool_result 配对。工具协议错了，后续 query 会被拖垮。</li><li>以为 compact 是删除历史。实际是引入边界和摘要，让 query 继续。</li><li>认为 normalize 只是格式转换。它还承担修复、防御、过滤职责。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>本章建立的模型：</p>
+<pre><code class="language-text">Message = UI event + API context + tool protocol + compact metadata</code></pre>
+<p>最重要证据链：</p>
+<pre><code class="language-text">REPL messages
+  -&gt; utils/messages.ts create/normalize
+  -&gt; query.ts consumes normalized context
+  -&gt; tool_use/tool_result pairing
+  -&gt; tokens/compact manage long context</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 8 章继续追踪 <code>query()</code>：消息进入 Agent loop 后，如何触发 API、stream、tool_use、runTools、继续下一轮。</p>
+<p>未确认源码点：当前源码 import <code>../types/message.js</code>，但本轮未定位到对应物理源文件；第 2 轮整体验证需要继续查构建产物或生成类型入口。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/06-appstate-store.html"><span>上一章</span><strong>第 6 章：AppState 状态管理机制源码导读</strong></a>
+    <a class="pager-next" href="/chapters/08-agent-query-loop.html"><span>下一章</span><strong>第 8 章：Agent 查询循环源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-消息为什么存在">1. 消息为什么存在</a><a class="toc-level-3" href="#2-normalizemessagesforapi-是协议边界">2. normalizeMessagesForAPI 是协议边界</a><a class="toc-level-3" href="#3-tool-use-tool-result-是成对约束">3. tool_use/tool_result 是成对约束</a><a class="toc-level-3" href="#4-token-与-compact-依赖消息结构">4. token 与 compact 依赖消息结构</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-消息创建">路线一：消息创建</a><a class="toc-level-3" href="#路线二-api-normalize">路线二：API normalize</a><a class="toc-level-3" href="#路线三-工具消息配对">路线三：工具消息配对</a><a class="toc-level-3" href="#路线四-上下文与压缩">路线四：上下文与压缩</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

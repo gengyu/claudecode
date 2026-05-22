@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>项目对比说明 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option selected value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="../chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="../chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="../chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="../chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="../chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="../chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="../chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="../chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="../chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="../chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="../chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="../chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="../chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="../chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="COMMENTS_GUIDE.html">代码注释说明</a><a href="DEPENDENCIES.html">项目依赖说明</a><a aria-current="page" href="PROJECT_COMPARISON.html">项目对比说明</a><a href="QUICKSTART.html">快速开始指南</a><a href="README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="项目对比说明">项目对比说明</h1>
+<h2 id="两个项目的关系">📂 两个项目的关系</h2>
+<pre><code class="language-">claudecode/                    # 工作区根目录
+├── claudecode-project/        # 📚 学习参考（原始项目）
+│   └── src/                   #    Claude Code 完整源代码
+│       ├── main.tsx           #    785KB - 复杂的生产代码
+│       ├── commands/          #    100+ 个命令实现
+│       ├── components/        #    144 个 React 组件
+│       ├── tools/             #    43 个 AI 工具
+│       └── ...                #    完整的功能实现
+│
+└── learning-framework/        # 🎯 实践场地（你的代码）
+    ├── src/                   #    简化的学习框架
+    │   ├── main.tsx           #    22 行 - 清晰的入门代码
+    │   ├── commands/          #    你来实现命令
+    │   ├── components/        #    你来构建组件
+    │   ├── tools/             #    你来开发工具
+    │   └── ...                #    逐步完善
+    └── docs/                  #    学习文档和笔记</code></pre>
+<h2 id="学习流程">🔄 学习流程</h2>
+<pre><code class="language-">┌─────────────────────┐
+│  claudecode-project │  ← 阅读和理解（只读）
+│  （原始项目）         │    • 查看架构设计
+│                     │    • 学习实现思路
+│  ✓ 完整的生产代码    │    • 理解最佳实践
+│  ✓ 复杂的功能实现    │    • 借鉴代码技巧
+│  ✓ 真实的业务逻辑    │
+└──────────┬──────────┘
+           │ 学习和参考
+           ↓
+┌─────────────────────┐
+│ learning-framework  │  ← 实践和实验（编写）
+│  （学习框架）         │    • 简化实现
+│                     │    • 验证理解
+│  ○ 从零开始构建      │    • 记录心得
+│  ○ 渐进式开发        │    • 迭代优化
+│  ○ 专注核心概念      │
+└─────────────────────┘</code></pre>
+<h2 id="模块对照表">📊 模块对照表</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>学习框架模块</th><th>原始项目位置</th><th>学习目标</th><th>复杂度</th></tr></thead><tbody><tr><td><code>src/main.tsx</code></td><td><code>claudecode-project/src/main.tsx</code></td><td>理解应用入口和初始化</td><td>⭐⭐⭐⭐⭐</td></tr><tr><td><code>src/commands/</code></td><td><code>claudecode-project/src/commands/</code></td><td>掌握命令系统架构</td><td>⭐⭐⭐⭐</td></tr><tr><td><code>src/components/</code></td><td><code>claudecode-project/src/components/</code></td><td>学习终端 UI 渲染</td><td>⭐⭐⭐</td></tr><tr><td><code>src/tools/</code></td><td><code>claudecode-project/src/tools/</code></td><td>理解工具调用机制</td><td>⭐⭐⭐⭐</td></tr><tr><td><code>src/hooks/</code></td><td><code>claudecode-project/src/hooks/</code></td><td>掌握状态管理</td><td>⭐⭐⭐</td></tr><tr><td><code>src/services/</code></td><td><code>claudecode-project/src/services/</code></td><td>学习服务层设计</td><td>⭐⭐⭐⭐</td></tr><tr><td><code>src/utils/</code></td><td><code>claudecode-project/src/utils/</code></td><td>积累工具函数</td><td>⭐⭐</td></tr><tr><td><code>src/bridge/</code></td><td><code>claudecode-project/src/bridge/</code></td><td>理解远程通信</td><td>⭐⭐⭐⭐⭐</td></tr></tbody></table></div>
+<h2 id="如何使用这两个项目">💡 如何使用这两个项目</h2>
+<h3 id="场景-1-学习命令系统">场景 1: 学习命令系统</h3>
+<p><strong>步骤</strong>:</p>
+<ol><li>在 <code>learning-framework</code> 中创建简单的命令</li><li>查看 <code>claudecode-project/src/commands/help/</code> 了解真实实现</li><li>对比差异，理解为什么要那样设计</li><li>改进自己的实现</li></ol>
+<p><strong>示例</strong>:</p>
+<pre><code class="language-bash"># 1. 查看简化版
+cat learning-framework/src/commands/hello.ts
+
+# 2. 查看完整版
+ls claudecode-project/src/commands/help/
+cat claudecode-project/src/commands/help/helpCommand.ts
+
+# 3. 理解差异和改进点</code></pre>
+<h3 id="场景-2-实现-ui-组件">场景 2: 实现 UI 组件</h3>
+<p><strong>步骤</strong>:</p>
+<ol><li>在 <code>learning-framework</code> 中用 Ink 创建基础组件</li><li>研究 <code>claudecode-project/src/components/</code> 中的组件</li><li>学习高级用法（布局、样式、交互）</li><li>应用到自己的组件中</li></ol>
+<p><strong>示例</strong>:</p>
+<pre><code class="language-bash"># 1. 查看简单组件
+cat learning-framework/src/components/App.tsx
+
+# 2. 查看复杂组件
+ls claudecode-project/src/components/Input/
+cat claudecode-project/src/components/Input/Input.tsx
+
+# 3. 学习并改进</code></pre>
+<h3 id="场景-3-开发工具">场景 3: 开发工具</h3>
+<p><strong>步骤</strong>:</p>
+<ol><li>在 <code>learning-framework</code> 中实现基础工具</li><li>分析 <code>claudecode-project/src/tools/read/</code> 等工具</li><li>理解权限、错误处理、结果格式化</li><li>完善自己的工具实现</li></ol>
+<h2 id="学习策略">🎯 学习策略</h2>
+<h3 id="推荐做法">✅ 推荐做法</h3>
+<ol><li><strong>先简后繁</strong></li></ol>
+<p>``<code> learning-framework (简单) → 理解原理 → claudecode-project (复杂) → 深化理解 </code>``</p>
+<ol><li><strong>对照阅读</strong></li></ol>
+<p>``<code>bash # 同时打开两个文件 code learning-framework/src/main.tsx code claudecode-project/src/main.tsx </code>``</p>
+<ol><li><strong>增量实现</strong></li></ol>
+<p>``<code> Week 1: 100 行代码 → 基础 CLI Week 2: 500 行代码 → 完整功能 Week 3: 1000 行代码 → 可扩展框架 </code>``</p>
+<ol><li><strong>记录对比</strong></li></ol>
+<p>```markdown # 学习笔记</p>
+<p>## 我的实现 [简化版代码]</p>
+<p>## 原始实现 [生产版代码]</p>
+<p>## 差异分析</p>
+<ul><li>原始版本考虑了...</li><li>我的版本缺少...</li><li>需要改进...</li></ul>
+<p>```</p>
+<h3 id="避免的做法">❌ 避免的做法</h3>
+<ol><li><strong>不要直接复制</strong></li></ol>
+<ul><li>❌ 复制粘贴代码</li><li>✅ 理解后自己写</li></ul>
+<ol><li><strong>不要一开始就看复杂代码</strong></li></ol>
+<ul><li>❌ 直接读 785KB 的 main.tsx</li><li>✅ 从简化版开始，逐步深入</li></ul>
+<ol><li><strong>不要忽视文档</strong></li></ol>
+<ul><li>❌ 只看代码</li><li>✅ 代码 + 文档 + 笔记</li></ul>
+<ol><li><strong>不要跳过基础</strong></li></ol>
+<ul><li>❌ 直接实现插件系统</li><li>✅ 循序渐进，打好基础</li></ul>
+<h2 id="难度递进">📈 难度递进</h2>
+<h3 id="level-1-入门-week-1">Level 1: 入门 (Week 1)</h3>
+<ul><li><strong>learning-framework</strong>: 100-300 行</li><li><strong>参考项目</strong>: 看接口定义和简单实现</li><li><strong>目标</strong>: 能运行基本 CLI</li></ul>
+<h3 id="level-2-进阶-week-2">Level 2: 进阶 (Week 2)</h3>
+<ul><li><strong>learning-framework</strong>: 500-800 行</li><li><strong>参考项目</strong>: 看核心模块实现</li><li><strong>目标</strong>: 实现完整功能模块</li></ul>
+<h3 id="level-3-高级-week-3">Level 3: 高级 (Week 3)</h3>
+<ul><li><strong>learning-framework</strong>: 1000+ 行</li><li><strong>参考项目</strong>: 看架构设计和优化</li><li><strong>目标</strong>: 构建可扩展框架</li></ul>
+<h2 id="具体对比示例">🔍 具体对比示例</h2>
+<h3 id="示例-1-命令定义">示例 1: 命令定义</h3>
+<p><strong>learning-framework (简化)</strong>:</p>
+<pre><code class="language-typescript">// 简单直观，适合学习
+export const helloCommand = new Command(&#39;hello&#39;)
+  .description(&#39;Say hello&#39;)
+  .action(() =&gt; {
+    console.log(&#39;Hello!&#39;);
+  });</code></pre>
+<p><strong>claudecode-project (生产)</strong>:</p>
+<pre><code class="language-typescript">// 考虑了权限、帮助、参数验证等
+export const helpCommand: CommandModule = {
+  name: &#39;help&#39;,
+  description: &#39;Show help information&#39;,
+  options: [...],
+  permissions: {...},
+  action: async (context, args) =&gt; {
+    // 复杂的业务逻辑
+    // 错误处理
+    // 日志记录
+    // ...
+  }
+};</code></pre>
+<p><strong>学习要点</strong>:</p>
+<ul><li>简化版：理解基本概念</li><li>生产版：学习工程实践</li></ul>
+<h3 id="示例-2-ui-组件">示例 2: UI 组件</h3>
+<p><strong>learning-framework (简化)</strong>:</p>
+<pre><code class="language-tsx">const App = () =&gt; (
+  &lt;Box&gt;
+    &lt;Text&gt;Hello&lt;/Text&gt;
+  &lt;/Box&gt;
+);</code></pre>
+<p><strong>claudecode-project (生产)</strong>:</p>
+<pre><code class="language-tsx">const App = ({ session, config, theme }) =&gt; {
+  // 多个 hooks
+  const { input, setInput } = useInput();
+  const { messages } = useMessages();
+  const { theme } = useTheme();
+  
+  // 复杂的状态管理
+  // 性能优化
+  // 响应式布局
+  // ...
+  
+  return (
+    &lt;ThemeProvider theme={theme}&gt;
+      &lt;Layout&gt;
+        &lt;MessageList messages={messages} /&gt;
+        &lt;Input value={input} onChange={setInput} /&gt;
+      &lt;/Layout&gt;
+    &lt;/ThemeProvider&gt;
+  );
+};</code></pre>
+<p><strong>学习要点</strong>:</p>
+<ul><li>简化版：掌握 JSX 和 Ink</li><li>生产版：学习组件设计和优化</li></ul>
+<h2 id="学习记录模板">📝 学习记录模板</h2>
+<p>每次对照学习时，使用这个模板：</p>
+<pre><code class="language-markdown"># [模块名称] 对比学习
+
+## 简化版实现
+路径: learning-framework/src/xxx
+</code></pre>
+<p>// 我的代码</p>
+<pre><code class="language-">
+特点:
+- 优点: 简单易懂
+- 缺点: 功能不完整
+
+## 生产版实现
+路径: claudecode-project/src/xxx
+</code></pre>
+<p>// 关键代码片段</p>
+<pre><code class="language-">
+特点:
+- 优点: 功能完整、健壮
+- 缺点: 复杂度高
+
+## 关键差异
+
+1. [差异点1]
+   - 为什么这样设计?
+   - 学到了什么?
+
+2. [差异点2]
+   - 为什么这样设计?
+   - 学到了什么?
+
+## 改进计划
+
+下一步要在简化版中添加:
+- [ ] 功能1
+- [ ] 功能2
+
+## 总结
+
+核心收获:
+1. ...
+2. ...</code></pre>
+<h2 id="总结">🎓 总结</h2>
+<p><strong>claudecode-project</strong> 是你的<strong>教科书</strong>和<strong>参考答案</strong></p>
+<ul><li>✅ 用来阅读和学习</li><li>✅ 理解架构和设计</li><li>✅ 借鉴最佳实践</li><li>❌ 不要直接复制</li></ul>
+<p><strong>learning-framework</strong> 是你的<strong>练习本</strong>和<strong>实验场</strong></p>
+<ul><li>✅ 用来实践和实验</li><li>✅ 验证理解和想法</li><li>✅ 构建自己的作品</li><li>✅ 犯错和学习</li></ul>
+<p>两者配合使用，效果最佳！</p>
+<p>---</p>
+<p><strong>开始学习的最佳姿势</strong>:</p>
+<ol><li>在 <code>learning-framework</code> 中尝试实现</li><li>遇到困难时查看 <code>claudecode-project</code> </li><li>理解后回到 <code>learning-framework</code> 改进</li><li>在 <code>docs/notes/</code> 中记录心得</li><li>重复以上步骤</li></ol>
+<p>Happy Learning! 🚀</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/legacy/DEPENDENCIES.html"><span>上一章</span><strong>项目依赖说明</strong></a>
+    <a class="pager-next" href="/legacy/QUICKSTART.html"><span>下一章</span><strong>快速开始指南</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#两个项目的关系">📂 两个项目的关系</a><a class="toc-level-2" href="#学习流程">🔄 学习流程</a><a class="toc-level-2" href="#模块对照表">📊 模块对照表</a><a class="toc-level-2" href="#如何使用这两个项目">💡 如何使用这两个项目</a><a class="toc-level-3" href="#场景-1-学习命令系统">场景 1: 学习命令系统</a><a class="toc-level-3" href="#场景-2-实现-ui-组件">场景 2: 实现 UI 组件</a><a class="toc-level-3" href="#场景-3-开发工具">场景 3: 开发工具</a><a class="toc-level-2" href="#学习策略">🎯 学习策略</a><a class="toc-level-3" href="#推荐做法">✅ 推荐做法</a><a class="toc-level-3" href="#避免的做法">❌ 避免的做法</a><a class="toc-level-2" href="#难度递进">📈 难度递进</a><a class="toc-level-3" href="#level-1-入门-week-1">Level 1: 入门 (Week 1)</a><a class="toc-level-3" href="#level-2-进阶-week-2">Level 2: 进阶 (Week 2)</a><a class="toc-level-3" href="#level-3-高级-week-3">Level 3: 高级 (Week 3)</a><a class="toc-level-2" href="#具体对比示例">🔍 具体对比示例</a><a class="toc-level-3" href="#示例-1-命令定义">示例 1: 命令定义</a><a class="toc-level-3" href="#示例-2-ui-组件">示例 2: UI 组件</a><a class="toc-level-2" href="#学习记录模板">📝 学习记录模板</a><a class="toc-level-2" href="#总结">🎓 总结</a>
+    </aside>
+  </div>
+</body>
+</html>

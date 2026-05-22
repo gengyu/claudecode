@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>附录 C：learning-framework 复刻路线 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option selected value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="../chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="../chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="../chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="../chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="../chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="../chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="../chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="../chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="../chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="../chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="../chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="../chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="../chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="../chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a aria-current="page" href="C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="附录-c-learning-framework-复刻路线">附录 C：learning-framework 复刻路线</h1>
+<p>本附录合并 <code>legacy/PROJECT_COMPARISON.md</code> 和 <code>legacy/QUICKSTART.md</code>，把“简化版 vs 生产版”的学习方式落到 4 个阶段项目。</p>
+<h2 id="复刻原则">复刻原则</h2>
+<pre><code class="language-text">先复刻能力边界
+再复刻数据流
+最后复刻异常/权限/扩展</code></pre>
+<p>不要追求一比一复制 Claude Code。learning-framework 的价值是把复杂源码压缩成可运行的小系统。</p>
+<h2 id="阶段项目-1-cli-tui">阶段项目 1：CLI TUI</h2>
+<p>覆盖章节：第 1-4 章。</p>
+<p>能力：</p>
+<ul><li>Commander 入口。</li><li>Ink/React TUI。</li><li>输入框、消息列表、状态栏。</li><li><code>/clear</code> 和退出。</li></ul>
+<p>验收：</p>
+<pre><code class="language-bash">pnpm start -- --model mock</code></pre>
+<p>能进入 TUI，输入文字后显示 user message。</p>
+<h2 id="阶段项目-2-消息循环">阶段项目 2：消息循环</h2>
+<p>覆盖章节：第 5-8 章。</p>
+<p>能力：</p>
+<ul><li><code>handlePromptSubmit</code>。</li><li>message model。</li><li>external store。</li><li>mock <code>async function* query()</code>。</li><li>模拟 streaming assistant。</li><li>模拟 tool_use/tool_result。</li></ul>
+<p>验收：输入“read package”后，UI 展示 assistant 请求工具、工具结果、最终回复。</p>
+<h2 id="阶段项目-3-工具与权限">阶段项目 3：工具与权限</h2>
+<p>覆盖章节：第 9-12 章。</p>
+<p>能力：</p>
+<ul><li>Tool interface。</li><li><code>ReadTool</code>、<code>WriteTool</code>、<code>BashTool</code>。</li><li>permission allow/deny/ask。</li><li>PermissionRequest。</li><li>slash command registry。</li></ul>
+<p>验收：Bash 默认 ask，用户确认后执行 mock command。</p>
+<h2 id="阶段项目-4-插件与高级系统">阶段项目 4：插件与高级系统</h2>
+<p>覆盖章节：第 13-14 章。</p>
+<p>能力：</p>
+<ul><li>plugin loader。</li><li>插件工具合并进工具池。</li><li>background task registry。</li><li>compact summary。</li><li>startup profiler checkpoint。</li></ul>
+<p>验收：插件目录新增一个 tool，重载后 query 可调用。</p>
+<h2 id="对比学习记录模板">对比学习记录模板</h2>
+<pre><code class="language-markdown"># 模块对比：xxx
+
+## Claude Code 生产版
+- 入口：
+- 主链路：
+- 复杂点：
+
+## learning-framework 简化版
+- 保留：
+- 省略：
+- 为什么省略：
+
+## 下一步增强
+- ...</code></pre><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/appendices/B-source-evidence-method.html"><span>上一章</span><strong>附录 B：源码检索与证据链方法</strong></a>
+    <a class="pager-next" href="/appendices/D-advanced-topic-index.html"><span>下一章</span><strong>附录 D：高级专题索引</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#复刻原则">复刻原则</a><a class="toc-level-2" href="#阶段项目-1-cli-tui">阶段项目 1：CLI TUI</a><a class="toc-level-2" href="#阶段项目-2-消息循环">阶段项目 2：消息循环</a><a class="toc-level-2" href="#阶段项目-3-工具与权限">阶段项目 3：工具与权限</a><a class="toc-level-2" href="#阶段项目-4-插件与高级系统">阶段项目 4：插件与高级系统</a><a class="toc-level-2" href="#对比学习记录模板">对比学习记录模板</a>
+    </aside>
+  </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 13 章：MCP、插件与 Skills 扩展系统源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option selected value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a aria-current="page" href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-13-章-mcp-插件与-skills-扩展系统源码导读">第 13 章：MCP、插件与 Skills 扩展系统源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 13 章进入开放扩展架构。前面章节讲的是内置主链路，本章看外部能力如何进入主系统：MCP tools/resources、plugin commands、skills prompt commands。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>可以把 MCP/插件/Skills 看成 AI CLI 的 extension platform。它比普通前端插件复杂：扩展不仅增加 UI，也会增加模型可调用工具、命令、hooks、agents、LSP server。</p>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>找到 MCP client/tools/resources 的状态入口。</li><li>追踪 MCP tools 如何通过 AppState 进入 <code>assembleToolPool</code>。</li><li>找到 plugin command/skill command 加载入口。</li><li>解释 command 扩展和 tool 扩展的差异。</li><li>在 learning-framework 中复刻一个简化 plugin loader。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>理解第 10 章工具池、第 12 章命令体系。不会讲 MCP 协议规范全文。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-扩展系统为什么存在">1. 扩展系统为什么存在</h3>
+<pre><code class="language-bash">rg -n &quot;mcp:|plugins:|pluginReconnectKey|commands: Command\\[\\]|tools: Tool\\[\\]&quot; claudecode-project/src/state/AppStateStore.ts</code></pre>
+<p>Claude Code 不能只依赖内置工具。MCP 让外部服务提供工具和资源，插件/skills 让用户和组织提供命令、agents、hooks。</p>
+<h3 id="2-mcp-tools-进入工具池">2. MCP tools 进入工具池</h3>
+<pre><code class="language-bash">rg -n &quot;assembleToolPool|mcp.tools|mcpTools|filterToolsByDenyRules&quot; claudecode-project/src/tools.ts claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>MCP tools 不绕过工具池，而是进入同一套 filtering/dedupe/permission 机制。</p>
+<h3 id="3-plugin-skills-进入命令体系">3. plugin/skills 进入命令体系</h3>
+<pre><code class="language-bash">rg -n &quot;plugin commands|loadPluginCommands|loadSkillsDir|dynamic skills|commandsPath|skillsPath&quot; claudecode-project/src/commands.ts claudecode-project/src/utils/plugins claudecode-project/src/skills/loadSkillsDir.ts claudecode-project/src/commands/plugin -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>command 扩展影响用户输入和 prompt expansion；tool 扩展影响模型可调用能力。</p>
+<h3 id="4-lsp-agents-hooks-也是插件扩展面">4. LSP/agents/hooks 也是插件扩展面</h3>
+<pre><code class="language-bash">rg -n &quot;loadPluginAgents|loadPluginHooks|LSP servers from plugin|plugins&quot; claudecode-project/src/utils/plugins claudecode-project/src/services/lsp -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>插件不仅是命令包，也可能提供 agents、hooks、LSP servers。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/services/mcp/*</code></td><td>MCP client/tools/resources</td><td>协议全部细节</td><td>本章</td></tr><tr><td><code>src/tools.ts</code></td><td>MCP tools 合并进工具池</td><td>内置工具细节</td><td>第 10 章</td></tr><tr><td><code>src/utils/plugins/*</code></td><td>插件 manifest/cache/load</td><td>marketplace 全量</td><td>高级专题</td></tr><tr><td><code>src/plugins/*</code></td><td>built-in plugins</td><td>每个插件业务</td><td>本章</td></tr><tr><td><code>src/skills/*</code></td><td>skills 加载为 prompt command</td><td>skill 内容</td><td>本章</td></tr><tr><td><code>src/commands.ts</code></td><td>动态命令合并</td><td>命令业务</td><td>第 12 章</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<pre><code class="language-text">plugin/MCP config
+  -&gt; load clients / tools / commands / skills
+  -&gt; AppState.mcp / AppState.plugins
+  -&gt; REPL useAppState(s =&gt; s.mcp/plugins)
+  -&gt; commands list / assembleToolPool
+  -&gt; PromptInput typeahead or query tools</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<pre><code class="language-bash">rg -n &quot;mcp:|plugins:&quot; claudecode-project/src/state/AppStateStore.ts
+rg -n &quot;useManageMCPConnections|mcp.clients|mcp.tools|pluginReconnectKey&quot; claudecode-project/src -g &#39;*.{ts,tsx}&#39; | head -80
+rg -n &quot;assembleToolPool|mcpTools&quot; claudecode-project/src/tools.ts claudecode-project/src/screens/REPL.tsx
+rg -n &quot;loadPluginCommands|loadPluginAgents|loadPluginHooks|loadPluginOutputStyles&quot; claudecode-project/src/utils/plugins -g &#39;*.{ts,tsx}&#39;
+rg -n &quot;loadSkillsDir|skill.type === &#39;prompt&#39;&quot; claudecode-project/src/skills/loadSkillsDir.ts</code></pre>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;mcp:|plugins:&quot; claudecode-project/src/state/AppStateStore.ts
+rg -n &quot;assembleToolPool\\(&quot; claudecode-project/src/tools.ts claudecode-project/src/screens/REPL.tsx
+rg -n &quot;loadSkillsDir|dynamic skills&quot; claudecode-project/src/commands.ts claudecode-project/src/skills/loadSkillsDir.ts
+rg -n &quot;PluginManifest|loadPluginCommands&quot; claudecode-project/src/utils/plugins -g &#39;*.{ts,tsx}&#39; | head -40</code></pre>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<p>AppState 存扩展结果，<code>commands.ts</code> 合并命令扩展，<code>tools.ts</code> 合并工具扩展，plugin utils 管理 manifest/cache/load，skills loader 把 markdown skill 转成 prompt command 或 SkillTool 可用能力。</p>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>第 10 章的 <code>assembleToolPool</code> 在这里接入 MCP tools。第 12 章 command registry 在这里接入 skills/plugin commands。第 14 章会看 remote、LSP、background tasks 等高级扩展如何复用这些入口。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">MCP server -&gt; tools/resources -&gt; AppState.mcp -&gt; assembleToolPool/query</code></pre>
+<pre><code class="language-text">Plugin -&gt; commands/skills/agents/hooks/LSP -&gt; AppState/plugins registries</code></pre>
+<pre><code class="language-text">Command extension: user triggers
+Tool extension: model triggers
+Hook extension: runtime triggers</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>定位 AppState 中 mcp/plugins 字段。</li><li>追踪 MCP tools 进入 <code>assembleToolPool</code> 的行号。</li><li>找出 skills prompt command 的加载点。</li><li>learning-framework 实现插件目录读取 <code>plugin.json</code>，注册一个 command 和一个 tool。</li><li>进阶分析：为什么 MCP tools 仍要经过 permission deny filtering？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>把 MCP 当普通 HTTP API。它进入模型工具协议。</li><li>把 plugin 只看成 UI 扩展。它可扩展 commands、tools、agents、hooks。</li><li>认为扩展工具可以绕过权限。MCP tools 仍进入统一工具池。</li><li>混淆 skills command 和 SkillTool。一个偏用户命令，一个偏模型工具能力。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>证据链：</p>
+<pre><code class="language-text">AppState.mcp/plugins
+  -&gt; commands.ts dynamic commands
+  -&gt; tools.ts assembleToolPool
+  -&gt; query/tool runtime</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 14 章收束高级系统：remote、bridge、AgentTool、background tasks、compact、LSP、telemetry、startup profiler。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/12-slash-commands.html"><span>上一章</span><strong>第 12 章：Slash Commands 命令体系源码导读</strong></a>
+    <a class="pager-next" href="/chapters/14-advanced-systems.html"><span>下一章</span><strong>第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-扩展系统为什么存在">1. 扩展系统为什么存在</a><a class="toc-level-3" href="#2-mcp-tools-进入工具池">2. MCP tools 进入工具池</a><a class="toc-level-3" href="#3-plugin-skills-进入命令体系">3. plugin/skills 进入命令体系</a><a class="toc-level-3" href="#4-lsp-agents-hooks-也是插件扩展面">4. LSP/agents/hooks 也是插件扩展面</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

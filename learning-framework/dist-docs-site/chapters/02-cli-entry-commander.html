@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 2 章：CLI 启动入口与 Commander 命令解析 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option selected value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a aria-current="page" href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-2-章-cli-启动入口与-commander-命令解析">第 2 章：CLI 启动入口与 Commander 命令解析</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 2 章进入 <code>main.tsx</code>。如果第 1 章是建立源码地图，那么本章就是顺着地图走进第一个真实交通枢纽：Claude Code 如何从一条命令行指令变成一个可运行的 AI CLI 会话。</p>
+<p>对高级前端工程师来说，<code>main.tsx</code> 不应该被理解成“一个过大的入口文件”，而应该先被理解成一个 <strong>CLI runtime router</strong>：</p>
+<pre><code class="language-text">process.argv
+  -&gt; Commander 参数解析
+  -&gt; preAction 初始化
+  -&gt; action handler 计算运行时上下文
+  -&gt; print/headless 或 interactive/REPL 分流
+  -&gt; query/tool/permission/state 在后续链路中接管</code></pre>
+<p>它承担的职责类似前端应用里的 bootstrap、router guard、feature flag 初始化、全局配置注入、首屏模式分流的组合体。区别在于，Web 前端通常分流到不同页面，而 Claude Code 分流到不同运行时：交互式 REPL、非交互式 print、远程、SSH、MCP server、plugin/auth 等子命令。</p>
+<p>本章保持课程原体系不变，覆盖 <code>SYSTEMATIC_COURSE.md</code> 第 2 章规定的 7 个知识点：</p>
+<ol><li>顶层副作用：启动性能优化</li><li><code>CommanderCommand</code> 创建 CLI 程序</li><li>全局参数与 option 定义</li><li><code>preAction</code> 初始化钩子</li><li><code>program.action</code> 主处理器</li><li><code>--print</code> 非交互模式</li><li>session、model、permission 等 CLI 参数如何进入应用状态</li></ol>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本章后，你应该能够：</p>
+<ol><li>解释 <code>main.tsx</code> 为什么既像入口，又像运行时路由器。</li><li>找到 Commander 创建、全局参数定义、<code>preAction</code> 和主 <code>.action()</code> 的源码位置。</li><li>画出 <code>claude</code>、<code>claude -p</code>、<code>claude --resume</code> 这几类路径的分流逻辑。</li><li>说清楚 <code>--model</code>、<code>--permission-mode</code>、<code>--allowedTools</code>、<code>--mcp-config</code> 等参数如何影响后续 state、tool、permission、query。</li><li>通过 <code>rg</code> 验证 <code>main.tsx -&gt; runHeadless</code> 和 <code>main.tsx -&gt; launchRepl</code> 两条核心路径。</li><li>理解为什么 print 模式不是“没有 UI 的 REPL”，而是独立的 headless runtime。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>本章不讲 Commander.js 基础语法。默认你知道 CLI option、argument、subcommand 的基本概念。你需要带着前端架构经验理解这些映射关系：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>前端应用概念</th><th>Claude Code CLI 中的对应物</th></tr></thead><tbody><tr><td><code>bootstrap()</code></td><td><code>run()</code>、顶层预热、<code>init()</code></td></tr><tr><td>router guard</td><td><code>program.hook(&#39;preAction&#39;)</code></td></tr><tr><td>route params/query</td><td>Commander options 和 prompt argument</td></tr><tr><td>feature flags</td><td><code>feature(...)</code>、env gate、settings gate</td></tr><tr><td>app shell</td><td>交互模式下的 <code>launchRepl(...)</code></td></tr><tr><td>SSR/批处理入口</td><td><code>--print</code> 下的 <code>runHeadless(...)</code></td></tr><tr><td>global app state seed</td><td><code>initialState</code>、<code>headlessInitialState</code>、bootstrap state setters</td></tr></tbody></table></div>
+<p>你还应该延续第 1 章的方法：每个架构判断都要能落到源码符号，而不是停留在“感觉应该如此”。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-main-tsx-是-runtime-router-不只是入口">1. <code>main.tsx</code> 是 runtime router，不只是入口</h3>
+<p>普通 CLI 入口可能只做：</p>
+<pre><code class="language-text">parse args -&gt; call handler -&gt; exit</code></pre>
+<p>Claude Code 的入口复杂得多，因为它要在启动早期做出多个会影响后续运行时的决策：</p>
+<ul><li>是否是 <code>--print</code> 非交互模式</li><li>是否需要跳过或延迟某些交互能力</li><li>是否要恢复已有 session</li><li>是否指定 model、agent、permission mode</li><li>是否加载 MCP、plugin、skills、agents</li><li>是否进入远程或 SSH 模式</li><li>是否注册大量子命令</li><li>是否连接 IDE、Chrome、bridge、server</li></ul>
+<p>这些决策都发生在用户真正进入 REPL 或 headless query 之前。因此 <code>main.tsx</code> 是 AI CLI 主链路上的第一个 runtime router。</p>
+<h3 id="2-顶层副作用服务于启动性能">2. 顶层副作用服务于启动性能</h3>
+<p><code>main.tsx</code> 文件开头有一些刻意放在其他 import 之前的副作用，比如 startup profiler、MDM 读取、keychain 预取。第一遍读到这里，不要用普通前端入口“避免顶层副作用”的标准直接否定它。</p>
+<p>它的设计意图是：在大量模块 import 期间，把可以并行的启动工作提前发出去。后面 <code>preAction</code> 再 await 这些预热结果。</p>
+<p>主链路可以这样理解：</p>
+<pre><code class="language-text">module evaluation
+  -&gt; startMdmRawRead()
+  -&gt; startKeychainPrefetch()
+  -&gt; import 大量模块
+  -&gt; run()
+  -&gt; preAction await ensureMdmSettingsLoaded / ensureKeychainPrefetchCompleted</code></pre>
+<p>这是 CLI 产品常见的启动优化：把 IO 型准备工作和模块加载重叠，而不是串行等待。</p>
+<h3 id="3-commander-定义的是运行时契约">3. Commander 定义的是运行时契约</h3>
+<p><code>program.name(...).description(...).argument(...).option(...).action(...)</code> 不是简单的帮助文档配置。对 Claude Code 来说，每一个 option 都可能改变后续 runtime：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>option</th><th>后续影响</th></tr></thead><tbody><tr><td><code>-p, --print</code></td><td>进入 headless <code>runHeadless</code>，不启动 REPL</td></tr><tr><td><code>--output-format</code></td><td>决定 stdout 协议：text/json/stream-json</td></tr><tr><td><code>--input-format</code></td><td>决定 stdin 消息协议</td></tr><tr><td><code>--model</code></td><td>影响 main loop model</td></tr><tr><td><code>--permission-mode</code></td><td>影响工具权限上下文</td></tr><tr><td><code>--allowedTools</code> / <code>--disallowedTools</code></td><td>影响工具池过滤</td></tr><tr><td><code>--mcp-config</code></td><td>影响 MCP server、tools、commands</td></tr><tr><td><code>--system-prompt</code> / <code>--append-system-prompt</code></td><td>影响 query 的 system prompt</td></tr><tr><td><code>--continue</code> / <code>--resume</code></td><td>影响 session recovery</td></tr><tr><td><code>--plugin-dir</code></td><td>影响 plugin/skills/command/tool 扩展</td></tr></tbody></table></div>
+<p>所以本章读 <code>.option()</code> 的方法不是背 Commander API，而是追问：这个参数最终会进入哪个核心模块？</p>
+<h3 id="4-preaction-是命令执行前的-runtime-guard">4. <code>preAction</code> 是命令执行前的 runtime guard</h3>
+<p><code>program.hook(&#39;preAction&#39;)</code> 的作用类似前端 router guard，但它不是鉴权页面跳转，而是给所有真正执行的命令准备环境：</p>
+<pre><code class="language-text">preAction
+  -&gt; await MDM/keychain 预取
+  -&gt; await init()
+  -&gt; 设置 process.title
+  -&gt; initSinks()
+  -&gt; setInlinePlugins()
+  -&gt; runMigrations()
+  -&gt; loadRemoteManagedSettings()
+  -&gt; loadPolicyLimits()</code></pre>
+<p>这段逻辑有两个关键点：</p>
+<ol><li>显示帮助时不需要跑完整初始化，所以初始化放在 <code>preAction</code>，而不是无条件放在模块加载后。</li><li>subcommand 也需要共享初始化能力，比如 logging sinks、plugin-dir、migrations、remote settings。</li></ol>
+<p>也就是说，<code>preAction</code> 是“命令真的要执行了”的边界。</p>
+<h3 id="5-主-action-负责把-cli-参数翻译成运行时上下文">5. 主 <code>.action()</code> 负责把 CLI 参数翻译成运行时上下文</h3>
+<p>主 <code>.action(async (prompt, options) =&gt; { ... })</code> 是默认 <code>claude [prompt]</code> 的核心处理器。它不是直接调用模型，而是完成一系列上下文组装：</p>
+<ul><li>规范化 prompt 和 stdin</li><li>判断 print / interactive</li><li>解析 model、effort、agent、betas</li><li>计算 permission mode 和 tool permission context</li><li>加载 settings、MCP、plugin、skills、commands</li><li>组装 initial state 或 headless state</li><li>根据 session/resume/continue/direct connect/SSH 等分支决定进入哪个 runtime</li></ul>
+<p>它把命令行世界翻译成后续 REPL 或 headless runtime 需要的结构。</p>
+<h3 id="6-print-是独立-headless-runtime">6. <code>--print</code> 是独立 headless runtime</h3>
+<p><code>--print</code> 不是“启动 REPL 但不显示 UI”。它进入 <code>src/cli/print.ts</code> 的 <code>runHeadless(...)</code>，有自己的 state store、stdin/stdout 协议、stream-json 支持、SDK 控制消息、MCP 连接策略和 permission prompt tool。</p>
+<p>主链路是：</p>
+<pre><code class="language-text">main.tsx action
+  -&gt; isNonInteractiveSession
+  -&gt; build headlessInitialState
+  -&gt; createStore(...)
+  -&gt; connect MCP for print mode
+  -&gt; import(&#39;src/cli/print.js&#39;)
+  -&gt; runHeadless(...)
+  -&gt; print.ts 内部调用 ask/query 相关能力</code></pre>
+<p>这条路径最终仍然会进入 Agent 能力和工具能力，但绕过了 <code>REPL.tsx</code> 的交互 UI。</p>
+<h3 id="7-交互模式进入-launchrepl">7. 交互模式进入 <code>launchRepl</code></h3>
+<p>非 print 的默认路径最终会进入 <code>launchRepl(root, ..., sessionConfig, renderAndRun)</code>。这一刻，CLI 参数已经被翻译成 REPL 所需的上下文：</p>
+<ul><li><code>commands</code></li><li><code>initialTools</code></li><li><code>mcpClients</code></li><li><code>thinkingConfig</code></li><li><code>mainThreadAgentDefinition</code></li><li><code>initialMessages</code></li><li><code>initialState</code></li><li><code>permission</code> 相关通知</li><li>resume/continue 相关恢复结果</li></ul>
+<p>从这里开始，课程主线会交给第 5 章的 <code>REPL.tsx</code>。</p>
+<h2 id="关键源码入口">关键源码入口</h2>
+<p>第 2 章建议重点读这些入口：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章阅读重点</th></tr></thead><tbody><tr><td><code>claudecode-project/src/main.tsx</code></td><td>Commander 初始化、option 定义、<code>preAction</code>、主 <code>.action()</code>、print/interactive 分流</td></tr><tr><td><code>claudecode-project/src/entrypoints/init.ts</code></td><td><code>preAction</code> 里调用的初始化函数，第 3 章会深入</td></tr><tr><td><code>claudecode-project/src/cli/print.ts</code></td><td><code>--print</code> 进入的 headless runtime</td></tr><tr><td><code>claudecode-project/src/replLauncher.tsx</code></td><td>交互模式进入 REPL 的启动包装</td></tr><tr><td><code>claudecode-project/src/interactiveHelpers.tsx</code></td><td><code>renderAndRun</code>、setup screens、错误渲染等交互辅助</td></tr><tr><td><code>claudecode-project/src/bootstrap/state.ts</code></td><td>CLI 参数落到全局 bootstrap state 的位置</td></tr><tr><td><code>claudecode-project/src/utils/permissions/permissionSetup.js</code></td><td>permission mode 和工具权限上下文初始化</td></tr><tr><td><code>claudecode-project/src/utils/model/model.js</code></td><td><code>--model</code> 解析和规范化</td></tr></tbody></table></div>
+<p>本章不要求读完 <code>main.tsx</code> 的全部 4600 多行。高级读法是先打锚点，再沿分支深入。</p>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-定位-commander-骨架">路线一：定位 Commander 骨架</h3>
+<p>先确认 <code>run()</code> 里的四段结构：</p>
+<pre><code class="language-bash">rg -n &quot;async function run|new CommanderCommand|program\\.hook\\(&#39;preAction&#39;|program\\.name\\(&#39;claude&#39;|\\.action\\(async|program\\.parseAsync&quot; claudecode-project/src/main.tsx</code></pre>
+<p>你要得到的骨架是：</p>
+<pre><code class="language-text">run()
+  -&gt; new CommanderCommand()
+  -&gt; program.hook(&#39;preAction&#39;)
+  -&gt; program.name(...).argument(...).option(...).action(...)
+  -&gt; subcommands registration
+  -&gt; program.parseAsync(process.argv)</code></pre>
+<p>第一遍不要陷入 option 链的细节，先确认它确实是一个 Commander runtime router。</p>
+<h3 id="路线二-分离初始化-参数定义-主处理器">路线二：分离初始化、参数定义、主处理器</h3>
+<p>用下面命令切出三个区域：</p>
+<pre><code class="language-bash">rg -n &quot;program\\.hook\\(&#39;preAction&#39;|await init\\(|initSinks|loadRemoteManagedSettings|loadPolicyLimits&quot; claudecode-project/src/main.tsx
+rg -n &quot;--print|--model|--permission-mode|--allowedTools|--mcp-config|--session-id|--plugin-dir&quot; claudecode-project/src/main.tsx
+rg -n &quot;action_handler_start|isNonInteractiveSession|runHeadless|launchRepl&quot; claudecode-project/src/main.tsx</code></pre>
+<p>你要建立的判断：</p>
+<ul><li><code>preAction</code> 管“命令执行前准备”</li><li><code>.option()</code> 管“外部契约”</li><li><code>.action()</code> 管“把参数翻译成 runtime state”</li><li><code>runHeadless</code> 和 <code>launchRepl</code> 是两条关键出口</li></ul>
+<h3 id="路线三-追踪-print">路线三：追踪 <code>--print</code></h3>
+<pre><code class="language-bash">rg -n &quot;hasPrintFlag|setIsInteractive|isNonInteractiveSession|--print mode|runHeadless&quot; claudecode-project/src/main.tsx
+rg -n &quot;export async function runHeadless|ask\\(|assembleToolPool|outputFormat|inputFormat&quot; claudecode-project/src/cli/print.ts</code></pre>
+<p>要确认的链路：</p>
+<pre><code class="language-text">-p / --print
+  -&gt; setIsInteractive(false)
+  -&gt; main action 进入 isNonInteractiveSession 分支
+  -&gt; 构造 headlessInitialState
+  -&gt; createStore
+  -&gt; 连接 MCP
+  -&gt; runHeadless
+  -&gt; print.ts 内部继续走 ask/query/tool 能力</code></pre>
+<p>这一步能帮你避免一个常见误解：print 不是 REPL 的显示开关，而是独立 headless runtime。</p>
+<h3 id="路线四-追踪交互模式">路线四：追踪交互模式</h3>
+<pre><code class="language-bash">rg -n &quot;launchRepl\\(&quot; claudecode-project/src/main.tsx
+rg -n &quot;initialState|initialMessages|commands|initialTools|mcpClients|thinkingConfig&quot; claudecode-project/src/main.tsx
+rg -n &quot;export.*launchRepl|function launchRepl&quot; claudecode-project/src/replLauncher.tsx</code></pre>
+<p>要确认：</p>
+<ul><li><code>main.tsx</code> 可能在多个 resume/remote/SSH/default 分支调用 <code>launchRepl</code></li><li>每个分支传入的 <code>initialState</code>、<code>initialMessages</code>、<code>sessionConfig</code> 不同</li><li>进入 <code>launchRepl</code> 后，REPL 才成为主协调器</li></ul>
+<h3 id="路线五-追踪-model-permission-tool-如何被-cli-参数影响">路线五：追踪 model、permission、tool 如何被 CLI 参数影响</h3>
+<pre><code class="language-bash">rg -n &quot;parseUserSpecifiedModel|setInitialMainLoopModel|getInitialMainLoopModel&quot; claudecode-project/src/main.tsx
+rg -n &quot;initialPermissionModeFromCLI|initializeToolPermissionContext|toolPermissionContext|setSessionBypassPermissionsMode&quot; claudecode-project/src/main.tsx
+rg -n &quot;parseToolListFromCLI|allowedTools|disallowedTools|getTools|assembleToolPool&quot; claudecode-project/src/main.tsx claudecode-project/src/tools.ts claudecode-project/src/cli/print.ts</code></pre>
+<p>要确认：</p>
+<ul><li>CLI 参数不是停留在 options 对象里，而是被写入 bootstrap state、tool permission context、headless/interactive initial state。</li><li>工具是否可见、是否可用、是否需要权限，早在入口阶段就开始被配置。</li></ul>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<p>这组命令用于快速验证本章主链路。</p>
+<h3 id="验证-1-commander-骨架">验证 1：Commander 骨架</h3>
+<pre><code class="language-bash">rg -n &quot;new CommanderCommand|program\\.hook\\(&#39;preAction&#39;|program\\.name\\(&#39;claude&#39;|\\.action\\(async|parseAsync&quot; claudecode-project/src/main.tsx</code></pre>
+<p>你应该能看到 Commander 创建、preAction、主 action 和 parseAsync。</p>
+<h3 id="验证-2-核心-option-是否存在">验证 2：核心 option 是否存在</h3>
+<pre><code class="language-bash">rg -n &quot;--print|--model|--permission-mode|--allowedTools|--disallowedTools|--mcp-config|--session-id&quot; claudecode-project/src/main.tsx</code></pre>
+<p>你应该能看到这些 option 都在主命令链上定义。</p>
+<h3 id="验证-3-print-分支出口">验证 3：print 分支出口</h3>
+<pre><code class="language-bash">rg -n &quot;--print mode|isNonInteractiveSession|runHeadless&quot; claudecode-project/src/main.tsx
+rg -n &quot;export async function runHeadless&quot; claudecode-project/src/cli/print.ts</code></pre>
+<p>你应该能确认 <code>--print</code> 出口是 <code>runHeadless</code>。</p>
+<h3 id="验证-4-interactive-分支出口">验证 4：interactive 分支出口</h3>
+<pre><code class="language-bash">rg -n &quot;launchRepl\\(&quot; claudecode-project/src/main.tsx
+rg -n &quot;launchRepl&quot; claudecode-project/src/replLauncher.tsx</code></pre>
+<p>你应该能看到多个 interactive 分支最终进入 <code>launchRepl</code>。</p>
+<h3 id="验证-5-permission-model-tool-进入运行时">验证 5：permission/model/tool 进入运行时</h3>
+<pre><code class="language-bash">rg -n &quot;initialPermissionModeFromCLI|initializeToolPermissionContext|parseUserSpecifiedModel|setInitialMainLoopModel|parseToolListFromCLI&quot; claudecode-project/src/main.tsx</code></pre>
+<p>你应该能确认 CLI 参数在入口阶段就开始影响后续 query 和 tool runtime。</p>
+<h2 id="主调用链">主调用链</h2>
+<h3 id="默认交互模式">默认交互模式</h3>
+<pre><code class="language-text">shell: claude &quot;fix this&quot;
+  -&gt; process.argv
+  -&gt; program.parseAsync
+  -&gt; preAction
+       -&gt; init()
+       -&gt; settings / migrations / remote policy
+  -&gt; program.action(prompt, options)
+       -&gt; parse model / permission / tool options
+       -&gt; load commands / MCP / plugins / skills
+       -&gt; build initialState / sessionConfig
+  -&gt; launchRepl(...)
+  -&gt; REPL.tsx
+  -&gt; query.ts
+  -&gt; tools / permissions</code></pre>
+<h3 id="非交互-print-模式">非交互 print 模式</h3>
+<pre><code class="language-text">shell: claude -p &quot;summarize&quot;
+  -&gt; process.argv
+  -&gt; early print detection: setIsInteractive(false)
+  -&gt; program.parseAsync
+  -&gt; preAction
+  -&gt; program.action(prompt, options)
+       -&gt; isNonInteractiveSession
+       -&gt; build headlessInitialState
+       -&gt; create headlessStore
+       -&gt; connect MCP for turn 1
+       -&gt; import cli/print.ts
+  -&gt; runHeadless(...)
+  -&gt; ask/query/tool runtime
+  -&gt; stdout text/json/stream-json</code></pre>
+<h3 id="恢复会话模式">恢复会话模式</h3>
+<pre><code class="language-text">shell: claude --resume &lt;id&gt;
+  -&gt; Commander parses resume option
+  -&gt; action loads conversation/session state
+  -&gt; restore initialState / initialMessages
+  -&gt; launchRepl(...)
+  -&gt; REPL continues with restored state</code></pre>
+<p>这些链路说明：<code>main.tsx</code> 不直接代表 Agent 执行本身，它负责把不同入口形态翻译成后续 runtime 所需的状态。</p>
+<h2 id="与核心模块的关联">与核心模块的关联</h2>
+<h3 id="和-repl-的关系">和 REPL 的关系</h3>
+<p><code>main.tsx</code> 负责启动前的上下文组装，<code>REPL.tsx</code> 负责启动后的交互编排。它们的边界大致是：</p>
+<pre><code class="language-text">main.tsx
+  -&gt; 解析 CLI、配置 runtime、恢复 session、准备 initialState
+  -&gt; launchRepl(...)
+
+REPL.tsx
+  -&gt; 接管用户输入、消息流、query 消费、权限 UI、工具状态</code></pre>
+<p>所以第 2 章读 <code>main.tsx</code> 时，不需要深入用户输入如何变成消息，那是第 5 章。</p>
+<h3 id="和-query-的关系">和 query 的关系</h3>
+<p><code>main.tsx</code> 不直接承担 Agent loop，但它会决定 query 的初始条件：</p>
+<ul><li>使用哪个 model</li><li>system prompt 如何构造</li><li>thinking/effort 如何设置</li><li>max turns、budget、fallback model 是否启用</li><li>print 模式还是 REPL 模式消费 query 事件</li></ul>
+<p>query 是执行引擎，main 是执行前的 runtime 配置器。</p>
+<h3 id="和-tool-的关系">和 tool 的关系</h3>
+<p>入口阶段会解析：</p>
+<ul><li><code>--allowedTools</code></li><li><code>--disallowedTools</code></li><li><code>--tools</code></li><li><code>--mcp-config</code></li><li><code>--plugin-dir</code></li><li><code>--disable-slash-commands</code></li></ul>
+<p>这些会影响后续工具池的可见性和可用性。尤其在 print 模式中，<code>main.tsx</code> 会尽量让 MCP tools 在第一轮前准备好，因为 headless 往往只有单 turn。</p>
+<h3 id="和-permission-的关系">和 permission 的关系</h3>
+<p><code>--permission-mode</code>、<code>--dangerously-skip-permissions</code>、<code>--allow-dangerously-skip-permissions</code> 等参数在入口阶段就被解析，并进入 <code>toolPermissionContext</code>。</p>
+<p>这意味着权限系统不是工具执行时才临时判断，它的基础上下文在 CLI 启动阶段已经生成。后续 REPL 或 print 只是使用这个上下文做具体决策。</p>
+<h3 id="和-state-的关系">和 state 的关系</h3>
+<p><code>main.tsx</code> 会写入 bootstrap state，也会构造 interactive 或 headless 的初始 AppState：</p>
+<pre><code class="language-text">CLI options
+  -&gt; bootstrap/state setters
+  -&gt; initialState or headlessInitialState
+  -&gt; REPL store or headless store</code></pre>
+<p>这和前端应用中把 URL/query/env/settings 转成初始 store 很像，只是这里还混入了模型、工具、权限和 MCP 维度。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<h3 id="1-main-tsx-三段结构图">1. <code>main.tsx</code> 三段结构图</h3>
+<pre><code class="language-text">┌─────────────────────────────────────┐
+│ Top-level warmup                    │
+│ profiler / MDM / keychain prefetch  │
+├─────────────────────────────────────┤
+│ Commander declaration               │
+│ name / argument / options / hooks   │
+├─────────────────────────────────────┤
+│ Runtime action                      │
+│ parse options -&gt; build context      │
+│   ├─ print -&gt; runHeadless           │
+│   └─ interactive -&gt; launchRepl      │
+└─────────────────────────────────────┘</code></pre>
+<h3 id="2-option-到-runtime-的映射图">2. Option 到 Runtime 的映射图</h3>
+<pre><code class="language-text">--model              -&gt; model parsing -&gt; query config
+--permission-mode    -&gt; toolPermissionContext -&gt; canUseTool
+--allowedTools       -&gt; tool filtering -&gt; model-visible tools
+--mcp-config         -&gt; MCP clients/tools/commands -&gt; tool pool
+--resume             -&gt; session restore -&gt; initialMessages
+--print              -&gt; headless store -&gt; runHeadless</code></pre>
+<h3 id="3-双出口图">3. 双出口图</h3>
+<pre><code class="language-text">                 main.tsx action
+                       │
+          ┌────────────┴────────────┐
+          │                         │
+  isNonInteractiveSession       interactive
+          │                         │
+  cli/print.ts runHeadless      launchRepl
+          │                         │
+  stdout protocol               REPL.tsx
+          │                         │
+      ask/query                 query stream
+          │                         │
+       tools                   tools + UI</code></pre>
+<p>这个图适合解释为什么 <code>--print</code> 和 REPL 是两条 runtime，而不是同一个 UI 的两个显示状态。</p>
+<h2 id="实践任务">实践任务</h2>
+<h3 id="任务-1-画出-main-tsx-的真实骨架">任务 1：画出 <code>main.tsx</code> 的真实骨架</h3>
+<p>用 <code>rg</code> 找到以下符号的行号，画一张带行号的骨架图：</p>
+<pre><code class="language-bash">rg -n &quot;async function run|new CommanderCommand|program\\.hook\\(&#39;preAction&#39;|program\\.name\\(&#39;claude&#39;|\\.action\\(async|parseAsync&quot; claudecode-project/src/main.tsx</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">| 符号 | 行号 | 作用 |
+| --- | --- | --- |
+| `new CommanderCommand` | ... | 创建 CLI program |</code></pre>
+<h3 id="任务-2-追踪-print-证据链">任务 2：追踪 <code>--print</code> 证据链</h3>
+<p>要求写出完整证据链，并标注每一段对应文件：</p>
+<pre><code class="language-text">--print option
+  -&gt; print flag / isNonInteractiveSession
+  -&gt; headlessInitialState
+  -&gt; runHeadless
+  -&gt; print.ts ask/query</code></pre>
+<p>建议检索：</p>
+<pre><code class="language-bash">rg -n &quot;--print|isNonInteractiveSession|headlessInitialState|runHeadless&quot; claudecode-project/src/main.tsx
+rg -n &quot;runHeadless|ask\\(&quot; claudecode-project/src/cli/print.ts</code></pre>
+<h3 id="任务-3-追踪交互模式进入-repl">任务 3：追踪交互模式进入 REPL</h3>
+<p>找到 <code>launchRepl</code> 的调用点，挑一个默认路径或 resume 路径分析它传入了哪些关键参数：</p>
+<pre><code class="language-bash">rg -n &quot;launchRepl\\(&quot; claudecode-project/src/main.tsx</code></pre>
+<p>产出：</p>
+<ul><li>当前分支是什么场景？</li><li>传入了哪些 state？</li><li>传入了哪些 commands/tools/MCP 信息？</li><li>哪些信息会在第 5 章的 REPL 中继续使用？</li></ul>
+<h3 id="任务-4-分析一个-cli-option-的生命周期">任务 4：分析一个 CLI option 的生命周期</h3>
+<p>从下面任选一个 option：</p>
+<ul><li><code>--model</code></li><li><code>--permission-mode</code></li><li><code>--allowedTools</code></li><li><code>--mcp-config</code></li><li><code>--session-id</code></li></ul>
+<p>追踪它从 <code>.option()</code> 定义到后续 runtime 的路径。产出格式：</p>
+<pre><code class="language-markdown">## `--permission-mode` 生命周期
+
+1. 在 `main.tsx` 中定义位置：...
+2. 在 action 中读取位置：...
+3. 进入的运行时结构：...
+4. 后续影响模块：permission / tool / REPL / print
+5. 我还没确认的问题：...</code></pre>
+<h3 id="任务-5-实现一个-learning-framework-版本的入口骨架">任务 5：实现一个 learning-framework 版本的入口骨架</h3>
+<p>在 <code>learning-framework</code> 中实现一个简化 CLI 入口，支持：</p>
+<ul><li><code>[prompt]</code></li><li><code>--print</code></li><li><code>--model</code></li><li><code>--permission-mode</code></li><li><code>--allowed-tools</code></li></ul>
+<p>要求只打印解析结果和将要进入的 runtime：</p>
+<pre><code class="language-text">runtime: interactive
+model: sonnet
+permissionMode: default
+prompt: ...</code></pre>
+<p>进阶要求：把解析结果转成一个 <code>InitialRuntimeConfig</code>，不要在业务代码里到处传 Commander 的 <code>options</code>。</p>
+<h3 id="任务-6-进阶分析题">任务 6：进阶分析题</h3>
+<p>任选一题，写 300-500 字：</p>
+<ol><li>为什么 <code>preAction</code> 比“模块加载后立即 init”更适合这个 CLI？</li><li>为什么 <code>--print</code> 要有独立 headless runtime，而不是复用 REPL 后隐藏 UI？</li><li>为什么 <code>main.tsx</code> 的 option 定义会越来越多？这是不是架构问题？</li><li>CLI 参数为什么会影响 tool、permission、query、state 多个系统？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<h3 id="误区-1-把-main-tsx-当成普通前端入口文件评价">误区 1：把 <code>main.tsx</code> 当成普通前端入口文件评价</h3>
+<p>前端入口通常很薄，但 CLI 产品入口天然承担更多 runtime 分流。先理解它的 router 角色，再讨论是否需要拆分。</p>
+<h3 id="误区-2-认为-option-只是帮助文案">误区 2：认为 <code>.option()</code> 只是帮助文案</h3>
+<p>在 Claude Code 中，option 是用户能改变 runtime 的外部契约。读 option 要追踪它对 model、state、tool、permission、MCP、session 的影响。</p>
+<h3 id="误区-3-把-preaction-看成普通初始化">误区 3：把 <code>preAction</code> 看成普通初始化</h3>
+<p><code>preAction</code> 的关键价值在边界：只有命令真正执行才初始化，显示 help 不需要。同时它让 subcommand 共享必要环境。</p>
+<h3 id="误区-4-误以为-print-模式只是-无-ui-输出">误区 4：误以为 print 模式只是“无 UI 输出”</h3>
+<p>print 模式有自己的 store、stdout 协议、MCP 策略和 SDK 控制能力。它最终使用 Agent 能力，但入口 runtime 和 REPL 不同。</p>
+<h3 id="误区-5-过早深入所有-subcommand">误区 5：过早深入所有 subcommand</h3>
+<p><code>main.tsx</code> 后半部分有大量 subcommand 注册。第 2 章先读默认主命令和 print/interactive 双出口，subcommand 体系后面会在第 12 章集中处理。</p>
+<h2 id="本章总结">本章总结</h2>
+<p>第 2 章的核心结论：</p>
+<ol><li><code>main.tsx</code> 是 Claude Code 的 CLI runtime router。</li><li>顶层预热和 <code>preAction</code> 共同服务于启动性能与执行前初始化。</li><li>Commander option 定义的是运行时契约，不只是 CLI 帮助信息。</li><li>主 <code>.action()</code> 把 CLI 参数翻译成 model、permission、tool、MCP、session、state 等运行时上下文。</li><li><code>--print</code> 进入 <code>runHeadless</code>，交互模式进入 <code>launchRepl</code>，两条路径都会继续连接 Agent 和 Tool 系统。</li></ol>
+<p>请带着这条证据链进入下一章：</p>
+<pre><code class="language-text">main.tsx
+  -&gt; preAction
+  -&gt; init()
+  -&gt; action
+  -&gt; runHeadless 或 launchRepl</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 3 章会进入 <code>entrypoints/init.ts</code>，回答本章留下的问题：<code>preAction</code> 中的 <code>init()</code> 到底做了什么，为什么配置、安全环境变量、远程策略、清理函数、网络代理、证书和 telemetry 初始化要在进入 REPL 或 print runtime 之前完成。</p>
+<p>如果说第 2 章讲的是“入口如何分流”，第 3 章讲的就是“进入任何分流前，系统必须先准备好什么”。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/01-source-map.html"><span>上一章</span><strong>第 1 章：源码全景与学习地图</strong></a>
+    <a class="pager-next" href="/chapters/03-initialization-config.html"><span>下一章</span><strong>第 3 章：初始化系统与配置加载</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-main-tsx-是-runtime-router-不只是入口">1. `main.tsx` 是 runtime router，不只是入口</a><a class="toc-level-3" href="#2-顶层副作用服务于启动性能">2. 顶层副作用服务于启动性能</a><a class="toc-level-3" href="#3-commander-定义的是运行时契约">3. Commander 定义的是运行时契约</a><a class="toc-level-3" href="#4-preaction-是命令执行前的-runtime-guard">4. `preAction` 是命令执行前的 runtime guard</a><a class="toc-level-3" href="#5-主-action-负责把-cli-参数翻译成运行时上下文">5. 主 `.action()` 负责把 CLI 参数翻译成运行时上下文</a><a class="toc-level-3" href="#6-print-是独立-headless-runtime">6. `--print` 是独立 headless runtime</a><a class="toc-level-3" href="#7-交互模式进入-launchrepl">7. 交互模式进入 `launchRepl`</a><a class="toc-level-2" href="#关键源码入口">关键源码入口</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-定位-commander-骨架">路线一：定位 Commander 骨架</a><a class="toc-level-3" href="#路线二-分离初始化-参数定义-主处理器">路线二：分离初始化、参数定义、主处理器</a><a class="toc-level-3" href="#路线三-追踪-print">路线三：追踪 `--print`</a><a class="toc-level-3" href="#路线四-追踪交互模式">路线四：追踪交互模式</a><a class="toc-level-3" href="#路线五-追踪-model-permission-tool-如何被-cli-参数影响">路线五：追踪 model、permission、tool 如何被 CLI 参数影响</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-3" href="#验证-1-commander-骨架">验证 1：Commander 骨架</a><a class="toc-level-3" href="#验证-2-核心-option-是否存在">验证 2：核心 option 是否存在</a><a class="toc-level-3" href="#验证-3-print-分支出口">验证 3：print 分支出口</a><a class="toc-level-3" href="#验证-4-interactive-分支出口">验证 4：interactive 分支出口</a><a class="toc-level-3" href="#验证-5-permission-model-tool-进入运行时">验证 5：permission/model/tool 进入运行时</a><a class="toc-level-2" href="#主调用链">主调用链</a><a class="toc-level-3" href="#默认交互模式">默认交互模式</a><a class="toc-level-3" href="#非交互-print-模式">非交互 print 模式</a><a class="toc-level-3" href="#恢复会话模式">恢复会话模式</a><a class="toc-level-2" href="#与核心模块的关联">与核心模块的关联</a><a class="toc-level-3" href="#和-repl-的关系">和 REPL 的关系</a><a class="toc-level-3" href="#和-query-的关系">和 query 的关系</a><a class="toc-level-3" href="#和-tool-的关系">和 tool 的关系</a><a class="toc-level-3" href="#和-permission-的关系">和 permission 的关系</a><a class="toc-level-3" href="#和-state-的关系">和 state 的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-3" href="#1-main-tsx-三段结构图">1. `main.tsx` 三段结构图</a><a class="toc-level-3" href="#2-option-到-runtime-的映射图">2. Option 到 Runtime 的映射图</a><a class="toc-level-3" href="#3-双出口图">3. 双出口图</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-3" href="#任务-1-画出-main-tsx-的真实骨架">任务 1：画出 `main.tsx` 的真实骨架</a><a class="toc-level-3" href="#任务-2-追踪-print-证据链">任务 2：追踪 `--print` 证据链</a><a class="toc-level-3" href="#任务-3-追踪交互模式进入-repl">任务 3：追踪交互模式进入 REPL</a><a class="toc-level-3" href="#任务-4-分析一个-cli-option-的生命周期">任务 4：分析一个 CLI option 的生命周期</a><a class="toc-level-3" href="#任务-5-实现一个-learning-framework-版本的入口骨架">任务 5：实现一个 learning-framework 版本的入口骨架</a><a class="toc-level-3" href="#任务-6-进阶分析题">任务 6：进阶分析题</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-3" href="#误区-1-把-main-tsx-当成普通前端入口文件评价">误区 1：把 `main.tsx` 当成普通前端入口文件评价</a><a class="toc-level-3" href="#误区-2-认为-option-只是帮助文案">误区 2：认为 `.option()` 只是帮助文案</a><a class="toc-level-3" href="#误区-3-把-preaction-看成普通初始化">误区 3：把 `preAction` 看成普通初始化</a><a class="toc-level-3" href="#误区-4-误以为-print-模式只是-无-ui-输出">误区 4：误以为 print 模式只是“无 UI 输出”</a><a class="toc-level-3" href="#误区-5-过早深入所有-subcommand">误区 5：过早深入所有 subcommand</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

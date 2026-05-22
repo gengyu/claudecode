@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 11 章：权限系统与安全边界源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option selected value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a aria-current="page" href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-11-章-权限系统与安全边界源码导读">第 11 章：权限系统与安全边界源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 11 章承接第 9-10 章工具系统。工具池决定“模型能看到什么工具”，权限系统决定“模型能不能执行某次具体操作”。这是 AI CLI 和普通 CLI 最大的工程差异之一。</p>
+<p>主线：</p>
+<pre><code class="language-text">tool_use
+  -&gt; tool.checkPermissions
+  -&gt; canUseTool
+  -&gt; allow / deny / ask
+  -&gt; PermissionRequest UI
+  -&gt; update toolPermissionContext
+  -&gt; continue / reject tool execution</code></pre>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>不要把权限理解为设置页选项。Claude Code 的 permission 是运行时协议：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>普通前端权限</th><th>Claude Code 权限</th></tr></thead><tbody><tr><td>页面/按钮是否显示</td><td>工具是否暴露 + 本次执行是否允许</td></tr><tr><td>静态 role</td><td>mode + allow/deny/ask rules + workspace</td></tr><tr><td>弹窗确认</td><td>tool runtime 的暂停/继续点</td></tr><tr><td>表单提交</td><td>可能改变未来规则</td></tr></tbody></table></div>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>定位 permission mode、rule、decision 类型。</li><li>追踪 <code>useCanUseTool</code> 如何把 ask decision 转成 UI queue。</li><li>解释工具级 <code>checkPermissions</code>、通用 <code>canUseTool</code>、UI <code>PermissionRequest</code> 的分工。</li><li>找到 Bash 危险命令、文件写入、workspace directory 的边界。</li><li>在 learning-framework 中复刻 allow/deny/ask + permission dialog。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>需要理解 Tool 协议、AppState 的 <code>toolPermissionContext</code>、REPL 的 <code>toolUseConfirmQueue</code>。不讲基础 RBAC。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-权限为什么存在">1. 权限为什么存在</h3>
+<pre><code class="language-bash">rg -n &quot;PermissionMode|PermissionBehavior|PermissionDecision|ToolPermissionContext&quot; claudecode-project/src/types/permissions.ts claudecode-project/src/Tool.ts</code></pre>
+<p>AI CLI 允许模型读写文件、执行命令、访问网络。权限系统必须在能力和安全之间建立动态边界。</p>
+<h3 id="2-allow-deny-ask-是执行决策">2. allow/deny/ask 是执行决策</h3>
+<pre><code class="language-bash">rg -n &quot;behavior: &#39;allow&#39;|behavior: &#39;deny&#39;|behavior: &#39;ask&#39;|alwaysAllowRules|alwaysDenyRules&quot; claudecode-project/src/types/permissions.ts claudecode-project/src/utils/permissions/permissions.ts</code></pre>
+<p><code>ask</code> 不是失败，而是暂停工具执行，交给用户或远程 permission bridge 决策。</p>
+<h3 id="3-usecanusetool-连接-runtime-和-ui">3. useCanUseTool 连接 runtime 和 UI</h3>
+<pre><code class="language-bash">rg -n &quot;function useCanUseTool|setToolUseConfirmQueue|case \&quot;ask\&quot;|ToolUseConfirm&quot; claudecode-project/src/hooks/useCanUseTool.tsx</code></pre>
+<p>当 permission result 是 ask，REPL 会把确认请求放进 queue，渲染 <code>PermissionRequest</code>。</p>
+<h3 id="4-permissionrequest-是运行时暂停点">4. PermissionRequest 是运行时暂停点</h3>
+<pre><code class="language-bash">rg -n &quot;PermissionRequest|BashPermissionRequest|FileWritePermissionRequest|SandboxPermissionRequest|onDone|onReject&quot; claudecode-project/src/components/permissions -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>权限弹窗不是装饰 UI。它的结果会决定工具继续、拒绝、以及是否更新 future rule。</p>
+<h3 id="5-bash-是权限复杂度最高的工具">5. Bash 是权限复杂度最高的工具</h3>
+<pre><code class="language-bash">rg -n &quot;BashTool|bashPermissions|dangerous|readOnly|pathValidation|destructive&quot; claudecode-project/src/tools/BashTool -g &#39;*.{ts,tsx}&#39;</code></pre>
+<p>Bash 需要处理语义风险、路径风险、wrapper、redirection、sed、rm/rmdir、sandbox 等多层判断。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/types/permissions.ts</code></td><td>mode/decision/rule 类型</td><td>每个类型字段背诵</td><td>本章</td></tr><tr><td><code>src/Tool.ts</code></td><td><code>ToolPermissionContext</code></td><td>Tool 协议已讲</td><td>第 9 章</td></tr><tr><td><code>src/hooks/useCanUseTool.tsx</code></td><td>ask queue 与 decision flow</td><td>UI 细节</td><td>本章重点</td></tr><tr><td><code>src/components/permissions/*</code></td><td>权限弹窗分发</td><td>每个表单细节</td><td>实践参考</td></tr><tr><td><code>src/utils/permissions/*</code></td><td>rule matching、path safety</td><td>所有 classifier 算法</td><td>高级专题</td></tr><tr><td><code>src/tools/BashTool/*</code></td><td>高风险命令权限</td><td>bash parser 全量</td><td>深入任务</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<pre><code class="language-text">runToolUse
+  -&gt; tool.checkPermissions(input, context)
+  -&gt; canUseTool(tool, input, context, assistantMessage, toolUseID)
+  -&gt; allow: execute tool.call
+  -&gt; deny: yield rejected tool_result
+  -&gt; ask: setToolUseConfirmQueue
+       -&gt; REPL renders PermissionRequest
+       -&gt; user chooses yes/no/yes-dont-ask
+       -&gt; update toolPermissionContext?
+       -&gt; continue / reject</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<pre><code class="language-bash">rg -n &quot;PermissionMode|PermissionBehavior|PermissionDecision&quot; claudecode-project/src/types/permissions.ts
+rg -n &quot;useCanUseTool|setToolUseConfirmQueue|case \&quot;ask\&quot;&quot; claudecode-project/src/hooks/useCanUseTool.tsx
+rg -n &quot;toolUseConfirmQueue|PermissionRequest|setToolPermissionContext&quot; claudecode-project/src/screens/REPL.tsx
+rg -n &quot;getDenyRuleForTool|toolPermissionResult|alwaysAllowedRule&quot; claudecode-project/src/utils/permissions/permissions.ts
+rg -n &quot;checkPermissions\\(|dangerous|readOnly&quot; claudecode-project/src/tools/BashTool/BashTool.tsx claudecode-project/src/tools/BashTool/*.ts</code></pre>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;export type PermissionMode|export type PermissionBehavior&quot; claudecode-project/src/types/permissions.ts
+rg -n &quot;function useCanUseTool|setToolUseConfirmQueue&quot; claudecode-project/src/hooks/useCanUseTool.tsx
+rg -n &quot;PermissionRequest|toolUseConfirmQueue&quot; claudecode-project/src/screens/REPL.tsx
+rg -n &quot;BashPermissionRequest|FileWritePermissionRequest|SandboxPermissionRequest&quot; claudecode-project/src/components/permissions -g &#39;*.{ts,tsx}&#39;</code></pre>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<ol><li>类型层：定义 mode、rule、decision。</li><li>工具层：每个工具可给出自己的 <code>checkPermissions</code>。</li><li>通用判断层：<code>useCanUseTool</code> 整合 permission result 和 UI queue。</li><li>UI 层：<code>PermissionRequest</code> 分发到 Bash/File/Web/Sandbox 等具体请求组件。</li><li>状态层：用户选择可能更新 AppState 的 <code>toolPermissionContext</code>。</li></ol>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>第 10 章说明工具池可被 deny rule 过滤；本章说明即使工具已暴露，执行时仍要权限判断。第 12 章的 <code>/permissions</code>、<code>/config</code> 等命令会修改权限相关状态。第 14 章 remote/bridge 会让权限请求跨进程/跨端。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">tool visible != tool executable</code></pre>
+<pre><code class="language-text">allow -&gt; call
+deny  -&gt; rejected result
+ask   -&gt; UI/remote prompt -&gt; decision</code></pre>
+<pre><code class="language-text">Bash command
+  -&gt; syntax/semantic checks
+  -&gt; path/workspace checks
+  -&gt; rules
+  -&gt; sandbox
+  -&gt; user approval</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>定位 PermissionMode、PermissionDecision、ToolPermissionContext 行号。</li><li>追踪一次 ask 从 <code>useCanUseTool</code> 到 <code>PermissionRequest</code> 的调用链。</li><li>记录 BashTool 的 <code>checkPermissions</code> 行号和它依赖的权限 helper。</li><li>learning-framework 实现 allow/deny/ask，写一个 BashTool 默认 ask。</li><li>进阶分析：为什么权限不能只在工具池过滤阶段完成？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>把权限当设置项。权限是执行时协议。</li><li>认为工具显示了就一定能执行。执行时还有 <code>checkPermissions</code>。</li><li>把 ask 当 error。ask 是 runtime pause。</li><li>低估 Bash 权限复杂度。命令语义远比文件读写复杂。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>证据链：</p>
+<pre><code class="language-text">Permission types
+  -&gt; tool.checkPermissions
+  -&gt; useCanUseTool
+  -&gt; PermissionRequest UI
+  -&gt; toolPermissionContext update</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 12 章进入 Slash Commands：用户输入 <code>/help</code>、<code>/clear</code>、<code>/model</code>、<code>/permissions</code> 时，如何绕过或进入 query 主链路。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/10-built-in-tools.html"><span>上一章</span><strong>第 10 章：内置工具系统源码导读</strong></a>
+    <a class="pager-next" href="/chapters/12-slash-commands.html"><span>下一章</span><strong>第 12 章：Slash Commands 命令体系源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-权限为什么存在">1. 权限为什么存在</a><a class="toc-level-3" href="#2-allow-deny-ask-是执行决策">2. allow/deny/ask 是执行决策</a><a class="toc-level-3" href="#3-usecanusetool-连接-runtime-和-ui">3. useCanUseTool 连接 runtime 和 UI</a><a class="toc-level-3" href="#4-permissionrequest-是运行时暂停点">4. PermissionRequest 是运行时暂停点</a><a class="toc-level-3" href="#5-bash-是权限复杂度最高的工具">5. Bash 是权限复杂度最高的工具</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

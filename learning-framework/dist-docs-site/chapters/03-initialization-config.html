@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 3 章：初始化系统与配置加载 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option selected value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a aria-current="page" href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-3-章-初始化系统与配置加载">第 3 章：初始化系统与配置加载</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 3 章继续沿着第 2 章的 <code>main.tsx -&gt; preAction -&gt; init()</code> 证据链往下走。第 2 章回答的是“CLI 入口如何分流”，本章回答的是：在进入 <code>runHeadless</code> 或 <code>launchRepl</code> 之前，系统必须先准备好哪些运行时基础设施。</p>
+<p>对高级前端工程师来说，<code>entrypoints/init.ts</code> 可以类比为一个高风险的 app bootstrap 层，但它比普通 Web 前端 bootstrap 更敏感。因为 Claude Code 后续会做这些事：</p>
+<ul><li>发起模型 API 请求</li><li>读取用户、项目、企业策略配置</li><li>连接代理、mTLS、远程 managed settings</li><li>执行 hooks、工具、子进程</li><li>进入 REPL 或 headless runtime</li><li>在退出时 flush 日志、关闭 LSP、清理 session 级资源</li></ul>
+<p>因此初始化不是“杂项准备代码”，而是 AI CLI 主链路中的信任边界、网络边界、配置边界和清理边界。</p>
+<p>本章保持 <code>SYSTEMATIC_COURSE.md</code> 第 3 章的主题不变，覆盖这些知识点：</p>
+<ol><li><code>init()</code> 使用 memoize 避免重复初始化</li><li>配置系统启用</li><li>safe env 与 full env 的区别</li><li>graceful shutdown</li><li>remote managed settings</li><li>policy limits</li><li>网络、代理、证书、mTLS 初始化</li></ol>
+<p>它承接第 2 章的 <code>preAction</code>，并为第 4 章 React + Ink 终端 UI 准备一个已经完成基础配置、安全环境和网络能力的运行时。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>本章不讲“什么是初始化函数”。你要关注的是大型 AI CLI 初始化和普通前端初始化的差异：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>普通前端应用 bootstrap</th><th>Claude Code 初始化</th></tr></thead><tbody><tr><td>加载 env、创建 root、挂载 App</td><td>加载 env、策略、代理、证书、远程配置、shutdown、telemetry</td></tr><tr><td>配置错误通常显示 error boundary</td><td>配置错误可能要分 interactive/headless 两种输出路径</td></tr><tr><td>网络请求通常在业务层发起</td><td>API preconnect、proxy、mTLS 必须在 query 前准备好</td></tr><tr><td>权限多是 UI 状态</td><td>env 和 project settings 涉及 trust boundary</td></tr><tr><td>cleanup 多是组件卸载</td><td>CLI 退出时要 flush 日志、关闭 LSP、清理 session 资源</td></tr></tbody></table></div>
+<p>本章最大的价值是建立一个判断：初始化代码不是线性“准备事项清单”，而是在多个边界之间做取舍：</p>
+<ul><li>哪些必须阻塞？</li><li>哪些可以 fire-and-forget？</li><li>哪些必须在 trust dialog 前执行？</li><li>哪些必须等 trust 后再执行？</li><li>哪些要提供 wait promise 给后续系统？</li><li>哪些失败应该 fail open，哪些失败必须中断？</li></ul>
+<p>这些问题会贯穿后续 REPL、query、tool、permission、MCP 的阅读。</p>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本章后，你应该能够：</p>
+<ol><li>用源码证明 <code>init()</code> 是 memoized，并解释为什么入口和子命令需要 idempotent 初始化。</li><li>追踪 <code>preAction -&gt; init -&gt; enableConfigs -&gt; applySafeConfigEnvironmentVariables</code> 的配置启动链路。</li><li>区分 <code>applySafeConfigEnvironmentVariables()</code> 和 <code>applyConfigEnvironmentVariables()</code> 的信任边界。</li><li>找到 graceful shutdown 的注册点，并说明它为什么要早于 REPL/query。</li><li>解释 remote managed settings 和 policy limits 为什么要先初始化 loading promise，再由 <code>main.tsx</code> 后续 load。</li><li>追踪 CA、mTLS、proxy、API preconnect 的顺序，并说明顺序为什么影响首个模型请求。</li><li>在 <code>learning-framework</code> 中复刻一个简化 <code>init()</code>：配置启用、安全 env、shutdown cleanup、非阻塞预加载、错误路径。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>本章默认你已经理解：</p>
+<ul><li>第 2 章的 <code>program.hook(&#39;preAction&#39;)</code></li><li>CLI 有 interactive 和 headless 两条 runtime</li><li>配置、环境变量和网络代理会影响后续 API 请求</li><li>大型应用 bootstrap 中 blocking task 与 background task 的差异</li></ul>
+<p>本章不会重复讲：</p>
+<ul><li>TypeScript import/export</li><li>Promise 基础</li><li>React app mount</li><li>Commander 语法</li><li>OpenTelemetry 基础</li></ul>
+<p>如果你不熟悉企业策略、mTLS 或 managed settings，不影响阅读。先按源码链路理解它们在初始化中的位置即可。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-init-为什么使用-memoize">1. <code>init()</code> 为什么使用 memoize</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export const init|memoize&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p><code>init</code> 被定义成 memoized async function。它存在的工程问题是：CLI 入口和多个子命令可能都会需要基础环境，但初始化不能重复注册 shutdown handler、重复启动 telemetry、重复配置网络 agent 或重复创建远程 loading promise。</p>
+<p>在主链路中的位置：</p>
+<pre><code class="language-text">main.tsx
+  -&gt; program.hook(&#39;preAction&#39;)
+  -&gt; await init()
+  -&gt; main action / subcommand action</code></pre>
+<p>它和后续模块的关系：</p>
+<ul><li>REPL 依赖已经启用的配置系统和 env。</li><li>query 依赖网络代理、证书、API preconnect、telemetry。</li><li>tool/hook/subprocess 依赖 env 和 cleanup registry。</li><li>print/headless 依赖配置错误能走 stderr/exit，而不是 Ink dialog。</li></ul>
+<h3 id="2-配置系统启用不是读取一个-json-那么简单">2. 配置系统启用不是读取一个 JSON 那么简单</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;enableConfigs|getSettingsForSource|getSettings_DEPRECATED|ConfigParseError&quot; claudecode-project/src/utils claudecode-project/src/entrypoints/init.ts -g &#39;*.{ts,js}&#39;</code></pre>
+<p><code>enableConfigs()</code> 在 <code>init()</code> 早期执行。它的目标不是“拿到某个配置对象”，而是打开后续所有配置读取能力，让 settings、policy、remote settings、CLI flags 能按预期参与合并。</p>
+<p>配置错误在 <code>init()</code> 中有专门处理：</p>
+<pre><code class="language-text">ConfigParseError
+  -&gt; headless: stderr + gracefulShutdownSync(1)
+  -&gt; interactive: dynamic import InvalidConfigDialog</code></pre>
+<p>这说明配置错误输出也要尊重 runtime：headless 不能弹 Ink dialog，interactive 可以走 UI。</p>
+<h3 id="3-safe-env-和-full-env-是-trust-boundary">3. safe env 和 full env 是 trust boundary</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;applySafeConfigEnvironmentVariables|applyConfigEnvironmentVariables|SAFE_ENV_VARS|TRUSTED_SETTING_SOURCES&quot; claudecode-project/src/utils/managedEnv.ts</code></pre>
+<p><code>applySafeConfigEnvironmentVariables()</code> 在 <code>init()</code> 里执行，发生在 trust dialog 之前。它只允许安全范围内的 project/local env 生效，同时允许 trusted sources 的 env 生效。</p>
+<p><code>applyConfigEnvironmentVariables()</code> 是 trust 后调用，允许完整 settings env 写入 <code>process.env</code>，并清理 CA/mTLS/proxy cache、重新配置 global agents。</p>
+<p>主链路位置：</p>
+<pre><code class="language-text">init()
+  -&gt; applySafeConfigEnvironmentVariables()
+  -&gt; applyExtraCACertsFromConfig()
+  -&gt; configureGlobalMTLS()
+  -&gt; configureGlobalAgents()
+
+trust accepted / print considered trusted
+  -&gt; applyConfigEnvironmentVariables()
+  -&gt; initializeTelemetryAfterTrust()</code></pre>
+<p>设计意图：</p>
+<ul><li>project settings 是仓库可控的，不能在用户信任前应用危险 env。</li><li>API base URL、proxy、PATH、LD_PRELOAD 这类 env 会影响进程行为，必须有信任边界。</li><li>但某些用户/企业级 env 又必须早于首次 API 或 onboarding 生效。</li></ul>
+<h3 id="4-graceful-shutdown-是-cli-的全局退出协议">4. graceful shutdown 是 CLI 的全局退出协议</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;setupGracefulShutdown|gracefulShutdownSync|registerCleanup&quot; claudecode-project/src/entrypoints/init.ts claudecode-project/src/utils/gracefulShutdown.ts claudecode-project/src/utils/cleanupRegistry.ts</code></pre>
+<p><code>setupGracefulShutdown()</code> 在 safe env 之后、异步后台任务之前执行。它要尽早建立退出协议，因为后面会启动日志、LSP、MCP、hooks、background tasks、team cleanup 等资源。</p>
+<p>本章重点不是读每个 cleanup 实现，而是理解边界：</p>
+<pre><code class="language-text">init()
+  -&gt; setupGracefulShutdown()
+  -&gt; registerCleanup(shutdownLspServerManager)
+  -&gt; registerCleanup(cleanupSessionTeams)
+  -&gt; later runtime registers more cleanup
+  -&gt; process exit / error / ctrl-c
+  -&gt; graceful shutdown runs cleanup</code></pre>
+<p>对 CLI 产品来说，退出不是页面卸载。退出时如果不集中处理，可能导致日志丢失、server 未关闭、团队/agent 临时资源残留。</p>
+<h3 id="5-remote-managed-settings-和-policy-limits-使用-early-promise">5. remote managed settings 和 policy limits 使用 early promise</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;initializeRemoteManagedSettingsLoadingPromise|isEligibleForRemoteManagedSettings|waitForRemoteManagedSettingsToLoad|loadRemoteManagedSettings&quot; claudecode-project/src/services/remoteManagedSettings/index.ts claudecode-project/src/entrypoints/init.ts claudecode-project/src/main.tsx
+rg -n &quot;initializePolicyLimitsLoadingPromise|isPolicyLimitsEligible|loadPolicyLimits&quot; claudecode-project/src/services/policyLimits/index.ts claudecode-project/src/entrypoints/init.ts claudecode-project/src/main.tsx</code></pre>
+<p><code>init()</code> 只初始化 loading promise，不直接完成所有远程加载。第 2 章里 <code>preAction</code> 在 <code>init()</code> 后会 <code>void loadRemoteManagedSettings()</code> 和 <code>void loadPolicyLimits()</code>。</p>
+<p>主链路：</p>
+<pre><code class="language-text">init()
+  -&gt; if eligible initializeRemoteManagedSettingsLoadingPromise()
+  -&gt; if eligible initializePolicyLimitsLoadingPromise()
+
+main.tsx preAction after init
+  -&gt; void loadRemoteManagedSettings()
+  -&gt; void loadPolicyLimits()
+
+later systems
+  -&gt; waitForRemoteManagedSettingsToLoad()
+  -&gt; read policy/limits when needed</code></pre>
+<p>为什么这样设计：</p>
+<ul><li>有些系统需要“可以等待远程配置”的句柄。</li><li>但远程配置不能无限阻塞启动，所以 promise 内置 timeout。</li><li>加载本身可以 fail open，避免企业策略服务短暂不可用导致 CLI 完全不可用。</li><li>headless/SDK 测试不一定走完整 main 流程，所以 wait promise 需要防死锁。</li></ul>
+<h3 id="6-网络-证书-mtls-proxy-必须早于首个-api-请求">6. 网络、证书、mTLS、proxy 必须早于首个 API 请求</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;applyExtraCACertsFromConfig|configureGlobalMTLS|configureGlobalAgents|preconnectAnthropicApi&quot; claudecode-project/src/entrypoints/init.ts claudecode-project/src/utils -g &#39;*.{ts,js}&#39;</code></pre>
+<p>顺序很重要：</p>
+<pre><code class="language-text">applySafeConfigEnvironmentVariables()
+  -&gt; applyExtraCACertsFromConfig()
+  -&gt; configureGlobalMTLS()
+  -&gt; configureGlobalAgents()
+  -&gt; preconnectAnthropicApi()</code></pre>
+<p>设计意图：</p>
+<ul><li>CA certs 要在首次 TLS 前应用。</li><li>mTLS 和 proxy 要在 API preconnect 前配置。</li><li>preconnect 尝试把 TCP/TLS 握手和 action handler 中的其他工作重叠。</li></ul>
+<p>这条链路会直接影响第 8 章 <code>query.ts</code> 的首次模型请求体验。</p>
+<h3 id="7-fire-and-forget-不是随便-void">7. fire-and-forget 不是随便 <code>void</code></h3>
+<p><code>init.ts</code> 里有很多 <code>void something()</code>，例如 1P event logging、OAuth account info、JetBrains detection、repository detection、preconnect。高级读者容易把这些都归类为“后台杂项”，但更准确的分类是：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>类型</th><th>是否阻塞 init</th><th>原因</th></tr></thead><tbody><tr><td>配置启用</td><td>阻塞</td><td>后续读取配置依赖它</td></tr><tr><td>safe env</td><td>阻塞</td><td>后续网络和 eligibility 依赖它</td></tr><tr><td>graceful shutdown</td><td>阻塞</td><td>后续启动资源需要退出协议</td></tr><tr><td>remote/policy loading promise</td><td>阻塞创建 promise，不阻塞加载</td><td>后续系统需要 wait handle</td></tr><tr><td>OAuth/IDE/repo detection</td><td>非阻塞</td><td>缓存优化，不影响主链路立即进入</td></tr><tr><td>preconnect</td><td>非阻塞</td><td>性能优化，失败不应中断</td></tr><tr><td>upstream proxy remote path</td><td>条件阻塞/捕获错误</td><td>远程模式下影响子进程网络</td></tr></tbody></table></div>
+<p>fire-and-forget 的关键不是“无所谓”，而是“当前阶段不等待，但要明确失败语义”。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>本章不看什么</th><th>后续章节</th></tr></thead><tbody><tr><td><code>claudecode-project/src/entrypoints/init.ts</code></td><td><code>init()</code> 顺序、错误路径、telemetry after trust</td><td>telemetry 具体实现、每个异步任务内部</td><td>第 8、14 章还会遇到 telemetry/startup profiling</td></tr><tr><td><code>claudecode-project/src/main.tsx</code></td><td><code>preAction</code> 如何调用 <code>init()</code>，以及后续 load remote/policy</td><td>Commander option 细节，第 2 章已覆盖</td><td>第 5 章进入 REPL 分支</td></tr><tr><td><code>claudecode-project/src/utils/managedEnv.ts</code></td><td>safe env/full env 的信任边界</td><td>每个 env allowlist 细节</td><td>第 11 章权限和安全边界会回看</td></tr><tr><td><code>claudecode-project/src/utils/config.ts</code></td><td><code>enableConfigs()</code>、first start、配置系统入口</td><td>settings 合并算法的所有细节</td><td>第 6、11、13 章涉及 settings 变更</td></tr><tr><td><code>claudecode-project/src/services/remoteManagedSettings/index.ts</code></td><td>early loading promise、eligibility、wait/load 分离</td><td>远程 API payload 和缓存全部细节</td><td>第 6、11、13 章涉及策略影响</td></tr><tr><td><code>claudecode-project/src/services/policyLimits/index.ts</code></td><td>policy loading promise、eligibility、load</td><td>具体限制项判断规则</td><td>第 10、11 章工具/权限会用到</td></tr><tr><td><code>claudecode-project/src/utils/gracefulShutdown.ts</code></td><td>shutdown 注册和同步退出能力</td><td>每种 signal 的完整处理</td><td>第 14 章高级工程化</td></tr><tr><td><code>claudecode-project/src/utils/proxy.ts</code>、<code>mtls.ts</code>、<code>caCertsConfig.ts</code>、<code>apiPreconnect.ts</code></td><td>网络准备顺序</td><td>各平台代理实现细节</td><td>第 8 章 query 首次 API 请求</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<h3 id="从-cli-到-init">从 CLI 到 init</h3>
+<pre><code class="language-text">main.tsx run()
+  -&gt; program.hook(&#39;preAction&#39;)
+  -&gt; await ensureMdmSettingsLoaded()
+  -&gt; await ensureKeychainPrefetchCompleted()
+  -&gt; await init()
+  -&gt; initSinks()
+  -&gt; runMigrations()
+  -&gt; void loadRemoteManagedSettings()
+  -&gt; void loadPolicyLimits()
+  -&gt; command/action continues</code></pre>
+<h3 id="init-内部主链路">init 内部主链路</h3>
+<pre><code class="language-text">init()
+  -&gt; enableConfigs()
+  -&gt; applySafeConfigEnvironmentVariables()
+  -&gt; applyExtraCACertsFromConfig()
+  -&gt; setupGracefulShutdown()
+  -&gt; start non-blocking analytics/oauth/IDE/repo detection
+  -&gt; initialize remote/policy loading promises
+  -&gt; recordFirstStartTime()
+  -&gt; configureGlobalMTLS()
+  -&gt; configureGlobalAgents()
+  -&gt; preconnectAnthropicApi()
+  -&gt; optional upstream proxy
+  -&gt; setShellIfWindows()
+  -&gt; registerCleanup(...)
+  -&gt; ensureScratchpadDir if enabled
+  -&gt; return to main action</code></pre>
+<h3 id="trust-后环境变量与-telemetry">trust 后环境变量与 telemetry</h3>
+<pre><code class="language-text">interactive trust accepted or print trusted path
+  -&gt; applyConfigEnvironmentVariables()
+  -&gt; clear CA/mTLS/proxy caches
+  -&gt; configureGlobalAgents()
+  -&gt; initializeTelemetryAfterTrust()
+       -&gt; maybe waitForRemoteManagedSettingsToLoad()
+       -&gt; applyConfigEnvironmentVariables() again
+       -&gt; doInitializeTelemetry()</code></pre>
+<p>这条链路说明 env 不是“一次性加载”。安全 env、完整 env、远程策略 env、telemetry 初始化之间有明确阶段关系。</p>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-确认-preaction-init-边界">路线一：确认 <code>preAction -&gt; init</code> 边界</h3>
+<p>阅读目标：确认第 2 章的 <code>preAction</code> 如何进入本章。</p>
+<pre><code class="language-bash">rg -n &quot;program\\.hook\\(&#39;preAction&#39;|await init\\(|loadRemoteManagedSettings\\(|loadPolicyLimits\\(&quot; claudecode-project/src/main.tsx</code></pre>
+<p>应该看到的证据：</p>
+<ul><li><code>preAction</code> 内 await <code>init()</code></li><li><code>init()</code> 后才 fire-and-forget load remote settings / policy limits</li></ul>
+<p>形成判断：</p>
+<p><code>init()</code> 是命令执行前基础环境准备，远程策略加载被拆成“创建可等待 promise”和“后续异步加载”两段。</p>
+<h3 id="路线二-拆-init-的阻塞顺序">路线二：拆 <code>init()</code> 的阻塞顺序</h3>
+<p>阅读目标：识别哪些任务必须按顺序完成。</p>
+<pre><code class="language-bash">rg -n &quot;enableConfigs|applySafeConfigEnvironmentVariables|applyExtraCACertsFromConfig|setupGracefulShutdown|configureGlobalMTLS|configureGlobalAgents|preconnectAnthropicApi|registerCleanup&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>应该看到的证据：</p>
+<ul><li>config/env/shutdown/network/cleanup 的顺序</li><li><code>preconnectAnthropicApi()</code> 在 proxy/mTLS 之后</li></ul>
+<p>形成判断：</p>
+<p>初始化顺序不是随意排列，而是在信任边界、网络边界和退出边界之间排出来的。</p>
+<h3 id="路线三-验证-safe-env-与-full-env">路线三：验证 safe env 与 full env</h3>
+<p>阅读目标：确认 trust 前后环境变量应用不同。</p>
+<pre><code class="language-bash">rg -n &quot;applySafeConfigEnvironmentVariables|applyConfigEnvironmentVariables|SAFE_ENV_VARS|TRUSTED_SETTING_SOURCES|clearCACertsCache|clearMTLSCache|clearProxyCache&quot; claudecode-project/src/utils/managedEnv.ts
+rg -n &quot;applyConfigEnvironmentVariables\\(|initializeTelemetryAfterTrust&quot; claudecode-project/src/main.tsx claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>应该看到的证据：</p>
+<ul><li>safe env 只允许部分 project/local env</li><li>full env 会 clear caches 并 reconfigure global agents</li><li>telemetry after trust 可能再次应用 env</li></ul>
+<p>形成判断：</p>
+<p>env 加载是安全边界，不是普通配置读取。</p>
+<h3 id="路线四-追踪-remote-settings-policy-limits-的-wait-handle">路线四：追踪 remote settings / policy limits 的 wait handle</h3>
+<p>阅读目标：确认 early promise + later load 设计。</p>
+<pre><code class="language-bash">rg -n &quot;initializeRemoteManagedSettingsLoadingPromise|waitForRemoteManagedSettingsToLoad|loadRemoteManagedSettings|LOADING_PROMISE_TIMEOUT_MS&quot; claudecode-project/src/services/remoteManagedSettings/index.ts claudecode-project/src/entrypoints/init.ts claudecode-project/src/main.tsx
+rg -n &quot;initializePolicyLimitsLoadingPromise|loadPolicyLimits|LOADING_PROMISE_TIMEOUT_MS|isPolicyLimitsEligible&quot; claudecode-project/src/services/policyLimits/index.ts claudecode-project/src/entrypoints/init.ts claudecode-project/src/main.tsx</code></pre>
+<p>应该看到的证据：</p>
+<ul><li>promise 初始化在 <code>init()</code></li><li>load 在 <code>main.tsx preAction</code> 后续触发</li><li>promise 有 timeout 防止死锁</li></ul>
+<p>形成判断：</p>
+<p>远程策略不是强阻塞启动项，而是给后续系统一个可等待但不无限等待的同步点。</p>
+<h3 id="路线五-确认配置错误如何分-runtime-输出">路线五：确认配置错误如何分 runtime 输出</h3>
+<p>阅读目标：确认 headless 和 interactive 配置错误路径不同。</p>
+<pre><code class="language-bash">rg -n &quot;ConfigParseError|getIsNonInteractiveSession|showInvalidConfigDialog|gracefulShutdownSync&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>应该看到的证据：</p>
+<ul><li>headless 走 stderr + exit</li><li>interactive 动态 import InvalidConfigDialog</li></ul>
+<p>形成判断：</p>
+<p>初始化层已经开始尊重 runtime 输出协议，这是第 4 章 UI 和 print runtime 的前置分流。</p>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<h3 id="验证-1-init-是-memoized">验证 1：<code>init</code> 是 memoized</h3>
+<pre><code class="language-bash">rg -n &quot;export const init = memoize&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>确认 <code>init()</code> 不是普通函数，重复调用会复用第一次执行结果。</p>
+<h3 id="验证-2-配置和-safe-env-在最前面">验证 2：配置和 safe env 在最前面</h3>
+<pre><code class="language-bash">rg -n &quot;enableConfigs|applySafeConfigEnvironmentVariables|applyExtraCACertsFromConfig&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>确认配置启用和 safe env 发生在 shutdown、网络、preconnect 之前。</p>
+<h3 id="验证-3-完整-env-在-trust-后">验证 3：完整 env 在 trust 后</h3>
+<pre><code class="language-bash">rg -n &quot;applyConfigEnvironmentVariables\\(|initializeTelemetryAfterTrust&quot; claudecode-project/src/main.tsx claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>确认 full env 不是 <code>init()</code> 开始就无条件应用。</p>
+<h3 id="验证-4-remote-policy-loading-promise">验证 4：remote/policy loading promise</h3>
+<pre><code class="language-bash">rg -n &quot;initializeRemoteManagedSettingsLoadingPromise|initializePolicyLimitsLoadingPromise&quot; claudecode-project/src/entrypoints/init.ts
+rg -n &quot;loadRemoteManagedSettings\\(|loadPolicyLimits\\(&quot; claudecode-project/src/main.tsx</code></pre>
+<p>确认 promise 初始化和实际加载分属两个阶段。</p>
+<h3 id="验证-5-网络准备顺序">验证 5：网络准备顺序</h3>
+<pre><code class="language-bash">rg -n &quot;configureGlobalMTLS|configureGlobalAgents|preconnectAnthropicApi&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>确认 preconnect 在 mTLS/proxy 配置之后。</p>
+<h3 id="验证-6-错误路径分-runtime">验证 6：错误路径分 runtime</h3>
+<pre><code class="language-bash">rg -n &quot;ConfigParseError|getIsNonInteractiveSession|InvalidConfigDialog&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>确认配置错误在 headless 和 interactive 下不是同一种输出方式。</p>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<h3 id="1-init-开头-配置与安全-env">1. <code>init()</code> 开头：配置与安全 env</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">enableConfigs()
+  -&gt; applySafeConfigEnvironmentVariables()
+  -&gt; applyExtraCACertsFromConfig()</code></pre>
+<p>设计意图：</p>
+<ul><li>先让配置系统可用。</li><li>再应用 trust 前允许的 env。</li><li>再处理 CA cert，因为 TLS 相关配置必须早于网络连接。</li></ul>
+<p>上游来自第 2 章的 <code>preAction</code>，下游影响所有 API/MCP/query 网络请求。</p>
+<h3 id="2-shutdown-注册-为后续资源建立退出协议">2. shutdown 注册：为后续资源建立退出协议</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">setupGracefulShutdown()
+  -&gt; later registerCleanup(...)</code></pre>
+<p>设计意图：</p>
+<ul><li>CLI 生命周期不受 React 组件树控制。</li><li>后续启动的 LSP、team cleanup、hooks、日志都需要退出协议。</li><li>配置错误也可能通过 <code>gracefulShutdownSync(1)</code> 退出。</li></ul>
+<p>这为第 5 章 REPL 和第 14 章后台任务/远程/Agent 清理铺垫。</p>
+<h3 id="3-非阻塞预加载-提升体验但不阻塞主路径">3. 非阻塞预加载：提升体验但不阻塞主路径</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">void initialize1PEventLogging()
+void populateOAuthAccountInfoIfNeeded()
+void initJetBrainsDetection()
+void detectCurrentRepository()
+preconnectAnthropicApi()</code></pre>
+<p>设计意图：</p>
+<ul><li>这些任务有价值，但不应该阻塞首次交互。</li><li>有些任务只是缓存或遥测。</li><li>preconnect 是性能优化，不能成为可靠性风险。</li></ul>
+<p>读源码时要区分“非阻塞”与“不重要”。非阻塞表示它不在当前 critical path。</p>
+<h3 id="4-remote-policy-promise-给后续系统同步点">4. remote/policy promise：给后续系统同步点</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">if eligible initialize loading promise
+main preAction later starts load
+other systems can wait
+timeout prevents deadlock</code></pre>
+<p>设计意图：</p>
+<ul><li>企业策略可能影响 env、telemetry、工具、插件、权限。</li><li>但远程服务不能拖死启动。</li><li>所以使用 early wait handle + later async load。</li></ul>
+<p>这类设计在大型前端里也常见：先创建 resource handle，再由后台加载填充。</p>
+<h3 id="5-网络层准备-影响首个-query">5. 网络层准备：影响首个 query</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">configureGlobalMTLS()
+configureGlobalAgents()
+preconnectAnthropicApi()</code></pre>
+<p>设计意图：</p>
+<ul><li>代理和 mTLS 决定请求怎么发。</li><li>preconnect 要使用正确的 transport。</li><li>第 8 章 query 发出首个模型请求时，不能再临时发现网络环境没准备好。</li></ul>
+<h3 id="6-错误路径-runtime-输出协议从-init-开始分流">6. 错误路径：runtime 输出协议从 init 开始分流</h3>
+<p>运行时职责：</p>
+<pre><code class="language-text">catch ConfigParseError
+  -&gt; headless: stderr + exit
+  -&gt; interactive: InvalidConfigDialog</code></pre>
+<p>设计意图：</p>
+<ul><li>headless 的消费者可能是脚本或 SDK，需要机器友好的 stderr/exit。</li><li>interactive 用户可以看到 Ink dialog。</li><li><code>init()</code> 不只是内部初始化，也要尊重外部运行协议。</li></ul>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<h3 id="承接第-2-章">承接第 2 章</h3>
+<p>第 2 章定位了：</p>
+<pre><code class="language-text">main.tsx
+  -&gt; preAction
+  -&gt; await init()</code></pre>
+<p>本章展开 <code>init()</code> 内部做了什么，以及为什么这些动作必须早于 <code>runHeadless</code> 和 <code>launchRepl</code>。</p>
+<h3 id="连接第-4-章-ink-ui">连接第 4 章 Ink UI</h3>
+<p>第 4 章会进入 React + Ink。进入 UI 前，本章已经处理：</p>
+<ul><li>配置是否可读</li><li>trust 前 env 是否安全应用</li><li>配置错误是否要显示 dialog</li><li>shutdown 是否已经可用</li></ul>
+<p>也就是说，UI 不是裸启动，它建立在初始化后的 runtime 之上。</p>
+<h3 id="连接-repl-appstate-message-query-tool-permission-command-mcp">连接 REPL、AppState、Message、query、tool、permission、command、MCP</h3>
+<ul><li>REPL 依赖配置、env、cleanup、telemetry、remote settings 的基础状态。</li><li>AppState 会在 settings change、permission context、MCP state 中继续消费初始化结果。</li><li>Message/query 依赖网络代理、证书、preconnect、telemetry。</li><li>tool/permission 依赖 policy limits、safe/full env、workspace trust。</li><li>command/MCP/plugin 会受到 remote managed settings 和 policy limits 影响。</li></ul>
+<h3 id="后续会继续使用的点">后续会继续使用的点</h3>
+<ul><li>第 4 章：InvalidConfigDialog 和 Ink 渲染路径</li><li>第 5 章：REPL 启动前的 initialState 和 cleanup</li><li>第 8 章：query 首次 API 请求依赖网络初始化</li><li>第 11 章：safe env/full env 与权限边界</li><li>第 13 章：remote settings/policy 对插件和 MCP 的约束</li><li>第 14 章：graceful shutdown、startup profiling、preconnect、telemetry</li></ul>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<h3 id="1-初始化阶段图">1. 初始化阶段图</h3>
+<pre><code class="language-text">preAction
+  -&gt; init()
+       ├─ config enabled
+       ├─ safe env applied
+       ├─ CA/proxy/mTLS prepared
+       ├─ shutdown protocol installed
+       ├─ remote/policy wait handles created
+       ├─ non-blocking preloads started
+       └─ cleanup handlers registered
+  -&gt; async load remote/policy
+  -&gt; action runtime</code></pre>
+<h3 id="2-env-信任边界图">2. env 信任边界图</h3>
+<pre><code class="language-text">Before trust
+  -&gt; applySafeConfigEnvironmentVariables()
+       ├─ trusted sources: broader env
+       └─ project/local: SAFE_ENV_VARS only
+
+After trust or print trusted path
+  -&gt; applyConfigEnvironmentVariables()
+       ├─ full settings env
+       ├─ clear CA/mTLS/proxy caches
+       └─ configureGlobalAgents()</code></pre>
+<h3 id="3-remote-policy-双阶段图">3. remote/policy 双阶段图</h3>
+<pre><code class="language-text">init()
+  -&gt; initializeRemoteManagedSettingsLoadingPromise()
+  -&gt; initializePolicyLimitsLoadingPromise()
+        │
+        ├─ gives wait handle to later systems
+        │
+main preAction after init
+  -&gt; void loadRemoteManagedSettings()
+  -&gt; void loadPolicyLimits()
+        │
+        └─ resolve or timeout, fail open where appropriate</code></pre>
+<h3 id="4-网络准备图">4. 网络准备图</h3>
+<pre><code class="language-text">safe env
+  -&gt; extra CA certs
+  -&gt; mTLS
+  -&gt; proxy/global agents
+  -&gt; API preconnect
+  -&gt; query first request</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<h3 id="任务-1-定位-init-主骨架">任务 1：定位 <code>init()</code> 主骨架</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;export const init|enableConfigs|applySafeConfigEnvironmentVariables|setupGracefulShutdown|configureGlobalMTLS|configureGlobalAgents|preconnectAnthropicApi|registerCleanup&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>产出格式：</p>
+<pre><code class="language-markdown">| 符号 | 行号 | 阻塞/非阻塞 | 运行时职责 |
+| --- | --- | --- | --- |
+| `enableConfigs` | ... | 阻塞 | 启用配置系统 |</code></pre>
+<h3 id="任务-2-追踪-safe-env-full-env-生命周期">任务 2：追踪 safe env/full env 生命周期</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;applySafeConfigEnvironmentVariables|applyConfigEnvironmentVariables|SAFE_ENV_VARS|TRUSTED_SETTING_SOURCES&quot; claudecode-project/src/utils/managedEnv.ts
+rg -n &quot;applyConfigEnvironmentVariables\\(&quot; claudecode-project/src/main.tsx claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>产出：</p>
+<pre><code class="language-markdown">## env trust boundary
+
+1. trust 前入口：...
+2. trust 后入口：...
+3. safe env 限制：...
+4. full env 副作用：...
+5. 对 query/tool/permission 的影响：...</code></pre>
+<h3 id="任务-3-画-remote-settings-的真实证据链">任务 3：画 remote settings 的真实证据链</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;initializeRemoteManagedSettingsLoadingPromise|waitForRemoteManagedSettingsToLoad|loadRemoteManagedSettings&quot; claudecode-project/src/services/remoteManagedSettings/index.ts claudecode-project/src/entrypoints/init.ts claudecode-project/src/main.tsx</code></pre>
+<p>产出一条带文件名/函数名的链路：</p>
+<pre><code class="language-text">init.ts
+  -&gt; initializeRemoteManagedSettingsLoadingPromise
+main.tsx preAction
+  -&gt; loadRemoteManagedSettings
+later
+  -&gt; waitForRemoteManagedSettingsToLoad</code></pre>
+<p>并解释为什么要有 timeout。</p>
+<h3 id="任务-4-分析配置错误的-runtime-输出">任务 4：分析配置错误的 runtime 输出</h3>
+<p>使用：</p>
+<pre><code class="language-bash">rg -n &quot;ConfigParseError|getIsNonInteractiveSession|InvalidConfigDialog|gracefulShutdownSync&quot; claudecode-project/src/entrypoints/init.ts</code></pre>
+<p>产出：</p>
+<pre><code class="language-markdown">| runtime | 错误输出方式 | 为什么 |
+| --- | --- | --- |
+| headless | stderr + exit | ... |
+| interactive | Ink dialog | ... |</code></pre>
+<h3 id="任务-5-在-learning-framework-复刻简化-init">任务 5：在 learning-framework 复刻简化 <code>init()</code></h3>
+<p>实现一个简化初始化模块，建议文件：</p>
+<pre><code class="language-text">learning-framework/src/entrypoints/init.ts</code></pre>
+<p>要求：</p>
+<ul><li><code>init()</code> 必须 idempotent，可以用 memoize 或手写 once promise。</li><li>支持 <code>enableConfig()</code>。</li><li>支持 <code>applySafeEnv()</code> 和 <code>applyFullEnv()</code> 两阶段。</li><li>支持 <code>registerCleanup()</code> 和 <code>gracefulShutdown()</code>。</li><li>启动一个非阻塞 preload，并记录日志。</li><li>模拟配置错误：interactive 返回 UI error 对象，headless 返回 exit code。</li></ul>
+<p>产出：</p>
+<pre><code class="language-markdown">## learning-framework init 复刻说明
+
+1. 我实现了哪些阶段：...
+2. 哪些是阻塞：...
+3. 哪些是非阻塞：...
+4. 和 Claude Code 原源码相比删掉了什么：...</code></pre>
+<h3 id="任务-6-进阶分析题">任务 6：进阶分析题</h3>
+<p>任选一题，写 300-500 字：</p>
+<ol><li>为什么 <code>applySafeConfigEnvironmentVariables()</code> 必须早于网络初始化，但 <code>applyConfigEnvironmentVariables()</code> 不能无条件早执行？</li><li>remote settings/policy limits 为什么使用 early promise，而不是在 <code>init()</code> 中直接 await load？</li><li><code>preconnectAnthropicApi()</code> 是性能优化，为什么它仍然必须位于 proxy/mTLS 之后？</li><li>对比 Web 前端和 AI CLI：为什么 CLI 的 graceful shutdown 比组件 unmount 更像全局协议？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<h3 id="误区-1-把初始化当杂项清单">误区 1：把初始化当杂项清单</h3>
+<p>高级前端读 bootstrap 时容易快速扫过初始化代码。但这里的初始化定义了 trust boundary、network boundary、exit boundary。后续 tool/query/permission/MCP 都依赖这些边界。</p>
+<h3 id="误区-2-认为-void-someasynctask-就是不重要">误区 2：认为 <code>void someAsyncTask()</code> 就是不重要</h3>
+<p>非阻塞不等于不重要。它只表示不在当前 critical path。要看它是否有失败处理、是否 fail open、是否有后续 wait handle。</p>
+<h3 id="误区-3-把-env-当普通配置">误区 3：把 env 当普通配置</h3>
+<p>在 AI CLI 里 env 可以改变 API endpoint、代理、证书、子进程行为和 provider routing。safe env/full env 的分离是安全设计，不是过度工程。</p>
+<h3 id="误区-4-忽略-headless-和-interactive-的错误输出差异">误区 4：忽略 headless 和 interactive 的错误输出差异</h3>
+<p>headless 面向脚本/SDK，interactive 面向人和 Ink UI。初始化层已经开始区分输出协议，不能假设所有错误都走同一种 UI。</p>
+<h3 id="误区-5-过早深入-remote-settings-业务细节">误区 5：过早深入 remote settings 业务细节</h3>
+<p>本章只需要理解 remote settings/policy limits 在初始化链路中的同步模型。具体策略如何影响工具、插件、权限，后续章节再深入。</p>
+<h2 id="本章总结">本章总结</h2>
+<p>本章建立的源码心智模型：</p>
+<pre><code class="language-text">preAction
+  -&gt; init()
+       -&gt; config enabled
+       -&gt; safe env
+       -&gt; shutdown
+       -&gt; remote/policy wait handles
+       -&gt; network transport
+       -&gt; cleanup registry
+  -&gt; async remote/policy load
+  -&gt; print or REPL runtime</code></pre>
+<p>最重要的证据链：</p>
+<pre><code class="language-text">main.tsx program.hook(&#39;preAction&#39;)
+  -&gt; await init()
+  -&gt; entrypoints/init.ts memoized init
+  -&gt; enableConfigs()
+  -&gt; applySafeConfigEnvironmentVariables()
+  -&gt; setupGracefulShutdown()
+  -&gt; initializeRemoteManagedSettingsLoadingPromise()
+  -&gt; initializePolicyLimitsLoadingPromise()
+  -&gt; configureGlobalMTLS()
+  -&gt; configureGlobalAgents()
+  -&gt; preconnectAnthropicApi()</code></pre>
+<p>如果你能解释这条链路为什么按这个顺序排列，就已经掌握了本章的核心。</p>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 4 章会进入 React + Ink 终端 UI。下一章要继续追踪的问题：</p>
+<ol><li>在初始化完成后，Claude Code 如何把 React 渲染到终端而不是浏览器？</li><li>Ink UI 的 <code>Box</code>、<code>Text</code>、输入事件、消息列表和 Dialog 如何组成 REPL 的可视界面？</li><li>配置错误、setup screens、REPL 主界面这些不同 UI 场景如何共享 render/runtime helper？</li></ol>
+<p>换句话说，第 3 章准备好了运行时环境，第 4 章开始看这个环境中第一个真正可见的终端 UI 层。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/02-cli-entry-commander.html"><span>上一章</span><strong>第 2 章：CLI 启动入口与 Commander 命令解析</strong></a>
+    <a class="pager-next" href="/chapters/04-react-ink-tui.html"><span>下一章</span><strong>第 4 章：React + Ink 终端 UI</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-init-为什么使用-memoize">1. `init()` 为什么使用 memoize</a><a class="toc-level-3" href="#2-配置系统启用不是读取一个-json-那么简单">2. 配置系统启用不是读取一个 JSON 那么简单</a><a class="toc-level-3" href="#3-safe-env-和-full-env-是-trust-boundary">3. safe env 和 full env 是 trust boundary</a><a class="toc-level-3" href="#4-graceful-shutdown-是-cli-的全局退出协议">4. graceful shutdown 是 CLI 的全局退出协议</a><a class="toc-level-3" href="#5-remote-managed-settings-和-policy-limits-使用-early-promise">5. remote managed settings 和 policy limits 使用 early promise</a><a class="toc-level-3" href="#6-网络-证书-mtls-proxy-必须早于首个-api-请求">6. 网络、证书、mTLS、proxy 必须早于首个 API 请求</a><a class="toc-level-3" href="#7-fire-and-forget-不是随便-void">7. fire-and-forget 不是随便 `void`</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-3" href="#从-cli-到-init">从 CLI 到 init</a><a class="toc-level-3" href="#init-内部主链路">init 内部主链路</a><a class="toc-level-3" href="#trust-后环境变量与-telemetry">trust 后环境变量与 telemetry</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-确认-preaction-init-边界">路线一：确认 `preAction -&gt; init` 边界</a><a class="toc-level-3" href="#路线二-拆-init-的阻塞顺序">路线二：拆 `init()` 的阻塞顺序</a><a class="toc-level-3" href="#路线三-验证-safe-env-与-full-env">路线三：验证 safe env 与 full env</a><a class="toc-level-3" href="#路线四-追踪-remote-settings-policy-limits-的-wait-handle">路线四：追踪 remote settings / policy limits 的 wait handle</a><a class="toc-level-3" href="#路线五-确认配置错误如何分-runtime-输出">路线五：确认配置错误如何分 runtime 输出</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-3" href="#验证-1-init-是-memoized">验证 1：`init` 是 memoized</a><a class="toc-level-3" href="#验证-2-配置和-safe-env-在最前面">验证 2：配置和 safe env 在最前面</a><a class="toc-level-3" href="#验证-3-完整-env-在-trust-后">验证 3：完整 env 在 trust 后</a><a class="toc-level-3" href="#验证-4-remote-policy-loading-promise">验证 4：remote/policy loading promise</a><a class="toc-level-3" href="#验证-5-网络准备顺序">验证 5：网络准备顺序</a><a class="toc-level-3" href="#验证-6-错误路径分-runtime">验证 6：错误路径分 runtime</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-3" href="#1-init-开头-配置与安全-env">1. `init()` 开头：配置与安全 env</a><a class="toc-level-3" href="#2-shutdown-注册-为后续资源建立退出协议">2. shutdown 注册：为后续资源建立退出协议</a><a class="toc-level-3" href="#3-非阻塞预加载-提升体验但不阻塞主路径">3. 非阻塞预加载：提升体验但不阻塞主路径</a><a class="toc-level-3" href="#4-remote-policy-promise-给后续系统同步点">4. remote/policy promise：给后续系统同步点</a><a class="toc-level-3" href="#5-网络层准备-影响首个-query">5. 网络层准备：影响首个 query</a><a class="toc-level-3" href="#6-错误路径-runtime-输出协议从-init-开始分流">6. 错误路径：runtime 输出协议从 init 开始分流</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-3" href="#承接第-2-章">承接第 2 章</a><a class="toc-level-3" href="#连接第-4-章-ink-ui">连接第 4 章 Ink UI</a><a class="toc-level-3" href="#连接-repl-appstate-message-query-tool-permission-command-mcp">连接 REPL、AppState、Message、query、tool、permission、command、MCP</a><a class="toc-level-3" href="#后续会继续使用的点">后续会继续使用的点</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-3" href="#1-初始化阶段图">1. 初始化阶段图</a><a class="toc-level-3" href="#2-env-信任边界图">2. env 信任边界图</a><a class="toc-level-3" href="#3-remote-policy-双阶段图">3. remote/policy 双阶段图</a><a class="toc-level-3" href="#4-网络准备图">4. 网络准备图</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-3" href="#任务-1-定位-init-主骨架">任务 1：定位 `init()` 主骨架</a><a class="toc-level-3" href="#任务-2-追踪-safe-env-full-env-生命周期">任务 2：追踪 safe env/full env 生命周期</a><a class="toc-level-3" href="#任务-3-画-remote-settings-的真实证据链">任务 3：画 remote settings 的真实证据链</a><a class="toc-level-3" href="#任务-4-分析配置错误的-runtime-输出">任务 4：分析配置错误的 runtime 输出</a><a class="toc-level-3" href="#任务-5-在-learning-framework-复刻简化-init">任务 5：在 learning-framework 复刻简化 `init()`</a><a class="toc-level-3" href="#任务-6-进阶分析题">任务 6：进阶分析题</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-3" href="#误区-1-把初始化当杂项清单">误区 1：把初始化当杂项清单</a><a class="toc-level-3" href="#误区-2-认为-void-someasynctask-就是不重要">误区 2：认为 `void someAsyncTask()` 就是不重要</a><a class="toc-level-3" href="#误区-3-把-env-当普通配置">误区 3：把 env 当普通配置</a><a class="toc-level-3" href="#误区-4-忽略-headless-和-interactive-的错误输出差异">误区 4：忽略 headless 和 interactive 的错误输出差异</a><a class="toc-level-3" href="#误区-5-过早深入-remote-settings-业务细节">误区 5：过早深入 remote settings 业务细节</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

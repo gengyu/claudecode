@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 1 章：源码全景与学习地图 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option selected value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a aria-current="page" href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-1-章-源码全景与学习地图">第 1 章：源码全景与学习地图</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>本章面向<strong>高级前端开发工程师</strong>。你已经熟悉 TypeScript、React、组件分层、状态管理、工程化和大型前端项目的阅读方式，所以这里不会把重点放在“什么是模块导入”“什么是组件”这类基础知识上。</p>
+<p>Claude Code 对高级前端来说真正陌生的地方，通常不是 React 或状态管理，而是这些能力如何被放进一个 AI CLI 产品里：</p>
+<ul><li>CLI 入口如何决定交互模式、非交互模式、远程模式</li><li>Ink/React 终端 UI 如何承载一个长期运行的 Agent 会话</li><li>用户输入如何被转成消息、进入模型请求、再驱动工具调用</li><li>Tool protocol、权限系统、MCP、插件和 skills 如何串进主链路</li><li><code>REPL.tsx</code> 为什么会成为 UI、状态、命令、权限、模型请求和工具执行的枢纽</li></ul>
+<p>所以第 1 章不是“项目简介”，而是给你一张足够实用的源码导航图。学完后，你应该能带着明确问题进入后续章节，而不是在大量文件里随机游走。</p>
+<blockquote><p>路径说明：本课程基于当前学习仓库结构，源码位于 <code>claudecode-project/src/</code>。如果你阅读的是官方仓库或其他镜像，目录前缀可能不同，但本章讲的模块角色和调用关系仍然适用。</p></blockquote>
+<p>在 14 章主线课中，本章属于第一阶段“建立全局地图”。它保持原课程体系不变，为后续第 2 章 <code>main.tsx</code>、第 5 章 <code>REPL.tsx</code>、第 8 章 <code>query.ts</code>、第 9-11 章工具与权限系统打底。</p>
+<h2 id="学习目标">学习目标</h2>
+<p>完成本章后，你应该能够：</p>
+<ol><li>用前端架构视角解释 Claude Code 的核心模块分工。</li><li>快速定位 CLI 入口、终端 UI、状态层、Agent 查询循环、工具系统和命令系统的入口文件。</li><li>画出“用户输入 -&gt; 消息 -&gt; query -&gt; tool_use -&gt; 工具执行 -&gt; UI 更新”的主链路。</li><li>识别 <code>REPL.tsx</code> 作为系统枢纽的 3-5 个交叉调用点。</li><li>使用 <code>rg</code> 在 5 分钟内验证自己对主链路的判断。</li><li>明确后续章节应该按“主路径证据链”推进，而不是按目录顺序平铺。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>你不需要补 TypeScript 或 React 基础。本章默认你已经具备：</p>
+<ul><li>大型前端项目模块拆解经验</li><li>React 容器组件、Hooks、Context、外部 store 的实践经验</li><li>CLI 工程或 Node.js/Bun 运行时的基本理解</li><li>能熟练使用 <code>rg</code>、<code>find</code>、<code>sed</code>、编辑器跳转定义等代码检索手段</li></ul>
+<p>本章会重点补齐你可能相对陌生的部分：</p>
+<ul><li><strong>Agent loop</strong>：模型不是一次返回就结束，而是可能多轮请求工具、消费工具结果、继续推理。</li><li><strong>Tool protocol</strong>：工具不是普通函数，它需要 schema、提示词、权限检查、执行上下文、结果消息和 UI 展示。</li><li><strong>TUI 架构</strong>：Ink 把 React 渲染到终端，前端组件思维还在，但输入、布局、刷新和生命周期会有 CLI 产品特有的问题。</li><li><strong>安全边界</strong>：AI 可以读写文件、执行命令，权限系统是主链路的一部分，不是附加功能。</li></ul>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-不要把它当普通-cli-也不要只把它当-react-app">1. 不要把它当普通 CLI，也不要只把它当 React App</h3>
+<p>如果只从 CLI 角度看，Claude Code 像是一个命令行工具；如果只从前端角度看，它又像一个 React 应用。但更准确的心智模型是：</p>
+<pre><code class="language-text">Claude Code = CLI Shell + React TUI + Agent Runtime + Tool Runtime + Extension Host</code></pre>
+<p>这几个角色同时存在：</p>
+<ul><li><strong>CLI Shell</strong>：解析参数、启动不同模式、处理登录/恢复/配置等命令。</li><li><strong>React TUI</strong>：用 Ink 管理输入框、消息列表、弹窗、状态栏、快捷键。</li><li><strong>Agent Runtime</strong>：把消息送进模型，处理流式响应、多轮继续、上下文压缩。</li><li><strong>Tool Runtime</strong>：把模型提出的 tool_use 转成真实本地能力调用。</li><li><strong>Extension Host</strong>：接入 MCP、插件、skills、远程桥接等扩展能力。</li></ul>
+<p>对高级前端来说，关键不是“它用了 React”，而是 React 组件树如何和 Agent Runtime 互相咬合。这个咬合点主要发生在 <code>REPL.tsx</code>。</p>
+<h3 id="2-主链路先于目录树">2. 主链路先于目录树</h3>
+<p>大型源码阅读最容易犯的错，是先看目录树，然后试图把每个目录都解释清楚。对 Claude Code 更有效的方式是先抓主链路：</p>
+<pre><code class="language-text">命令行启动
+  -&gt; main.tsx 解析参数和运行模式
+  -&gt; init.ts 初始化配置、策略、环境
+  -&gt; REPL.tsx 挂载终端交互界面
+  -&gt; PromptInput 接收用户输入
+  -&gt; handlePromptSubmit 把输入转成消息
+  -&gt; query.ts 发起 Agent 查询循环
+  -&gt; 模型返回 assistant 文本或 tool_use
+  -&gt; toolOrchestration.ts 调度工具
+  -&gt; Tool.ts / tools/* 执行具体能力
+  -&gt; tool_result 回到消息流
+  -&gt; REPL/Messages 渲染新状态</code></pre>
+<p>这条链路是你后续读源码的“证据链”。每进入一个新文件，都要问两个问题：</p>
+<ol><li>它在这条链路的哪一段？</li><li>它把数据交给了谁，或者从谁那里接收数据？</li></ol>
+<p>目录树是静态地图，主链路是动态地图。高级工程师读源码要优先建立动态地图。</p>
+<h3 id="3-五个核心子系统">3. 五个核心子系统</h3>
+<p>第 1 章先把系统压缩成五个子系统，后续章节再展开：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>子系统</th><th>前端类比</th><th>核心入口</th><th>主要问题</th></tr></thead><tbody><tr><td>入口系统</td><td>应用 bootstrap + router guard</td><td><code>main.tsx</code>、<code>entrypoints/init.ts</code></td><td>程序以什么模式启动？哪些配置先加载？</td></tr><tr><td>交互系统</td><td>顶层容器组件 + shell layout</td><td><code>screens/REPL.tsx</code>、<code>components/</code></td><td>用户输入、消息展示、弹窗和快捷键如何协作？</td></tr><tr><td>状态与消息系统</td><td>external store + domain model</td><td><code>state/</code>、<code>utils/messages</code></td><td>会话状态如何被订阅、更新和转成 API 输入？</td></tr><tr><td>Agent 循环系统</td><td>async workflow engine</td><td><code>query.ts</code>、<code>query/</code></td><td>模型流式响应、工具调用、多轮继续如何组织？</td></tr><tr><td>工具与扩展系统</td><td>plugin host + capability registry</td><td><code>Tool.ts</code>、<code>tools.ts</code>、<code>commands.ts</code></td><td>本地能力如何安全暴露给模型和用户？</td></tr></tbody></table></div>
+<p>注意，这不是严格分层架构。<code>REPL.tsx</code> 会同时连接多个子系统，这恰恰是它的价值：它是交互态系统的协调中心，而不是一个单纯的页面组件。</p>
+<h3 id="4-repl-tsx-是前端工程师最应该优先理解的枢纽">4. <code>REPL.tsx</code> 是前端工程师最应该优先理解的枢纽</h3>
+<p>从前端视角看，<code>REPL.tsx</code> 很像一个超大型 smart component，但它的职责比普通页面容器更重。它至少连接了这些方向：</p>
+<ol><li><strong>UI 输入方向</strong>：通过 <code>PromptInput</code>、键盘处理、命令队列接收用户意图。</li><li><strong>状态方向</strong>：通过 <code>useAppState</code>、<code>useSetAppState</code>、局部 state 维护会话和 UI 状态。</li><li><strong>模型方向</strong>：调用 <code>query()</code>，消费流式事件，把模型输出变成消息。</li><li><strong>工具方向</strong>：把工具池、MCP tools、权限上下文传入查询循环。</li><li><strong>权限方向</strong>：展示文件、Bash、MCP、plan mode 等权限请求 UI。</li><li><strong>扩展方向</strong>：接入 IDE、remote、skills、plugins、background tasks、voice 等能力。</li></ol>
+<p>这也是为什么它看起来“重”。它不是一个应该被简单拆小的普通前端页面，而是终端 Agent 产品的运行时编排层。后续第 5 章会专门拆它，本章先把它标成重点地标。</p>
+<h3 id="5-工具系统是-ai-cli-和普通前端应用的最大差异">5. 工具系统是 AI CLI 和普通前端应用的最大差异</h3>
+<p>传统前端应用的动作一般来自用户点击、表单提交、路由跳转。Claude Code 的动作还可能来自模型：</p>
+<pre><code class="language-text">用户：帮我看一下项目结构
+  -&gt; 模型决定需要搜索文件
+  -&gt; 发出 tool_use: Glob/Grep/Read
+  -&gt; 程序检查工具是否可用、是否需要权限
+  -&gt; 执行工具并把结果作为 tool_result 返回
+  -&gt; 模型继续基于结果回答或发起下一轮工具调用</code></pre>
+<p>所以 <code>Tool.ts</code> 不是一个简单工具函数集合的类型定义。它定义的是模型和本地运行时之间的契约，包括：</p>
+<ul><li>工具名和描述如何进入模型上下文</li><li>输入 schema 如何校验模型生成的参数</li><li>权限系统如何参与执行</li><li>执行结果如何变成消息</li><li>UI 如何展示工具运行状态</li><li>哪些工具可以并发，哪些必须串行</li></ul>
+<p>这部分会在第 9-11 章成为课程核心。</p>
+<h2 id="关键源码入口">关键源码入口</h2>
+<p>本章先锁定 9 个核心入口文件。第一遍只需要识别角色，不必逐行读完。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>你应该看什么</th><th>后续章节</th></tr></thead><tbody><tr><td><code>claudecode-project/src/main.tsx</code></td><td>CLI 参数、运行模式、进入 REPL 或 print 的分流</td><td>第 2 章</td></tr><tr><td><code>claudecode-project/src/entrypoints/init.ts</code></td><td>配置、环境、远程策略、清理逻辑的初始化顺序</td><td>第 3 章</td></tr><tr><td><code>claudecode-project/src/screens/REPL.tsx</code></td><td>输入、状态、query、权限、工具池如何聚合</td><td>第 5 章</td></tr><tr><td><code>claudecode-project/src/state/AppState.tsx</code></td><td>external store、Provider、selector hook</td><td>第 6 章</td></tr><tr><td><code>claudecode-project/src/query.ts</code></td><td>Agent loop、流式事件、工具调用继续循环</td><td>第 8 章</td></tr><tr><td><code>claudecode-project/src/Tool.ts</code></td><td>工具抽象、ToolUseContext、权限上下文</td><td>第 9 章</td></tr><tr><td><code>claudecode-project/src/tools.ts</code></td><td>内置工具池、feature gate、权限过滤、MCP 合并</td><td>第 10 章</td></tr><tr><td><code>claudecode-project/src/services/tools/toolOrchestration.ts</code></td><td>工具串行/并发调度、tool_use 到 tool_result</td><td>第 10 章</td></tr><tr><td><code>claudecode-project/src/commands.ts</code></td><td>slash command 注册、动态命令、skills/plugin command</td><td>第 12 章</td></tr></tbody></table></div>
+<p>辅助目录可以先只建立印象：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>目录</th><th>本章只需知道</th></tr></thead><tbody><tr><td><code>components/</code></td><td>Ink/React UI 组件，不等于 Web DOM 组件</td></tr><tr><td><code>hooks/</code></td><td>交互、IDE、命令、工具、状态订阅的组合逻辑</td></tr><tr><td><code>tools/</code></td><td>内置工具实现，后续按 Read/Edit/Bash/Agent 等分组读</td></tr><tr><td><code>commands/</code></td><td><code>/help</code>、<code>/clear</code>、<code>/model</code> 等斜杠命令</td></tr><tr><td><code>services/</code></td><td>API、MCP、compact、analytics、settings、tool orchestration</td></tr><tr><td><code>bridge/</code>、<code>remote/</code></td><td>远程与桥接能力，属于高级专题</td></tr><tr><td><code>plugins/</code>、<code>skills/</code></td><td>扩展系统，后续第 13 章读</td></tr></tbody></table></div>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<h3 id="路线一-先用命令建立静态地图">路线一：先用命令建立静态地图</h3>
+<p>在仓库根目录运行：</p>
+<pre><code class="language-bash">find claudecode-project/src -maxdepth 1 -type d | sort
+rg --files claudecode-project/src | wc -l</code></pre>
+<p>这一步只回答两个问题：</p>
+<ol><li>一级功能区有哪些？</li><li>项目规模大概有多大？</li></ol>
+<p>不要在这一步打开所有文件。高级工程师也会被大项目的横向复杂度拖慢，先避免无目的探索。</p>
+<h3 id="路线二-用-rg-验证主链路存在">路线二：用 <code>rg</code> 验证主链路存在</h3>
+<p>第一轮验证不追求完全准确，只确认关键符号真实存在：</p>
+<pre><code class="language-bash">rg -n &quot;function.*REPL|const.*REPL|export.*REPL&quot; claudecode-project/src/screens/REPL.tsx
+rg -n &quot;handlePromptSubmit&quot; claudecode-project/src
+rg -n &quot;export async function\\* query|function\\* query&quot; claudecode-project/src/query.ts
+rg -n &quot;runTools\\(&quot; claudecode-project/src
+rg -n &quot;getTools\\(|assembleToolPool&quot; claudecode-project/src</code></pre>
+<p>你要得到的不是最终答案，而是证据链的锚点：</p>
+<pre><code class="language-text">REPL 存在
+  -&gt; 输入提交函数存在
+  -&gt; query 生成器存在
+  -&gt; runTools 调度存在
+  -&gt; tools 工具池装配存在</code></pre>
+<h3 id="路线三-按-数据流-打开文件">路线三：按“数据流”打开文件</h3>
+<p>按下面顺序读，每个文件第一遍只读导入、关键导出、核心函数签名：</p>
+<ol><li><code>main.tsx</code>：看它引入了哪些启动和渲染能力。</li><li><code>entrypoints/init.ts</code>：看初始化任务大类，不看每个配置细节。</li><li><code>screens/REPL.tsx</code>：搜索 <code>handlePromptSubmit</code>、<code>query</code>、<code>useAppState</code>、<code>PermissionRequest</code>。</li><li><code>query.ts</code>：搜索 <code>query</code>、<code>runTools</code>、<code>tool_use</code>、<code>yield</code>。</li><li><code>Tool.ts</code>：搜索 <code>ToolUseContext</code>、<code>ToolPermissionContext</code>、<code>Tools</code>。</li><li><code>tools.ts</code>：搜索 <code>getAllBaseTools</code>、<code>getTools</code>、<code>assembleToolPool</code>。</li><li><code>commands.ts</code>：搜索 <code>getCommands</code>、<code>getDynamicSkills</code>、<code>getPluginCommands</code>。</li></ol>
+<p>这一路线的目标是把“文件名猜测”升级成“源码证据”。</p>
+<h3 id="路线四-把源码映射到课程章节">路线四：把源码映射到课程章节</h3>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>源码区域</th><th>先问的问题</th><th>深入章节</th></tr></thead><tbody><tr><td><code>main.tsx</code></td><td>CLI 如何分流到不同运行模式？</td><td>第 2 章</td></tr><tr><td><code>entrypoints/init.ts</code></td><td>哪些初始化必须早于 UI 和 API？</td><td>第 3 章</td></tr><tr><td><code>ink/</code>、<code>components/</code></td><td>React 如何渲染到终端？</td><td>第 4 章</td></tr><tr><td><code>screens/REPL.tsx</code></td><td>用户输入如何驱动 Agent turn？</td><td>第 5 章</td></tr><tr><td><code>state/</code></td><td>状态如何避免全树重渲染？</td><td>第 6 章</td></tr><tr><td><code>utils/messages</code>、<code>types/message</code></td><td>UI 消息如何变成 API 消息？</td><td>第 7 章</td></tr><tr><td><code>query.ts</code></td><td>Agent loop 如何多轮继续？</td><td>第 8 章</td></tr><tr><td><code>Tool.ts</code></td><td>工具协议包含哪些契约？</td><td>第 9 章</td></tr><tr><td><code>tools.ts</code>、<code>tools/</code></td><td>工具如何注册、过滤、执行？</td><td>第 10 章</td></tr><tr><td><code>permissions</code></td><td>本地危险能力如何被约束？</td><td>第 11 章</td></tr><tr><td><code>commands.ts</code>、<code>commands/</code></td><td>slash command 如何接入？</td><td>第 12 章</td></tr><tr><td><code>mcp/</code>、<code>plugins/</code>、<code>skills/</code></td><td>外部能力如何扩展系统？</td><td>第 13 章</td></tr><tr><td><code>bridge/</code>、<code>remote/</code>、<code>AgentTool/</code></td><td>复杂产品能力如何接入主链路？</td><td>第 14 章</td></tr></tbody></table></div>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<p>这一节是给有经验开发者的抓手。读完本章后，立刻做一次快速验证。</p>
+<h3 id="验证-1-确认入口文件存在">验证 1：确认入口文件存在</h3>
+<pre><code class="language-bash">ls claudecode-project/src/main.tsx
+ls claudecode-project/src/screens/REPL.tsx
+ls claudecode-project/src/query.ts
+ls claudecode-project/src/Tool.ts
+ls claudecode-project/src/tools.ts
+ls claudecode-project/src/commands.ts</code></pre>
+<p>如果路径不一致，先修正你本地的路径前缀，再继续学习。</p>
+<h3 id="验证-2-确认用户输入链路的关键符号">验证 2：确认用户输入链路的关键符号</h3>
+<pre><code class="language-bash">rg -n &quot;handlePromptSubmit&quot; claudecode-project/src
+rg -n &quot;PromptInput&quot; claudecode-project/src/screens/REPL.tsx
+rg -n &quot;query\\(&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>你要确认三件事：</p>
+<ul><li>REPL 渲染或使用了输入组件。</li><li>输入提交会进入 <code>handlePromptSubmit</code> 附近的逻辑。</li><li>REPL 会调用或消费 <code>query()</code>。</li></ul>
+<h3 id="验证-3-确认工具执行链路">验证 3：确认工具执行链路</h3>
+<pre><code class="language-bash">rg -n &quot;runTools\\(&quot; claudecode-project/src/query.ts claudecode-project/src/services/tools
+rg -n &quot;runToolUse&quot; claudecode-project/src/services/tools
+rg -n &quot;getAllBaseTools|getTools|assembleToolPool&quot; claudecode-project/src/tools.ts</code></pre>
+<p>你要确认：</p>
+<ul><li><code>query.ts</code> 不是只负责 API 请求，它还会衔接工具调度。</li><li>工具有统一的 orchestration 层。</li><li>工具池不是散落调用，而是集中装配、过滤和合并。</li></ul>
+<h3 id="验证-4-确认权限系统进入主链路">验证 4：确认权限系统进入主链路</h3>
+<pre><code class="language-bash">rg -n &quot;PermissionRequest|useCanUseTool|toolPermissionContext&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src</code></pre>
+<p>你要确认权限不是独立设置页，而是和 REPL、工具执行、状态上下文直接相关。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<h3 id="1-高级前端视角的系统分层图">1. 高级前端视角的系统分层图</h3>
+<pre><code class="language-text">┌──────────────────────────────────────────────┐
+│ CLI Bootstrap                                │
+│ main.tsx / init.ts                           │
+├──────────────────────────────────────────────┤
+│ React TUI Container                          │
+│ REPL.tsx / PromptInput / Messages / Dialogs  │
+├──────────────────────────────────────────────┤
+│ State + Domain Events                        │
+│ AppState / message model / command queue     │
+├──────────────────────────────────────────────┤
+│ Agent Runtime                                │
+│ query.ts / stream events / compact / hooks   │
+├──────────────────────────────────────────────┤
+│ Tool Runtime                                 │
+│ Tool.ts / tools.ts / toolOrchestration.ts    │
+├──────────────────────────────────────────────┤
+│ Extension + Remote                           │
+│ MCP / plugins / skills / bridge / remote     │
+└──────────────────────────────────────────────┘</code></pre>
+<h3 id="2-repl-枢纽图">2. REPL 枢纽图</h3>
+<pre><code class="language-text">                         ┌──────────────┐
+                         │  AppState    │
+                         └──────┬───────┘
+                                │
+┌──────────────┐        ┌───────▼───────┐        ┌──────────────┐
+│ PromptInput  ├───────►│   REPL.tsx    ├───────►│   query.ts   │
+└──────────────┘        └───┬───────┬───┘        └──────┬───────┘
+                            │       │                   │
+                    ┌───────▼───┐   │            ┌──────▼──────┐
+                    │ Commands  │   │            │ runTools     │
+                    └───────────┘   │            └──────┬──────┘
+                                    │                   │
+                              ┌─────▼─────┐      ┌──────▼──────┐
+                              │ Permission│      │ Tool Runtime │
+                              └───────────┘      └─────────────┘</code></pre>
+<p>这张图要传达一个判断：<code>REPL.tsx</code> 的复杂度不是偶然的，它负责把用户交互态和 Agent 执行态接起来。</p>
+<h3 id="3-工具协议图">3. 工具协议图</h3>
+<pre><code class="language-text">Model tool_use
+  -&gt; name + input
+  -&gt; findToolByName
+  -&gt; inputSchema.safeParse
+  -&gt; canUseTool / permission context
+  -&gt; runToolUse
+  -&gt; tool_result message
+  -&gt; query continues</code></pre>
+<p>这个图可以提前建立第 9-11 章的心智模型。</p>
+<h2 id="实践任务">实践任务</h2>
+<h3 id="任务-1-建立-10-个入口文件清单">任务 1：建立 10 个入口文件清单</h3>
+<p>产出一个表格，记录 10 个入口文件：</p>
+<pre><code class="language-markdown">| 文件 | 我认为它负责什么 | 后续要验证的问题 |
+| --- | --- | --- |
+| `src/main.tsx` | CLI 启动与模式分流 | `--print` 在哪里进入非交互路径？ |</code></pre>
+<p>要求：不能只复制本章表格，必须补一列“后续要验证的问题”。</p>
+<h3 id="任务-2-追踪-repl-的-5-个交叉点">任务 2：追踪 REPL 的 5 个交叉点</h3>
+<p>在 <code>REPL.tsx</code> 中搜索并记录这些符号附近的代码位置：</p>
+<pre><code class="language-bash">rg -n &quot;PromptInput|handlePromptSubmit|query\\(|useAppState|PermissionRequest|useMergedTools|useMergedCommands&quot; claudecode-project/src/screens/REPL.tsx</code></pre>
+<p>产出：</p>
+<ul><li>输入组件在哪里接入？</li><li>状态在哪里读取？</li><li>query 在哪里被调用或消费？</li><li>权限 UI 在哪里接入？</li><li>工具池/命令池在哪里进入 REPL？</li></ul>
+<p>记录函数名或行号即可，不需要本章深入解释全部实现。</p>
+<h3 id="任务-3-画真实调用证据链">任务 3：画真实调用证据链</h3>
+<p>基于 <code>rg</code> 结果，画一条带文件名的证据链：</p>
+<pre><code class="language-text">PromptInput
+  -&gt; REPL.tsx: ...
+  -&gt; handlePromptSubmit: ...
+  -&gt; query.ts: ...
+  -&gt; toolOrchestration.ts: ...
+  -&gt; Tool.ts / tools.ts: ...</code></pre>
+<p>要求每一段都能对应到一个真实文件或符号，不写纯猜测。</p>
+<h3 id="任务-4-高级可选任务-找出一个设计张力">任务 4：高级可选任务：找出一个设计张力</h3>
+<p>从下面任选一个问题，写 200-300 字分析：</p>
+<ul><li>为什么 <code>REPL.tsx</code> 很难保持“小而美”？</li><li>为什么工具系统不能只是普通函数列表？</li><li>为什么权限系统必须进入工具主链路，而不能只放在设置页？</li><li>为什么 <code>main.tsx</code> 在真实产品里会承担大量启动分流？</li></ul>
+<p>这个任务的目的，是训练你从源码结构反推产品和工程约束。</p>
+<h3 id="任务-5-写第-1-章学习笔记">任务 5：写第 1 章学习笔记</h3>
+<p>建议创建：</p>
+<pre><code class="language-text">learning-framework/docs/notes/ch01-source-map.md</code></pre>
+<p>包含：</p>
+<ul><li>我理解的 Claude Code 主链路</li><li>10 个入口文件和验证问题</li><li>REPL 的 5 个交叉点</li><li>我发现的 1 个设计张力</li><li>下一章要重点验证的 <code>main.tsx</code> 问题</li></ul>
+<h2 id="常见误区">常见误区</h2>
+<h3 id="误区-1-把-repl-tsx-当作普通页面组件评价">误区 1：把 <code>REPL.tsx</code> 当作普通页面组件评价</h3>
+<p>高级前端很容易看到大组件就本能想拆。但在这里要先问：它是不是承担了运行时协调职责？<code>REPL.tsx</code> 同时连接输入、状态、query、权限、工具池、命令池、远程和后台任务，它更像交互运行时的 coordinator。是否应该拆，是后续重构问题；第一遍阅读先理解它为什么会重。</p>
+<h3 id="误区-2-只看静态目录-不看调用证据">误区 2：只看静态目录，不看调用证据</h3>
+<p>目录名会告诉你“可能是什么”，但不会告诉你“运行时怎么走”。本章要求用 <code>rg</code> 验证，是为了避免停留在架构猜测。高级工程师读源码，应该尽快把猜测变成证据链。</p>
+<h3 id="误区-3-低估工具系统的协议复杂度">误区 3：低估工具系统的协议复杂度</h3>
+<p>如果把工具理解成 <code>tools.map(fn =&gt; fn())</code>，后面会看不懂权限、schema、tool_result、并发调度和 UI 展示为什么要分散在多个文件。工具系统本质上是模型和本地能力之间的协议层。</p>
+<h3 id="误区-4-过早深入高级扩展">误区 4：过早深入高级扩展</h3>
+<p>MCP、plugins、skills、bridge、remote 都很有吸引力，但它们是主链路上的扩展点。先理解本地交互主链路和工具主链路，再看扩展系统，会快很多。</p>
+<h3 id="误区-5-把-main-tsx-的复杂度理解为-入口写乱了">误区 5：把 <code>main.tsx</code> 的复杂度理解为“入口写乱了”</h3>
+<p>真实 CLI 产品的入口通常会承担参数解析、模式分流、配置预热、登录状态、远程状态、兼容路径等职责。第 2 章会拆解它的结构，第一章先不要急着用普通前端入口文件的标准评价它。</p>
+<h2 id="本章总结">本章总结</h2>
+<p>第 1 章的重点不是把 Claude Code 讲完，而是让你获得一个可以继续深入的心智模型：</p>
+<pre><code class="language-text">main.tsx 启动和分流
+  -&gt; init.ts 准备运行环境
+  -&gt; REPL.tsx 承载交互运行时
+  -&gt; AppState / messages 维护会话状态
+  -&gt; query.ts 驱动 Agent loop
+  -&gt; Tool.ts / tools.ts / toolOrchestration.ts 连接模型和本地能力
+  -&gt; commands / MCP / plugins / skills 提供扩展入口</code></pre>
+<p>对高级前端开发工程师来说，本章最重要的结论是：</p>
+<ol><li>Claude Code 不是普通 CLI，也不是普通 React App，而是一个终端 Agent Runtime。</li><li><code>REPL.tsx</code> 是理解系统的关键枢纽，后续要重点追踪它的交叉调用点。</li><li>工具系统是 AI CLI 的核心差异，后续要按协议层而不是普通函数层理解。</li><li>每个架构判断都要用源码符号和调用链验证。</li></ol>
+<p>请带着这句话进入后续章节：<strong>先建立证据链，再评价架构；先理解主路径，再讨论拆分和优化。</strong></p>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 2 章会进入 <code>main.tsx</code>，重点不再是“它很大”，而是拆解它为什么大、如何分层阅读：</p>
+<ul><li>顶层导入和启动预热做了什么</li><li>Commander.js 如何定义 CLI 参数和 action</li><li><code>preAction</code> 为什么承载初始化逻辑</li><li>交互模式、<code>--print</code> 非交互模式、特殊子命令如何分流</li><li>model、session、permission 等参数如何进入后续运行时</li></ul>
+<p>如果第 1 章是地图，第 2 章就是从地图上的第一个入口正式进城。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/COURSE_FINAL_REVIEW.html"><span>上一章</span><strong>Claude Code 源码系统课程最终验收报告</strong></a>
+    <a class="pager-next" href="/chapters/02-cli-entry-commander.html"><span>下一章</span><strong>第 2 章：CLI 启动入口与 Commander 命令解析</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-不要把它当普通-cli-也不要只把它当-react-app">1. 不要把它当普通 CLI，也不要只把它当 React App</a><a class="toc-level-3" href="#2-主链路先于目录树">2. 主链路先于目录树</a><a class="toc-level-3" href="#3-五个核心子系统">3. 五个核心子系统</a><a class="toc-level-3" href="#4-repl-tsx-是前端工程师最应该优先理解的枢纽">4. `REPL.tsx` 是前端工程师最应该优先理解的枢纽</a><a class="toc-level-3" href="#5-工具系统是-ai-cli-和普通前端应用的最大差异">5. 工具系统是 AI CLI 和普通前端应用的最大差异</a><a class="toc-level-2" href="#关键源码入口">关键源码入口</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-先用命令建立静态地图">路线一：先用命令建立静态地图</a><a class="toc-level-3" href="#路线二-用-rg-验证主链路存在">路线二：用 `rg` 验证主链路存在</a><a class="toc-level-3" href="#路线三-按-数据流-打开文件">路线三：按“数据流”打开文件</a><a class="toc-level-3" href="#路线四-把源码映射到课程章节">路线四：把源码映射到课程章节</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-3" href="#验证-1-确认入口文件存在">验证 1：确认入口文件存在</a><a class="toc-level-3" href="#验证-2-确认用户输入链路的关键符号">验证 2：确认用户输入链路的关键符号</a><a class="toc-level-3" href="#验证-3-确认工具执行链路">验证 3：确认工具执行链路</a><a class="toc-level-3" href="#验证-4-确认权限系统进入主链路">验证 4：确认权限系统进入主链路</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-3" href="#1-高级前端视角的系统分层图">1. 高级前端视角的系统分层图</a><a class="toc-level-3" href="#2-repl-枢纽图">2. REPL 枢纽图</a><a class="toc-level-3" href="#3-工具协议图">3. 工具协议图</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-3" href="#任务-1-建立-10-个入口文件清单">任务 1：建立 10 个入口文件清单</a><a class="toc-level-3" href="#任务-2-追踪-repl-的-5-个交叉点">任务 2：追踪 REPL 的 5 个交叉点</a><a class="toc-level-3" href="#任务-3-画真实调用证据链">任务 3：画真实调用证据链</a><a class="toc-level-3" href="#任务-4-高级可选任务-找出一个设计张力">任务 4：高级可选任务：找出一个设计张力</a><a class="toc-level-3" href="#任务-5-写第-1-章学习笔记">任务 5：写第 1 章学习笔记</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-3" href="#误区-1-把-repl-tsx-当作普通页面组件评价">误区 1：把 `REPL.tsx` 当作普通页面组件评价</a><a class="toc-level-3" href="#误区-2-只看静态目录-不看调用证据">误区 2：只看静态目录，不看调用证据</a><a class="toc-level-3" href="#误区-3-低估工具系统的协议复杂度">误区 3：低估工具系统的协议复杂度</a><a class="toc-level-3" href="#误区-4-过早深入高级扩展">误区 4：过早深入高级扩展</a><a class="toc-level-3" href="#误区-5-把-main-tsx-的复杂度理解为-入口写乱了">误区 5：把 `main.tsx` 的复杂度理解为“入口写乱了”</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

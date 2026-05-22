@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 8 章：Agent 查询循环源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option selected value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a aria-current="page" href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-8-章-agent-查询循环源码导读">第 8 章：Agent 查询循环源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 8 章进入 Claude Code 的核心 Agent loop：<code>src/query.ts</code>。前面章节已经建立了入口、TUI、REPL、AppState、Message，本章看这些输入如何驱动模型和工具多轮协作。</p>
+<p>主线：</p>
+<pre><code class="language-text">REPL.onQuery
+  -&gt; query(messages, systemPrompt, tools, canUseTool, toolUseContext)
+  -&gt; normalizeMessagesForAPI
+  -&gt; callModel stream
+  -&gt; assistant message
+  -&gt; tool_use?
+  -&gt; runTools
+  -&gt; tool_result messages
+  -&gt; continue queryLoop</code></pre>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p><code>query()</code> 不是普通 request 函数，而是 AsyncGenerator runtime。它边请求、边 yield UI 事件、边处理工具、边决定是否继续下一轮。</p>
+<p>前端类比：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>前端概念</th><th>query loop 中的升级版</th></tr></thead><tbody><tr><td>fetch request</td><td>streamed model call</td></tr><tr><td>loading state</td><td>generator yield stream events</td></tr><tr><td>retry</td><td>prompt-too-long / max-output recovery</td></tr><tr><td>effect pipeline</td><td>tool_use -&gt; runTools -&gt; continuation</td></tr><tr><td>route guard</td><td>maxTurns / stop hooks / abort</td></tr></tbody></table></div>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>追踪 <code>REPL -&gt; query -&gt; queryLoop -&gt; callModel</code>。</li><li>解释为什么 <code>query()</code> 使用 AsyncGenerator。</li><li>找到 stream event、assistant message、tool_use、tool_result 的 yield 点。</li><li>说明 runTools 后为什么要继续下一轮 query。</li><li>在 learning-framework 中复刻一个能 yield 文本、工具调用、工具结果、继续轮次的 generator。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>需要理解 AsyncGenerator、streaming response、tool use 协议、AbortController。不会展开 API client、模型参数、token 算法细节。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-query-为什么存在">1. query 为什么存在</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;export async function\\* query|async function\\* queryLoop|yield \\{ type: &#39;stream_request_start&#39; \\}|deps.callModel|runTools&quot; claudecode-project/src/query.ts</code></pre>
+<p>query 是 REPL 和模型/工具 runtime 的分界线。REPL 不应该知道模型如何恢复、工具如何继续、compact 如何触发；这些都收进 query loop。</p>
+<h3 id="2-asyncgenerator-是-ui-和-runtime-的桥">2. AsyncGenerator 是 UI 和 runtime 的桥</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;for await \\(const event of query|yield yieldMessage|yield result.message|yield createSystemMessage&quot; claudecode-project/src/screens/REPL.tsx claudecode-project/src/query.ts</code></pre>
+<p>REPL 可以 <code>for await</code> 消费 query 事件，边收到边更新 UI，而 query 内部可以在每个阶段 yield：请求开始、assistant delta、工具进度、工具结果、compact boundary、错误恢复。</p>
+<h3 id="3-tool-use-让-query-从单轮变成多轮">3. tool_use 让 query 从单轮变成多轮</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;toolUseBlocks|runTools\\(|for await \\(const update of toolUpdates\\)|nextTurnCount|maxTurns&quot; claudecode-project/src/query.ts</code></pre>
+<p>模型返回 tool_use 不是结束，而是中间态：</p>
+<pre><code class="language-text">assistant(tool_use)
+  -&gt; runTools
+  -&gt; user(tool_result)
+  -&gt; queryLoop(next turn)</code></pre>
+<h3 id="4-query-也负责上下文压力">4. query 也负责上下文压力</h3>
+<p>源码锚点：</p>
+<pre><code class="language-bash">rg -n &quot;microcompact|autocompact|tokenBudget|prompt too long|max_output_tokens|buildPostCompactMessages&quot; claudecode-project/src/query.ts claudecode-project/src/query/*.ts</code></pre>
+<p>Agent loop 不能只处理 happy path。它还要在上下文过长、输出过长、compact 触发、stop hooks 介入时保持会话继续。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/query.ts</code></td><td>query generator、loop、tool continuation、recovery</td><td>每个 feature gate 分支</td><td>第 14 章回看 compact</td></tr><tr><td><code>src/query/config.ts</code></td><td>query 配置组织</td><td>模型策略细节</td><td>高级专题</td></tr><tr><td><code>src/query/tokenBudget.ts</code></td><td>budget 检查入口</td><td>算法细节</td><td>第 14 章</td></tr><tr><td><code>src/services/api/claude.ts</code></td><td>callModel 边界</td><td>API SDK 细节</td><td>API 专题</td></tr><tr><td><code>src/services/tools/toolOrchestration.ts</code></td><td>runTools 与 query 的连接</td><td>工具执行细节</td><td>第 10 章</td></tr><tr><td><code>src/query/stopHooks.ts</code></td><td>turn end hooks</td><td>hook 生态全量</td><td>第 14 章</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<pre><code class="language-text">REPL.onQueryImpl
+  -&gt; for await (event of query(...))
+  -&gt; query()
+  -&gt; queryLoop()
+  -&gt; yield stream_request_start
+  -&gt; deps.callModel(normalizeMessagesForAPI(...))
+  -&gt; yield assistant stream messages
+  -&gt; collect toolUseBlocks
+  -&gt; runTools(toolUseBlocks)
+  -&gt; yield tool progress/result messages
+  -&gt; append tool_result to messages
+  -&gt; loop next turn or stop</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<ol><li>query 入口：</li></ol>
+<pre><code class="language-bash">rg -n &quot;export async function\\* query|async function\\* queryLoop|yield\\* queryLoop&quot; claudecode-project/src/query.ts</code></pre>
+<ol><li>模型请求：</li></ol>
+<pre><code class="language-bash">rg -n &quot;stream_request_start|deps.callModel|normalizeMessagesForAPI|for await \\(const message of deps.callModel&quot; claudecode-project/src/query.ts</code></pre>
+<ol><li>工具继续：</li></ol>
+<pre><code class="language-bash">rg -n &quot;toolUseBlocks|runTools\\(|toolUpdates|nextTurnCount|maxTurns&quot; claudecode-project/src/query.ts</code></pre>
+<ol><li>恢复与压缩：</li></ol>
+<pre><code class="language-bash">rg -n &quot;prompt-too-long|prompt too long|max_output_tokens|autocompact|microcompact|buildPostCompactMessages&quot; claudecode-project/src/query.ts</code></pre>
+<ol><li>stop hooks：</li></ol>
+<pre><code class="language-bash">rg -n &quot;handleStopHooks|stopHookActive|preventContinuation|blockingErrors&quot; claudecode-project/src/query.ts claudecode-project/src/query/stopHooks.ts</code></pre>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;export async function\\* query&quot; claudecode-project/src/query.ts
+rg -n &quot;yield \\{ type: &#39;stream_request_start&#39; \\}|deps.callModel&quot; claudecode-project/src/query.ts
+rg -n &quot;toolUseBlocks|runTools\\(&quot; claudecode-project/src/query.ts
+rg -n &quot;for await \\(const update of toolUpdates\\)&quot; claudecode-project/src/query.ts
+rg -n &quot;maxTurns|handleStopHooks|autocompact|microcompact&quot; claudecode-project/src/query.ts</code></pre>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<ol><li><code>query()</code>：外部入口，包住 queryLoop，负责 generator 生命周期。</li><li><code>queryLoop()</code>：真正主循环，管理轮次、messagesForQuery、tracking、stop hook 状态。</li><li>请求前：normalize、token budget、compact/microcompact。</li><li>请求中：<code>deps.callModel</code> stream yield assistant message。</li><li>请求后：收集 tool_use，决定是否 runTools。</li><li>工具后：tool_result 作为 user message 回到 messages，触发下一轮。</li><li>退出条件：无 tool_use、maxTurns、abort、stop hooks、recoverable error 处理结束。</li></ol>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>承接第 7 章 normalized messages，连接第 9-10 章 tool 抽象和内置工具。第 11 章的 permission 会在 runTools/checkPermissions 路径介入。第 14 章会回看 compact、stop hooks、telemetry、performance。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">messages -&gt; API -&gt; assistant(text) -&gt; stop</code></pre>
+<pre><code class="language-text">messages -&gt; API -&gt; assistant(tool_use)
+  -&gt; runTools -&gt; user(tool_result)
+  -&gt; API -&gt; assistant(text)</code></pre>
+<pre><code class="language-text">query loop
+  -&gt; compact check
+  -&gt; model stream
+  -&gt; tool orchestration
+  -&gt; stop hooks
+  -&gt; continuation decision</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>定位 <code>query()</code>、<code>queryLoop()</code>、<code>deps.callModel</code>、<code>runTools</code> 行号。</li><li>追踪一次 tool_use 后继续下一轮的调用链，画出消息数组变化。</li><li>记录所有 <code>yield</code> 类型，分类为 UI event、message、recovery、tool result。</li><li>在 learning-framework 实现 <code>async function* query()</code>：yield 请求开始、assistant 文本、tool_use、tool_result、最终文本。</li><li>进阶分析：为什么 query loop 不能写成一个返回 Promise&lt;Message[]&gt; 的函数？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>把 query 当 API wrapper。它是 Agent loop。</li><li>忽略 generator 的 UI 价值。没有 yield，TUI 只能等整轮结束。</li><li>把 tool_use 当模型最终输出。它只是下一步动作。</li><li>把 compact 当外围功能。上下文压力直接影响 query 继续能力。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>核心模型：</p>
+<pre><code class="language-text">query = streamed model call + tool continuation + context recovery + turn control</code></pre>
+<p>证据链：</p>
+<pre><code class="language-text">REPL for-await query
+  -&gt; queryLoop
+  -&gt; callModel
+  -&gt; collect tool_use
+  -&gt; runTools
+  -&gt; append tool_result
+  -&gt; continue / stop</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 9 章拆 Tool 抽象：query 发现 tool_use 后，为什么任意工具都能被统一调度、校验、权限检查、执行和渲染。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/07-message-context.html"><span>上一章</span><strong>第 7 章：消息系统与对话上下文源码导读</strong></a>
+    <a class="pager-next" href="/chapters/09-tool-abstraction.html"><span>下一章</span><strong>第 9 章：Tool 抽象层设计源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-query-为什么存在">1. query 为什么存在</a><a class="toc-level-3" href="#2-asyncgenerator-是-ui-和-runtime-的桥">2. AsyncGenerator 是 UI 和 runtime 的桥</a><a class="toc-level-3" href="#3-tool-use-让-query-从单轮变成多轮">3. tool_use 让 query 从单轮变成多轮</a><a class="toc-level-3" href="#4-query-也负责上下文压力">4. query 也负责上下文压力</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>

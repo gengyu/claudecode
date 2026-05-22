@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>项目依赖说明 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option selected value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="../chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="../chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="../chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="../chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="../chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="../chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="../chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="../chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="../chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="../chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="../chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="../chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="../chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="../chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="COMMENTS_GUIDE.html">代码注释说明</a><a aria-current="page" href="DEPENDENCIES.html">项目依赖说明</a><a href="PROJECT_COMPARISON.html">项目对比说明</a><a href="QUICKSTART.html">快速开始指南</a><a href="README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="项目依赖说明">项目依赖说明</h1>
+<p>本文档详细说明 learning-framework 项目使用的所有依赖库。</p>
+<p>---</p>
+<h2 id="运行时依赖-dependencies">📦 运行时依赖 (Dependencies)</h2>
+<p>这些库在应用运行时必需，会被打包到生产版本中。</p>
+<h3 id="react-18-2-0">React (^18.2.0)</h3>
+<p><strong>用途</strong>: UI 框架 <strong>文档</strong>: https://react.dev <strong>Claude Code</strong>: ✅ 也使用 React 18</p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+
+const App = () =&gt; {
+  return &lt;div&gt;Hello&lt;/div&gt;;
+};</code></pre>
+<p><strong>为什么选择 React:</strong></p>
+<ul><li>组件化开发，代码复用性高</li><li>生态系统丰富，社区活跃</li><li>Claude Code 也使用，便于对比学习</li><li>与 Ink 完美集成</li></ul>
+<p>---</p>
+<h3 id="ink-4-4-0">Ink (^4.4.0)</h3>
+<p><strong>用途</strong>: 终端 UI 渲染引擎 <strong>文档</strong>: https://github.com/vadimdemedes/ink <strong>Claude Code</strong>: ✅ 使用相同的 Ink 库（有自定义封装）</p>
+<pre><code class="language-typescript">import { Text, Box } from &#39;ink&#39;;
+
+const App = () =&gt; (
+  &lt;Box&gt;
+    &lt;Text color=&quot;green&quot;&gt;Hello Terminal!&lt;/Text&gt;
+  &lt;/Box&gt;
+);</code></pre>
+<p><strong>核心组件:</strong></p>
+<ul><li><code>Box</code>: flexbox 布局容器（类似 div）</li><li><code>Text</code>: 文本显示组件（类似 span）</li><li><code>useInput</code>: 键盘输入 hook</li><li><code>useApp</code>: 应用实例 hook</li></ul>
+<p><strong>Claude Code 的封装:</strong></p>
+<pre><code class="language-typescript">// Claude Code: src/ink.ts
+export async function render(node: ReactNode) {
+  return inkRender(withTheme(node), options);
+}</code></pre>
+<p>---</p>
+<h3 id="commander-11-0-0">Commander (^11.0.0)</h3>
+<p><strong>用途</strong>: CLI 命令解析器 <strong>文档</strong>: https://github.com/tj/commander.js <strong>Claude Code</strong>: ⚠️ 使用 <code>@commander-js/extra-typings</code>（带完整类型）</p>
+<pre><code class="language-typescript">import { Command } from &#39;commander&#39;;
+
+const program = new Command();
+program
+  .name(&#39;my-app&#39;)
+  .version(&#39;1.0.0&#39;)
+  .option(&#39;-d, --debug&#39;, &#39;Enable debug mode&#39;)
+  .action((options) =&gt; {
+    console.log(&#39;Running...&#39;);
+  });
+
+program.parse(process.argv);</code></pre>
+<p><strong>常用 API:</strong></p>
+<ul><li><code>.name()</code>: 设置应用名称</li><li><code>.description()</code>: 设置描述</li><li><code>.version()</code>: 设置版本号</li><li><code>.option()</code>: 定义选项</li><li><code>.command()</code>: 定义子命令</li><li><code>.action()</code>: 执行回调</li><li><code>.parse()</code>: 解析参数</li></ul>
+<p><strong>与 Claude Code 的差异:</strong></p>
+<pre><code class="language-typescript">// 我们使用
+import { Command } from &#39;commander&#39;;
+
+// Claude Code 使用（更严格的类型）
+import { Command as CommanderCommand } from &#39;@commander-js/extra-typings&#39;;</code></pre>
+<p>---</p>
+<h3 id="chalk-5-3-0">Chalk (^5.3.0)</h3>
+<p><strong>用途</strong>: 终端字符串样式库 <strong>文档</strong>: https://github.com/chalk/chalk <strong>Claude Code</strong>: ✅ 也使用 Chalk</p>
+<pre><code class="language-typescript">import chalk from &#39;chalk&#39;;
+
+console.log(chalk.red(&#39;错误信息&#39;));
+console.log(chalk.green(&#39;成功信息&#39;));
+console.log(chalk.blue(&#39;提示信息&#39;));
+console.log(chalk.bold(&#39;粗体文本&#39;));</code></pre>
+<p><strong>常用方法:</strong></p>
+<ul><li><code>chalk.red()</code>, <code>chalk.green()</code>, <code>chalk.blue()</code> - 颜色</li><li><code>chalk.bold()</code>, <code>chalk.dim()</code> - 样式</li><li><code>chalk.bgRed()</code> - 背景色</li><li>可以链式调用：<code>chalk.red.bold(&#39;重要&#39;)</code></li></ul>
+<p>---</p>
+<h3 id="lodash-es-4-17-21">Lodash-es (^4.17.21)</h3>
+<p><strong>用途</strong>: JavaScript 工具库（ES modules 版本） <strong>文档</strong>: https://lodash.com <strong>Claude Code</strong>: ✅ 大量使用 lodash-es</p>
+<pre><code class="language-typescript">import mapValues from &#39;lodash-es/mapValues.js&#39;;
+import pickBy from &#39;lodash-es/pickBy.js&#39;;
+import uniqBy from &#39;lodash-es/uniqBy.js&#39;;
+
+// 示例
+const obj = { a: 1, b: 2, c: 3 };
+const doubled = mapValues(obj, n =&gt; n * 2);
+// { a: 2, b: 4, c: 6 }</code></pre>
+<p><strong>为什么用 lodash-es 而不是 lodash:</strong></p>
+<ul><li>ES modules 版本，支持 tree-shaking</li><li>可以单独导入函数，减小打包体积</li><li>Bun 和现代打包工具友好</li></ul>
+<p><strong>Claude Code 中的使用:</strong></p>
+<pre><code class="language-typescript">// claudecode-project/src/main.tsx
+import mapValues from &#39;lodash-es/mapValues.js&#39;;
+import pickBy from &#39;lodash-es/pickBy.js&#39;;
+import uniqBy from &#39;lodash-es/uniqBy.js&#39;;</code></pre>
+<p>---</p>
+<h2 id="开发时依赖-devdependencies">🛠️ 开发时依赖 (DevDependencies)</h2>
+<p>这些库只在开发时使用，不会打包到生产版本。</p>
+<h3 id="types-react-18-2-0">@types/react (^18.2.0)</h3>
+<p><strong>用途</strong>: React 的 TypeScript 类型定义 <strong>必要性</strong>: 为 React 提供完整的类型支持</p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+
+// 有了 @types/react，TypeScript 知道：
+const App: React.FC = () =&gt; { ... };  // ✅ 类型正确</code></pre>
+<p>---</p>
+<h3 id="typescript-5-3-0">TypeScript (^5.3.0)</h3>
+<p><strong>用途</strong>: TypeScript 编译器 <strong>文档</strong>: https://www.typescriptlang.org <strong>Claude Code</strong>: ✅ 使用 TypeScript 5.3+</p>
+<p><strong>主要功能:</strong></p>
+<ul><li>静态类型检查</li><li>代码智能提示</li><li>重构支持</li><li>早期发现错误</li></ul>
+<p><strong>运行类型检查:</strong></p>
+<pre><code class="language-bash">bun run typecheck
+# 或
+tsc --noEmit</code></pre>
+<p>---</p>
+<h3 id="eslint-8-50-0">ESLint (^8.50.0)</h3>
+<p><strong>用途</strong>: JavaScript/TypeScript 代码检查工具 <strong>文档</strong>: https://eslint.org <strong>Claude Code</strong>: ✅ 也使用 ESLint</p>
+<p><strong>主要功能:</strong></p>
+<ul><li>代码风格检查</li><li>发现潜在错误</li><li>强制最佳实践</li><li>自动修复部分问题</li></ul>
+<p><strong>运行代码检查:</strong></p>
+<pre><code class="language-bash">bun run lint
+# 或
+eslint src/</code></pre>
+<p>---</p>
+<h3 id="types-bun-latest">@types/bun (latest)</h3>
+<p><strong>用途</strong>: Bun 运行时的 TypeScript 类型定义 <strong>Bun 简介</strong>: 快速的 JavaScript 运行时（替代 Node.js） <strong>文档</strong>: https://bun.sh</p>
+<p><strong>Bun 的优势:</strong></p>
+<ul><li>比 Node.js 快 4 倍</li><li>原生支持 TypeScript</li><li>内置打包工具</li><li>兼容 npm 生态</li></ul>
+<p><strong>提供的类型:</strong></p>
+<pre><code class="language-typescript">// Bun 特有的 API
+Bun.file(&#39;path.txt&#39;);
+Bun.write(&#39;output.txt&#39;, data);</code></pre>
+<p>---</p>
+<h2 id="依赖对比表">📊 依赖对比表</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>依赖</th><th>版本</th><th>Claude Code</th><th>用途</th><th>是否必需</th></tr></thead><tbody><tr><td>react</td><td>^18.2.0</td><td>✅ 相同</td><td>UI 框架</td><td>✅ 是</td></tr><tr><td>ink</td><td>^4.4.0</td><td>✅ 相同</td><td>终端渲染</td><td>✅ 是</td></tr><tr><td>commander</td><td>^11.0.0</td><td>⚠️ extra-typings</td><td>CLI 解析</td><td>✅ 是</td></tr><tr><td>chalk</td><td>^5.3.0</td><td>✅ 相同</td><td>终端样式</td><td>⚠️ 可选</td></tr><tr><td>lodash-es</td><td>^4.17.21</td><td>✅ 相同</td><td>工具函数</td><td>⚠️ 可选</td></tr><tr><td>@types/react</td><td>^18.2.0</td><td>✅ 相同</td><td>TS 类型</td><td>✅ 是</td></tr><tr><td>typescript</td><td>^5.3.0</td><td>✅ 相同</td><td>编译器</td><td>✅ 是</td></tr><tr><td>eslint</td><td>^8.50.0</td><td>✅ 相同</td><td>代码检查</td><td>⚠️ 可选</td></tr><tr><td>@types/bun</td><td>latest</td><td>✅ 相同</td><td>Bun 类型</td><td>✅ 是</td></tr></tbody></table></div>
+<p>---</p>
+<h2 id="如何管理依赖">🔧 如何管理依赖</h2>
+<h3 id="安装新依赖">安装新依赖</h3>
+<pre><code class="language-bash"># 运行时依赖
+bun add &lt;package-name&gt;
+
+# 开发时依赖
+bun add -d &lt;package-name&gt;
+
+# 指定版本
+bun add package@^1.0.0</code></pre>
+<h3 id="更新依赖">更新依赖</h3>
+<pre><code class="language-bash"># 更新所有依赖
+bun update
+
+# 更新特定依赖
+bun update package-name</code></pre>
+<h3 id="移除依赖">移除依赖</h3>
+<pre><code class="language-bash">bun remove package-name</code></pre>
+<h3 id="查看依赖树">查看依赖树</h3>
+<pre><code class="language-bash">bun pm ls</code></pre>
+<p>---</p>
+<h2 id="学习建议">💡 学习建议</h2>
+<h3 id="第一阶段-核心依赖">第一阶段：核心依赖</h3>
+<p>先掌握这三个核心库：</p>
+<ol><li><strong>React</strong> - UI 组件化</li><li><strong>Ink</strong> - 终端渲染</li><li><strong>Commander</strong> - CLI 解析</li></ol>
+<h3 id="第二阶段-辅助工具">第二阶段：辅助工具</h3>
+<p>然后学习辅助库：</p>
+<ol><li><strong>Chalk</strong> - 美化输出</li><li><strong>Lodash-es</strong> - 工具函数</li></ol>
+<h3 id="第三阶段-开发工具">第三阶段：开发工具</h3>
+<p>最后熟悉开发工具：</p>
+<ol><li><strong>TypeScript</strong> - 类型系统</li><li><strong>ESLint</strong> - 代码质量</li><li><strong>@types/bun</strong> - Bun API</li></ol>
+<p>---</p>
+<h2 id="深入理解">🔍 深入理解</h2>
+<h3 id="查看依赖源码">查看依赖源码</h3>
+<pre><code class="language-bash"># 查看 Ink 源码
+ls node_modules/ink/build/components
+
+# 查看 Commander 示例
+cat node_modules/commander/examples/*.js</code></pre>
+<h3 id="阅读官方文档">阅读官方文档</h3>
+<ul><li><a href="https://react.dev/learn">React 官方教程</a></li><li><a href="https://github.com/vadimdemedes/ink#components">Ink 组件文档</a></li><li><a href="https://github.com/tj/commander.js#documentation">Commander 完整指南</a></li></ul>
+<h3 id="实践练习">实践练习</h3>
+<pre><code class="language-typescript">// 练习 1: 创建一个简单的 Ink 组件
+import { Text } from &#39;ink&#39;;
+const Hello = () =&gt; &lt;Text&gt;Hello&lt;/Text&gt;;
+
+// 练习 2: 添加一个 Commander 子命令
+program.command(&#39;test&#39;).action(() =&gt; console.log(&#39;Test&#39;));
+
+// 练习 3: 使用 Chalk 美化输出
+console.log(chalk.green(&#39;✓ Success&#39;));</code></pre>
+<p>---</p>
+<h2 id="常见问题">❓ 常见问题</h2>
+<h3 id="q-为什么不用-npm-或-yarn">Q: 为什么不用 npm 或 yarn？</h3>
+<p>A: Bun 更快，且原生支持 TypeScript，与 Claude Code 保持一致。</p>
+<h3 id="q-可以用其他-cli-库吗">Q: 可以用其他 CLI 库吗？</h3>
+<p>A: 可以，如 yargs、minimist。但 Commander 最流行，文档最全。</p>
+<h3 id="q-ink-和其他终端库有什么区别">Q: Ink 和其他终端库有什么区别？</h3>
+<p>A: Ink 使用 React，可以复用 React 知识，组件化更好。</p>
+<h3 id="q-必须使用-typescript-吗">Q: 必须使用 TypeScript 吗？</h3>
+<p>A: 不是必须，但强烈推荐。Claude Code 也用 TS，便于对比学习。</p>
+<p>---</p>
+<h2 id="相关资源">📚 相关资源</h2>
+<ul><li><a href="https://bun.sh/docs">Bun 官方文档</a></li><li><a href="https://bun.sh/docs/cli/install">npm vs Bun 对比</a></li><li><a href="https://github.com/vadimdemedes/ink#create-your-first-app">React + Ink 教程</a></li><li><a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html">TypeScript 入门</a></li></ul>
+<p>---</p>
+<p><strong>最后更新</strong>: 2026-04-07 <strong>维护者</strong>: Learning Framework Team</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/legacy/COMMENTS_GUIDE.html"><span>上一章</span><strong>代码注释说明</strong></a>
+    <a class="pager-next" href="/legacy/PROJECT_COMPARISON.html"><span>下一章</span><strong>项目对比说明</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#运行时依赖-dependencies">📦 运行时依赖 (Dependencies)</a><a class="toc-level-3" href="#react-18-2-0">React (^18.2.0)</a><a class="toc-level-3" href="#ink-4-4-0">Ink (^4.4.0)</a><a class="toc-level-3" href="#commander-11-0-0">Commander (^11.0.0)</a><a class="toc-level-3" href="#chalk-5-3-0">Chalk (^5.3.0)</a><a class="toc-level-3" href="#lodash-es-4-17-21">Lodash-es (^4.17.21)</a><a class="toc-level-2" href="#开发时依赖-devdependencies">🛠️ 开发时依赖 (DevDependencies)</a><a class="toc-level-3" href="#types-react-18-2-0">@types/react (^18.2.0)</a><a class="toc-level-3" href="#typescript-5-3-0">TypeScript (^5.3.0)</a><a class="toc-level-3" href="#eslint-8-50-0">ESLint (^8.50.0)</a><a class="toc-level-3" href="#types-bun-latest">@types/bun (latest)</a><a class="toc-level-2" href="#依赖对比表">📊 依赖对比表</a><a class="toc-level-2" href="#如何管理依赖">🔧 如何管理依赖</a><a class="toc-level-3" href="#安装新依赖">安装新依赖</a><a class="toc-level-3" href="#更新依赖">更新依赖</a><a class="toc-level-3" href="#移除依赖">移除依赖</a><a class="toc-level-3" href="#查看依赖树">查看依赖树</a><a class="toc-level-2" href="#学习建议">💡 学习建议</a><a class="toc-level-3" href="#第一阶段-核心依赖">第一阶段：核心依赖</a><a class="toc-level-3" href="#第二阶段-辅助工具">第二阶段：辅助工具</a><a class="toc-level-3" href="#第三阶段-开发工具">第三阶段：开发工具</a><a class="toc-level-2" href="#深入理解">🔍 深入理解</a><a class="toc-level-3" href="#查看依赖源码">查看依赖源码</a><a class="toc-level-3" href="#阅读官方文档">阅读官方文档</a><a class="toc-level-3" href="#实践练习">实践练习</a><a class="toc-level-2" href="#常见问题">❓ 常见问题</a><a class="toc-level-3" href="#q-为什么不用-npm-或-yarn">Q: 为什么不用 npm 或 yarn？</a><a class="toc-level-3" href="#q-可以用其他-cli-库吗">Q: 可以用其他 CLI 库吗？</a><a class="toc-level-3" href="#q-ink-和其他终端库有什么区别">Q: Ink 和其他终端库有什么区别？</a><a class="toc-level-3" href="#q-必须使用-typescript-吗">Q: 必须使用 TypeScript 吗？</a><a class="toc-level-2" href="#相关资源">📚 相关资源</a>
+    </aside>
+  </div>
+</body>
+</html>

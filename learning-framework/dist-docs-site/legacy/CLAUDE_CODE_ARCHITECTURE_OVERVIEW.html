@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Code 项目架构预览 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option selected value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="../chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="../chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="../chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="../chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="../chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="../chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="../chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="../chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="../chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="../chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="../chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="../chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="../chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="../chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a aria-current="page" href="CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="COMMENTS_GUIDE.html">代码注释说明</a><a href="DEPENDENCIES.html">项目依赖说明</a><a href="PROJECT_COMPARISON.html">项目对比说明</a><a href="QUICKSTART.html">快速开始指南</a><a href="README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="claude-code-项目架构预览">Claude Code 项目架构预览</h1>
+<h2 id="目录">📋 目录</h2>
+<ul><li><a href="#项目概述">项目概述</a></li><li><a href="#核心技术栈">核心技术栈</a></li><li><a href="#架构分层">架构分层</a></li><li><a href="#cli-命令系统-commanderjs">CLI 命令系统 (Commander.js)</a></li><li><a href="#终端-ui-系统-react--ink">终端 UI 系统 (React + Ink)</a></li><li><a href="#工具调用系统">工具调用系统</a></li><li><a href="#会话管理系统">会话管理系统</a></li><li><a href="#插件与-mcp-系统">插件与 MCP 系统</a></li><li><a href="#完整示例从启动到交互">完整示例：从启动到交互</a></li></ul>
+<p>---</p>
+<h2 id="项目概述">项目概述</h2>
+<p><strong>Claude Code</strong> 是一个基于终端</p>
+<h3 id="核心特性">核心特性</h3>
+<ul><li>🖥️ <strong>终端交互界面</strong> - 基于 React + Ink 的响应式 TUI</li><li>🤖 <strong>AI 驱动</strong> - 集成 Anthropic Claude API</li><li>🛠️ <strong>工具调用</strong> - AI 可以调用文件读写、Shell 执行等工具</li><li>💬 <strong>会话管理</strong> - 支持会话持久化和恢复</li><li>🔌 <strong>插件系统</strong> - 支持 MCP 协议和自定义插件</li><li>🌐 <strong>远程支持</strong> - 支持 SSH 远程会话和 IDE 集成</li></ul>
+<h3 id="项目规模">项目规模</h3>
+<ul><li><strong>代码量</strong>: ~50,000+ 行 TypeScript</li><li><strong>文件数</strong>: 1000+ 文件</li><li><strong>模块</strong>: 50+ 个功能模块</li><li><strong>命令</strong>: 100+ 个斜杠命令</li><li><strong>工具</strong>: 43+ 个 AI 可调用的工具</li></ul>
+<p>---</p>
+<h2 id="核心技术栈">核心技术栈</h2>
+<h3 id="1-运行时与语言">1. 运行时与语言</h3>
+<pre><code class="language-typescript">// Bun 运行时 - 比 Node.js 快 4 倍
+// 原生支持 TypeScript，无需预编译
+import { feature } from &#39;bun:bundle&#39;;
+
+// TypeScript 5.3+ - 完整的类型安全
+type SessionId = string &amp; { readonly __brand: &#39;SessionId&#39; };</code></pre>
+<p><strong>为什么选择 Bun:</strong></p>
+<ul><li>极速启动（~135ms vs Node.js ~500ms）</li><li>原生 TypeScript 支持</li><li>内置打包工具</li><li>兼容 npm 生态</li></ul>
+<p>---</p>
+<h3 id="2-cli-命令解析-commander-js">2. CLI 命令解析 - Commander.js</h3>
+<pre><code class="language-typescript">// claudecode-project/src/main.tsx (第22行)
+import { Command as CommanderCommand, Option } from &#39;@commander-js/extra-typings&#39;;
+
+const program = new CommanderCommand()
+  .configureHelp(createSortedHelpConfig())
+  .enablePositionalOptions();</code></pre>
+<p><strong>核心功能:</strong></p>
+<ul><li>参数解析（位置参数、选项参数）</li><li>子命令支持</li><li>自动帮助生成</li><li>类型安全的选项定义</li></ul>
+<p>---</p>
+<h3 id="3-终端-ui-react-ink">3. 终端 UI - React + Ink</h3>
+<pre><code class="language-typescript">// claudecode-project/src/ink.ts
+import inkRender from &#39;./ink/root.js&#39;;
+
+export async function render(node: ReactNode) {
+  return inkRender(withTheme(node), options);
+}</code></pre>
+<p><strong>Ink 提供的组件:</strong></p>
+<ul><li><code>Box</code> - Flexbox 布局容器</li><li><code>Text</code> - 文本显示</li><li><code>useInput</code> - 键盘输入处理</li><li><code>useApp</code> - 应用生命周期</li></ul>
+<p>---</p>
+<h3 id="4-状态管理-react-hooks-zustand">4. 状态管理 - React Hooks + Zustand</h3>
+<pre><code class="language-typescript">// claudecode-project/src/state/store.ts
+import { createStore } from &#39;./state/store.js&#39;;
+
+const store = createStore&lt;AppState&gt;({
+  messages: [],
+  currentTool: null,
+  session: null,
+});</code></pre>
+<p>---</p>
+<h2 id="架构分层">架构分层</h2>
+<pre><code class="language-">┌─────────────────────────────────────────┐
+│         CLI Interface Layer             │  ← Commander.js 解析命令行
+│         (src/main.tsx)                  │
+├─────────────────────────────────────────┤
+│         Command System                  │  ← 斜杠命令 (/help, /resume)
+│         (src/commands/)                 │
+├─────────────────────────────────────────┤
+│         UI Rendering Layer              │  ← React + Ink 渲染
+│         (src/components/, src/ink/)     │
+├─────────────────────────────────────────┤
+│         Business Logic Layer            │  ← 核心业务逻辑
+│         (src/Task.ts, src/QueryEngine)  │
+├─────────────────────────────────────────┤
+│         Tool System                     │  ← AI 工具调用
+│         (src/tools/)                    │
+├─────────────────────────────────────────┤
+│         Service Layer                   │  ← 外部服务集成
+│         (src/services/)                 │
+├─────────────────────────────────────────┤
+│         Bridge Layer                    │  ← 远程通信
+│         (src/bridge/)                   │
+└─────────────────────────────────────────┘</code></pre>
+<p>---</p>
+<h2 id="cli-命令系统-commander-js">CLI 命令系统 (Commander.js)</h2>
+<h3 id="1-主命令配置">1. 主命令配置</h3>
+<p><strong>文件</strong>: <code>src/main.tsx</code> (第902-1006行)</p>
+<pre><code class="language-typescript">import { Command as CommanderCommand, Option } from &#39;@commander-js/extra-typings&#39;;
+
+// 创建命令实例
+const program = new CommanderCommand()
+  .configureHelp(createSortedHelpConfig())
+  .enablePositionalOptions();
+
+// 配置基本信息
+program
+  .name(&#39;claude&#39;)
+  .description(&#39;Claude Code - starts an interactive session by default&#39;)
+  .argument(&#39;[prompt]&#39;, &#39;Your prompt&#39;, String);
+
+// 定义全局选项（50+ 个选项）
+program
+  .option(&#39;-d, --debug [filter]&#39;, &#39;Enable debug mode&#39;)
+  .option(&#39;-p, --print&#39;, &#39;Print response and exit&#39;)
+  .option(&#39;--model &lt;model&gt;&#39;, &#39;Model for the current session&#39;)
+  .option(&#39;--permission-mode &lt;mode&gt;&#39;, &#39;Permission mode&#39;, 
+    [&#39;auto&#39;, &#39;default&#39;, &#39;acceptEdits&#39;])
+  .addOption(new Option(&#39;--effort &lt;level&gt;&#39;, &#39;Effort level&#39;)
+    .choices([&#39;low&#39;, &#39;medium&#39;, &#39;high&#39;, &#39;max&#39;]))
+  .option(&#39;--mcp-config &lt;configs...&gt;&#39;, &#39;Load MCP servers&#39;)
+  .option(&#39;--session-id &lt;uuid&gt;&#39;, &#39;Use specific session ID&#39;)
+  // ... 更多选项</code></pre>
+<h3 id="2-preaction-hook-初始化逻辑">2. PreAction Hook - 初始化逻辑</h3>
+<p><strong>文件</strong>: <code>src/main.tsx</code> (第907-967行)</p>
+<pre><code class="language-typescript">// 在执行任何命令前运行的初始化逻辑
+program.hook(&#39;preAction&#39;, async (thisCommand) =&gt; {
+  // 1. 等待异步 subprocess 完成
+  await Promise.all([
+    ensureMdmSettingsLoaded(),
+    ensureKeychainPrefetchCompleted()
+  ]);
+  
+  // 2. 初始化应用
+  await init();
+  
+  // 3. 设置进程标题
+  if (!isEnvTruthy(process.env.CLAUDE_CODE_DISABLE_TERMINAL_TITLE)) {
+    process.title = &#39;claude&#39;;
+  }
+  
+  // 4. 附加日志 sinks
+  const { initSinks } = await import(&#39;./utils/sinks.js&#39;);
+  initSinks();
+  
+  // 5. 加载远程设置（非阻塞）
+  void loadRemoteManagedSettings();
+  void loadPolicyLimits();
+});</code></pre>
+<h3 id="3-主-action-处理器">3. 主 Action 处理器</h3>
+<p><strong>文件</strong>: <code>src/main.tsx</code> (第1006-4684行)</p>
+<pre><code class="language-typescript">program.action(async (prompt, options) =&gt; {
+  // 解构选项
+  const {
+    debug = false,
+    print = false,
+    model,
+    sessionId,
+    permissionMode,
+    // ... 更多选项
+  } = options;
+  
+  // 1. 处理特殊模式
+  if (options.bare) {
+    process.env.CLAUDE_CODE_SIMPLE = &#39;1&#39;;
+  }
+  
+  // 2. 下载文件资源（如果有）
+  if (options.file) {
+    const fileSpecs = parseFileSpecs(options.file);
+    fileDownloadPromise = downloadSessionFiles(fileSpecs, config);
+  }
+  
+  // 3. 初始化权限上下文
+  await initializeToolPermissionContext({
+    permissionMode,
+    allowedTools,
+    disallowedTools,
+  });
+  
+  // 4. 启动交互式 REPL 或打印模式
+  if (print) {
+    // 非交互模式：打印结果并退出
+    await runPrintMode(prompt, options);
+  } else {
+    // 交互模式：启动 REPL
+    await launchRepl(prompt, options);
+  }
+});
+
+// 解析命令行参数
+program.parse(process.argv);</code></pre>
+<h3 id="4-子命令示例">4. 子命令示例</h3>
+<h4 id="示例-1-mcp-命令">示例 1: MCP 命令</h4>
+<p><strong>文件</strong>: <code>src/cli/handlers/mcp.tsx</code></p>
+<pre><code class="language-typescript">import { Command } from &#39;@commander-js/extra-typings&#39;;
+
+export const mcpCommand = new Command(&#39;mcp&#39;)
+  .description(&#39;Manage MCP servers&#39;)
+  .addCommand(
+    new Command(&#39;add&#39;)
+      .description(&#39;Add an MCP server&#39;)
+      .argument(&#39;&lt;name&gt;&#39;, &#39;Server name&#39;)
+      .option(&#39;--transport &lt;type&gt;&#39;, &#39;Transport type&#39;, &#39;stdio&#39;)
+      .option(&#39;--command &lt;cmd&gt;&#39;, &#39;Command to run&#39;)
+      .action(async (name, options) =&gt; {
+        await addMcpServer(name, options);
+      })
+  )
+  .addCommand(
+    new Command(&#39;list&#39;)
+      .description(&#39;List MCP servers&#39;)
+      .action(async () =&gt; {
+        await listMcpServers();
+      })
+  )
+  .addCommand(
+    new Command(&#39;remove&#39;)
+      .description(&#39;Remove an MCP server&#39;)
+      .argument(&#39;&lt;name&gt;&#39;, &#39;Server name&#39;)
+      .action(async (name) =&gt; {
+        await removeMcpServer(name);
+      })
+  );
+
+// 在主程序中注册
+program.addCommand(mcpCommand);</code></pre>
+<h4 id="示例-2-plugin-命令">示例 2: Plugin 命令</h4>
+<p><strong>文件</strong>: <code>src/commands/plugin/install.tsx</code></p>
+<pre><code class="language-typescript">export const pluginInstallCommand = new Command(&#39;install&#39;)
+  .description(&#39;Install a plugin&#39;)
+  .argument(&#39;&lt;package&gt;&#39;, &#39;Plugin package name&#39;)
+  .option(&#39;--scope &lt;scope&gt;&#39;, &#39;Installation scope&#39;, &#39;user&#39;)
+  .option(&#39;--version &lt;ver&gt;&#39;, &#39;Specific version&#39;)
+  .action(async (pkg, options) =&gt; {
+    console.log(`Installing ${pkg}...`);
+    
+    // 验证包名
+    if (!isValidPluginName(pkg)) {
+      throw new Error(&#39;Invalid plugin name&#39;);
+    }
+    
+    // 下载并安装
+    await installPlugin(pkg, {
+      scope: options.scope,
+      version: options.version,
+    });
+    
+    console.log(chalk.green(&#39;✓ Plugin installed successfully&#39;));
+  });</code></pre>
+<p>---</p>
+<h2 id="终端-ui-系统-react-ink">终端 UI 系统 (React + Ink)</h2>
+<h3 id="1-ink-封装层">1. Ink 封装层</h3>
+<p><strong>文件</strong>: <code>src/ink.ts</code></p>
+<pre><code class="language-typescript">import { createElement, type ReactNode } from &#39;react&#39;;
+import inkRender from &#39;./ink/root.js&#39;;
+import { ThemeProvider } from &#39;./components/design-system/ThemeProvider.js&#39;;
+
+// 包装所有渲染调用，添加主题支持
+function withTheme(node: ReactNode): ReactNode {
+  return createElement(ThemeProvider, null, node);
+}
+
+export async function render(
+  node: ReactNode,
+  options?: RenderOptions
+): Promise&lt;Instance&gt; {
+  return inkRender(withTheme(node), options);
+}
+
+// 导出 Ink 组件
+export { Box } from &#39;./components/design-system/ThemedBox.js&#39;;
+export { Text } from &#39;./components/design-system/ThemedText.js&#39;;
+export { useInput } from &#39;./ink/hooks/use-input.js&#39;;
+export { useApp } from &#39;./ink/hooks/use-app.js&#39;;</code></pre>
+<h3 id="2-主应用组件">2. 主应用组件</h3>
+<p><strong>文件</strong>: <code>src/state/AppStateStore.tsx</code></p>
+<pre><code class="language-typescript">import React, { useEffect, useState } from &#39;react&#39;;
+import { Box, Text, useInput } from &#39;../ink.js&#39;;
+import { MessageList } from &#39;../components/Messages/MessageList.js&#39;;
+import { InputBox } from &#39;../components/Input/InputBox.js&#39;;
+import { ToolOutput } from &#39;../components/Tools/ToolOutput.js&#39;;
+import { useAppState } from &#39;./AppStateStore.js&#39;;
+
+export const App: React.FC = () =&gt; {
+  const {
+    messages,
+    input,
+    setInput,
+    isProcessing,
+    currentTool,
+  } = useAppState();
+  
+  // 处理键盘输入
+  useInput((input, key) =&gt; {
+    if (key.return) {
+      // 提交消息
+      handleSubmit(input);
+      setInput(&#39;&#39;);
+    } else if (key.upArrow) {
+      // 历史消息导航
+      navigateHistory(&#39;up&#39;);
+    } else if (key.ctrlC) {
+      // 中断当前操作
+      handleInterrupt();
+    }
+  });
+  
+  return (
+    &lt;Box flexDirection=&quot;column&quot; height=&quot;100%&quot;&gt;
+      {/* 消息列表 */}
+      &lt;Box flexGrow={1} overflow=&quot;hidden&quot;&gt;
+        &lt;MessageList messages={messages} /&gt;
+      &lt;/Box&gt;
+      
+      {/* 工具输出 */}
+      {currentTool &amp;&amp; (
+        &lt;Box borderTop={1} borderColor=&quot;gray&quot;&gt;
+          &lt;ToolOutput tool={currentTool} /&gt;
+        &lt;/Box&gt;
+      )}
+      
+      {/* 输入框 */}
+      &lt;Box borderTop={1} borderColor=&quot;gray&quot; padding={1}&gt;
+        &lt;InputBox 
+          value={input}
+          onChange={setInput}
+          disabled={isProcessing}
+          placeholder=&quot;Ask Claude to do something...&quot;
+        /&gt;
+      &lt;/Box&gt;
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<h3 id="3-消息列表组件">3. 消息列表组件</h3>
+<p><strong>文件</strong>: <code>src/components/Messages/MessageList.tsx</code></p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+import { Box, Text } from &#39;../../ink.js&#39;;
+import { UserMessage } from &#39;./UserMessage.js&#39;;
+import { AssistantMessage } from &#39;./AssistantMessage.js&#39;;
+import { SystemMessage } from &#39;./SystemMessage.js&#39;;
+import type { Message } from &#39;../../types/message.js&#39;;
+
+interface MessageListProps {
+  messages: Message[];
+}
+
+export const MessageList: React.FC&lt;MessageListProps&gt; = ({ messages }) =&gt; {
+  return (
+    &lt;Box flexDirection=&quot;column&quot;&gt;
+      {messages.map((message, index) =&gt; {
+        switch (message.role) {
+          case &#39;user&#39;:
+            return (
+              &lt;UserMessage 
+                key={message.id}
+                content={message.content}
+                timestamp={message.timestamp}
+              /&gt;
+            );
+          
+          case &#39;assistant&#39;:
+            return (
+              &lt;AssistantMessage
+                key={message.id}
+                content={message.content}
+                tools={message.toolCalls}
+              /&gt;
+            );
+          
+          case &#39;system&#39;:
+            return (
+              &lt;SystemMessage
+                key={message.id}
+                content={message.content}
+              /&gt;
+            );
+        }
+      })}
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<h3 id="4-用户消息组件">4. 用户消息组件</h3>
+<p><strong>文件</strong>: <code>src/components/Messages/UserMessage.tsx</code></p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+import { Box, Text } from &#39;../../ink.js&#39;;
+import chalk from &#39;chalk&#39;;
+
+interface UserMessageProps {
+  content: string;
+  timestamp: Date;
+}
+
+export const UserMessage: React.FC&lt;UserMessageProps&gt; = ({ 
+  content, 
+  timestamp 
+}) =&gt; {
+  const timeStr = timestamp.toLocaleTimeString(&#39;zh-CN&#39;, {
+    hour: &#39;2-digit&#39;,
+    minute: &#39;2-digit&#39;
+  });
+  
+  return (
+    &lt;Box flexDirection=&quot;column&quot; marginY={1}&gt;
+      &lt;Text dimColor&gt;
+        ┌─ You ({timeStr})
+      &lt;/Text&gt;
+      &lt;Box paddingLeft={2}&gt;
+        &lt;Text color=&quot;cyan&quot;&gt;{content}&lt;/Text&gt;
+      &lt;/Box&gt;
+      &lt;Text dimColor&gt;└─&lt;/Text&gt;
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<h3 id="5-助手消息组件-支持工具调用">5. 助手消息组件（支持工具调用）</h3>
+<p><strong>文件</strong>: <code>src/components/Messages/AssistantMessage.tsx</code></p>
+<pre><code class="language-typescript">import React, { useState } from &#39;react&#39;;
+import { Box, Text } from &#39;../../ink.js&#39;;
+import { ToolCallDisplay } from &#39;../Tools/ToolCallDisplay.js&#39;;
+import type { ToolCall } from &#39;../../types/tool.js&#39;;
+
+interface AssistantMessageProps {
+  content: string;
+  tools?: ToolCall[];
+}
+
+export const AssistantMessage: React.FC&lt;AssistantMessageProps&gt; = ({
+  content,
+  tools = []
+}) =&gt; {
+  const [expandedTools, setExpandedTools] = useState&lt;Set&lt;string&gt;&gt;(new Set());
+  
+  return (
+    &lt;Box flexDirection=&quot;column&quot; marginY={1}&gt;
+      &lt;Text dimColor&gt;┌─ Claude&lt;/Text&gt;
+      
+      {/* AI 回复内容 */}
+      {content &amp;&amp; (
+        &lt;Box paddingLeft={2}&gt;
+          &lt;Text&gt;{content}&lt;/Text&gt;
+        &lt;/Box&gt;
+      )}
+      
+      {/* 工具调用 */}
+      {tools.length &gt; 0 &amp;&amp; (
+        &lt;Box flexDirection=&quot;column&quot; paddingLeft={2} marginTop={1}&gt;
+          {tools.map((tool) =&gt; (
+            &lt;ToolCallDisplay
+              key={tool.id}
+              tool={tool}
+              expanded={expandedTools.has(tool.id)}
+              onToggle={() =&gt; {
+                const newSet = new Set(expandedTools);
+                if (newSet.has(tool.id)) {
+                  newSet.delete(tool.id);
+                } else {
+                  newSet.add(tool.id);
+                }
+                setExpandedTools(newSet);
+              }}
+            /&gt;
+          ))}
+        &lt;/Box&gt;
+      )}
+      
+      &lt;Text dimColor&gt;└─&lt;/Text&gt;
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<h3 id="6-输入框组件">6. 输入框组件</h3>
+<p><strong>文件</strong>: <code>src/components/Input/InputBox.tsx</code></p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+import { Box, Text, useStdin } from &#39;../../ink.js&#39;;
+import { cursor } from &#39;../../ink/termio/cursor.js&#39;;
+
+interface InputBoxProps {
+  value: string;
+  onChange: (value: string) =&gt; void;
+  disabled?: boolean;
+  placeholder?: string;
+}
+
+export const InputBox: React.FC&lt;InputBoxProps&gt; = ({
+  value,
+  onChange,
+  disabled = false,
+  placeholder = &#39;Type a message...&#39;
+}) =&gt; {
+  const { internal_writeToStdout } = useStdin();
+  
+  // 渲染提示符
+  const prompt = disabled 
+    ? Text.color(&#39;gray&#39;)(&#39;⏸ &#39;) 
+    : Text.color(&#39;green&#39;)(&#39;❯ &#39;);
+  
+  // 渲染输入内容
+  const displayValue = value || Text.dim()(placeholder);
+  
+  return (
+    &lt;Box&gt;
+      {prompt}
+      &lt;Text&gt;{displayValue}&lt;/Text&gt;
+      {!disabled &amp;&amp; value.length &gt; 0 &amp;&amp; cursor.show()}
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<h3 id="7-工具调用显示组件">7. 工具调用显示组件</h3>
+<p><strong>文件</strong>: <code>src/components/Tools/ToolCallDisplay.tsx</code></p>
+<pre><code class="language-typescript">import React from &#39;react&#39;;
+import { Box, Text } from &#39;../../ink.js&#39;;
+import type { ToolCall } from &#39;../../types/tool.js&#39;;
+
+interface ToolCallDisplayProps {
+  tool: ToolCall;
+  expanded: boolean;
+  onToggle: () =&gt; void;
+}
+
+export const ToolCallDisplay: React.FC&lt;ToolCallDisplayProps&gt; = ({
+  tool,
+  expanded,
+  onToggle
+}) =&gt; {
+  const statusIcon = {
+    pending: &#39;⏳&#39;,
+    running: &#39;🔄&#39;,
+    completed: &#39;✅&#39;,
+    failed: &#39;❌&#39;
+  }[tool.status];
+  
+  return (
+    &lt;Box flexDirection=&quot;column&quot; marginY={1}&gt;
+      &lt;Box&gt;
+        &lt;Text&gt;{statusIcon} &lt;/Text&gt;
+        &lt;Text bold&gt;{tool.name}&lt;/Text&gt;
+        &lt;Text dimColor&gt; (press Enter to {expanded ? &#39;collapse&#39; : &#39;expand&#39;})&lt;/Text&gt;
+      &lt;/Box&gt;
+      
+      {expanded &amp;&amp; (
+        &lt;Box paddingLeft={2} flexDirection=&quot;column&quot;&gt;
+          &lt;Text dimColor&gt;Arguments:&lt;/Text&gt;
+          &lt;Text&gt;
+            {JSON.stringify(tool.arguments, null, 2)}
+          &lt;/Text&gt;
+          
+          {tool.result &amp;&amp; (
+            &lt;&gt;
+              &lt;Text dimColor&gt;Result:&lt;/Text&gt;
+              &lt;Text color=&quot;green&quot;&gt;
+                {typeof tool.result === &#39;string&#39; 
+                  ? tool.result 
+                  : JSON.stringify(tool.result, null, 2)}
+              &lt;/Text&gt;
+            &lt;/&gt;
+          )}
+        &lt;/Box&gt;
+      )}
+    &lt;/Box&gt;
+  );
+};</code></pre>
+<p>---</p>
+<h2 id="工具调用系统">工具调用系统</h2>
+<h3 id="1-工具基类">1. 工具基类</h3>
+<p><strong>文件</strong>: <code>src/Tool.ts</code></p>
+<pre><code class="language-typescript">export abstract class Tool {
+  abstract name: string;
+  abstract description: string;
+  abstract parameters: ToolInputJSONSchema;
+  
+  /**
+   * 执行工具
+   */
+  abstract execute(
+    input: unknown,
+    context: ToolExecutionContext
+  ): Promise&lt;ToolResult&gt;;
+  
+  /**
+   * 检查权限
+   */
+  checkPermission(
+    input: unknown,
+    context: PermissionContext
+  ): PermissionDecision {
+    return &#39;ask&#39;; // 默认询问用户
+  }
+}</code></pre>
+<h3 id="2-bash-工具示例">2. Bash 工具示例</h3>
+<p><strong>文件</strong>: <code>src/tools/bash/BashTool.ts</code></p>
+<pre><code class="language-typescript">import { Tool } from &#39;../../Tool.js&#39;;
+import { spawn } from &#39;child_process&#39;;
+
+export class BashTool extends Tool {
+  name = &#39;Bash&#39;;
+  description = &#39;Execute a bash command&#39;;
+  
+  parameters = {
+    type: &#39;object&#39;,
+    properties: {
+      command: {
+        type: &#39;string&#39;,
+        description: &#39;The bash command to execute&#39;
+      },
+      timeout: {
+        type: &#39;number&#39;,
+        description: &#39;Timeout in seconds&#39;,
+        default: 30
+      }
+    },
+    required: [&#39;command&#39;]
+  };
+  
+  async execute(input: { command: string; timeout?: number }) {
+    const { command, timeout = 30 } = input;
+    
+    return new Promise((resolve, reject) =&gt; {
+      const proc = spawn(&#39;bash&#39;, [&#39;-c&#39;, command], {
+        stdio: [&#39;pipe&#39;, &#39;pipe&#39;, &#39;pipe&#39;]
+      });
+      
+      let stdout = &#39;&#39;;
+      let stderr = &#39;&#39;;
+      
+      proc.stdout.on(&#39;data&#39;, (data) =&gt; {
+        stdout += data.toString();
+      });
+      
+      proc.stderr.on(&#39;data&#39;, (data) =&gt; {
+        stderr += data.toString();
+      });
+      
+      const timer = setTimeout(() =&gt; {
+        proc.kill();
+        reject(new Error(`Command timed out after ${timeout}s`));
+      }, timeout * 1000);
+      
+      proc.on(&#39;close&#39;, (code) =&gt; {
+        clearTimeout(timer);
+        
+        resolve({
+          success: code === 0,
+          stdout,
+          stderr,
+          exitCode: code
+        });
+      });
+    });
+  }
+}</code></pre>
+<h3 id="3-文件读取工具">3. 文件读取工具</h3>
+<p><strong>文件</strong>: <code>src/tools/read/ReadTool.ts</code></p>
+<pre><code class="language-typescript">import { Tool } from &#39;../../Tool.js&#39;;
+import { readFile } from &#39;fs/promises&#39;;
+
+export class ReadTool extends Tool {
+  name = &#39;Read&#39;;
+  description = &#39;Read a file from the filesystem&#39;;
+  
+  parameters = {
+    type: &#39;object&#39;,
+    properties: {
+      path: {
+        type: &#39;string&#39;,
+        description: &#39;Path to the file to read&#39;
+      },
+      encoding: {
+        type: &#39;string&#39;,
+        enum: [&#39;utf-8&#39;, &#39;base64&#39;],
+        default: &#39;utf-8&#39;
+      }
+    },
+    required: [&#39;path&#39;]
+  };
+  
+  async execute(input: { path: string; encoding?: string }) {
+    try {
+      const content = await readFile(input.path, {
+        encoding: (input.encoding as BufferEncoding) || &#39;utf-8&#39;
+      });
+      
+      return {
+        success: true,
+        content,
+        size: content.length
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+}</code></pre>
+<p>---</p>
+<h2 id="会话管理系统">会话管理系统</h2>
+<h3 id="1-会话存储">1. 会话存储</h3>
+<p><strong>文件</strong>: <code>src/utils/sessionStorage.ts</code></p>
+<pre><code class="language-typescript">import { writeFileSync, readFileSync } from &#39;fs&#39;;
+import { join } from &#39;path&#39;;
+
+const SESSION_DIR = join(process.env.HOME!, &#39;.claude&#39;, &#39;sessions&#39;);
+
+export interface Session {
+  id: string;
+  name: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * 保存会话
+ */
+export async function saveSession(session: Session): Promise&lt;void&gt; {
+  const filePath = join(SESSION_DIR, `${session.id}.json`);
+  
+  writeFileSync(filePath, JSON.stringify({
+    ...session,
+    createdAt: session.createdAt.toISOString(),
+    updatedAt: session.updatedAt.toISOString()
+  }, null, 2));
+}
+
+/**
+ * 加载会话
+ */
+export async function loadSession(sessionId: string): Promise&lt;Session | null&gt; {
+  const filePath = join(SESSION_DIR, `${sessionId}.json`);
+  
+  try {
+    const data = readFileSync(filePath, &#39;utf-8&#39;);
+    const session = JSON.parse(data);
+    
+    return {
+      ...session,
+      createdAt: new Date(session.createdAt),
+      updatedAt: new Date(session.updatedAt)
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * 列出所有会话
+ */
+export async function listSessions(): Promise&lt;Session[]&gt; {
+  const files = readdirSync(SESSION_DIR);
+  
+  return Promise.all(
+    files
+      .filter(f =&gt; f.endsWith(&#39;.json&#39;))
+      .map(f =&gt; loadSession(f.replace(&#39;.json&#39;, &#39;&#39;)))
+  ).then(sessions =&gt; sessions.filter(Boolean) as Session[]);
+}</code></pre>
+<p>---</p>
+<h2 id="插件与-mcp-系统">插件与 MCP 系统</h2>
+<h3 id="1-mcp-服务器配置">1. MCP 服务器配置</h3>
+<p><strong>文件</strong>: <code>src/services/mcp/config.ts</code></p>
+<pre><code class="language-typescript">import { readFileSync } from &#39;fs&#39;;
+
+export interface McpServerConfig {
+  name: string;
+  transport: &#39;stdio&#39; | &#39;sse&#39; | &#39;websocket&#39;;
+  command?: string;
+  args?: string[];
+  url?: string;
+  headers?: Record&lt;string, string&gt;;
+}
+
+/**
+ * 解析 MCP 配置
+ */
+export function parseMcpConfig(configPath: string): McpServerConfig[] {
+  const content = readFileSync(configPath, &#39;utf-8&#39;);
+  const config = JSON.parse(content);
+  
+  return Object.entries(config.mcpServers || {}).map(([name, server]) =&gt; ({
+    name,
+    ...(server as Omit&lt;McpServerConfig, &#39;name&#39;&gt;)
+  }));
+}</code></pre>
+<h3 id="2-mcp-客户端">2. MCP 客户端</h3>
+<p><strong>文件</strong>: <code>src/services/mcp/client.ts</code></p>
+<pre><code class="language-typescript">import { spawn } from &#39;child_process&#39;;
+
+export class McpClient {
+  private process: ChildProcess | null = null;
+  
+  async connect(server: McpServerConfig): Promise&lt;void&gt; {
+    if (server.transport === &#39;stdio&#39;) {
+      this.process = spawn(server.command!, server.args || []);
+      
+      this.process.stdout.on(&#39;data&#39;, (data) =&gt; {
+        this.handleMessage(JSON.parse(data));
+      });
+    }
+  }
+  
+  async callTool(name: string, args: unknown): Promise&lt;unknown&gt; {
+    const requestId = generateId();
+    
+    this.process!.stdin.write(JSON.stringify({
+      jsonrpc: &#39;2.0&#39;,
+      id: requestId,
+      method: &#39;tools/call&#39;,
+      params: {
+        name,
+        arguments: args
+      }
+    }) + &#39;\n&#39;);
+    
+    return new Promise((resolve) =&gt; {
+      this.once(`response:${requestId}`, resolve);
+    });
+  }
+}</code></pre>
+<p>---</p>
+<h2 id="完整示例-从启动到交互">完整示例：从启动到交互</h2>
+<h3 id="启动流程">启动流程</h3>
+<pre><code class="language-bash"># 用户运行
+$ claude &quot;帮我创建一个 React 组件&quot;</code></pre>
+<h3 id="执行流程">执行流程</h3>
+<pre><code class="language-typescript">// 1. Commander 解析参数 (src/main.tsx)
+program.parse([&#39;node&#39;, &#39;claude&#39;, &#39;帮我创建一个 React 组件&#39;]);
+
+// 2. PreAction Hook 执行初始化
+await init();
+await initializeToolPermissionContext({...});
+
+// 3. 进入主 action
+program.action(async (prompt, options) =&gt; {
+  // prompt = &quot;帮我创建一个 React 组件&quot;
+  
+  // 4. 启动 REPL
+  await launchRepl(prompt, options);
+});
+
+// 5. 渲染 UI (src/interactiveHelpers.tsx)
+const instance = await render(&lt;App initialPrompt={prompt} /&gt;);
+
+// 6. App 组件显示初始消息
+// ┌─ You (14:30)
+//   帮我创建一个 React 组件
+// └─
+
+// 7. AI 处理并返回
+// ┌─ Claude
+//   我来帮你创建一个 React 组件。首先让我查看一下项目结构。
+//   
+//   ⏳ Bash (ls -la)
+// └─
+
+// 8. 执行 Bash 工具
+const result = await bashTool.execute({ command: &#39;ls -la&#39; });
+
+// 9. 显示工具结果
+// ✅ Bash
+// Arguments: { &quot;command&quot;: &quot;ls -la&quot; }
+// Result:
+// total 48
+// drwxr-xr-x  12 user  staff   384 Apr  7 14:30 .
+// -rw-r--r--   1 user  staff  1234 Apr  7 14:29 package.json
+
+// 10. AI 继续对话
+// ┌─ Claude
+//   我看到这是一个 Node.js 项目。我来创建一个简单的 Button 组件。
+//   
+//   📝 Write (src/components/Button.tsx)
+// └─
+
+// 11. 执行 Write 工具
+await writeTool.execute({
+  path: &#39;src/components/Button.tsx&#39;,
+  content: `
+import React from &#39;react&#39;;
+
+interface ButtonProps {
+  label: string;
+  onClick: () =&gt; void;
+}
+
+export const Button: React.FC&lt;ButtonProps&gt; = ({ label, onClick }) =&gt; {
+  return &lt;button onClick={onClick}&gt;{label}&lt;/button&gt;;
+};
+  `
+});
+
+// 12. 完成
+// ✅ Write
+// Arguments: { &quot;path&quot;: &quot;src/components/Button.tsx&quot; }
+// Result: File written successfully (234 bytes)
+
+// ┌─ Claude
+//   完成！我已经创建了 Button 组件。你可以这样使用：
+//   
+//   import { Button } from &#39;./components/Button&#39;;
+//   
+//   &lt;Button label=&quot;Click me&quot; onClick={() =&gt; alert(&#39;Clicked!&#39;)} /&gt;
+// └─</code></pre>
+<p>---</p>
+<h2 id="关键技术点总结">关键技术点总结</h2>
+<h3 id="1-commander-js-的优势">1. Commander.js 的优势</h3>
+<p>✅ <strong>类型安全</strong> - <code>@commander-js/extra-typings</code> 提供完整类型 ✅ <strong>链式 API</strong> - 流畅的配置体验 ✅ <strong>自动帮助</strong> - 自动生成 <code>--help</code> 输出 ✅ <strong>子命令</strong> - 支持嵌套命令结构 ✅ <strong>Hooks</strong> - <code>preAction</code> 用于初始化</p>
+<h3 id="2-react-ink-的优势">2. React + Ink 的优势</h3>
+<p>✅ <strong>组件化</strong> - 复用 React 组件开发经验 ✅ <strong>声明式 UI</strong> - 清晰的 UI 结构 ✅ <strong>状态管理</strong> - 使用 React hooks ✅ <strong>热更新</strong> - 开发时即时预览 ✅ <strong>生态系统</strong> - 丰富的 React 库可用</p>
+<h3 id="3-架构设计亮点">3. 架构设计亮点</h3>
+<p>🎯 <strong>分层清晰</strong> - CLI → Commands → UI → Business → Tools → Services 🎯 <strong>可扩展</strong> - 插件系统和 MCP 协议 🎯 <strong>类型安全</strong> - 全程 TypeScript 🎯 <strong>性能优化</strong> - Bun 运行时 + 懒加载 🎯 <strong>用户体验</strong> - 响应式 TUI + 实时反馈</p>
+<p>---</p>
+<h2 id="学习路径建议">学习路径建议</h2>
+<h3 id="week-1-基础理解">Week 1: 基础理解</h3>
+<ol><li>阅读 <code>src/main.tsx</code> - 理解入口和 Commander 配置</li><li>研究 <code>src/ink.ts</code> - 理解 Ink 封装</li><li>分析一个简单的组件（如 <code>UserMessage.tsx</code>）</li></ol>
+<h3 id="week-2-核心功能">Week 2: 核心功能</h3>
+<ol><li>实现一个自定义工具（参考 <code>BashTool.ts</code>）</li><li>添加一个新的斜杠命令</li><li>修改 UI 组件的样式</li></ol>
+<h3 id="week-3-高级特性">Week 3: 高级特性</h3>
+<ol><li>研究 MCP 协议实现</li><li>理解会话管理机制</li><li>探索插件系统架构</li></ol>
+<p>---</p>
+<p><strong>文档版本</strong>: 1.0.0 <strong>最后更新</strong>: 2026-04-07 <strong>参考项目</strong>: claudecode-project (50,000+ 行代码)</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/legacy/ARCHITECTURE_GUIDE.html"><span>上一章</span><strong>Claude Code 架构学习指南</strong></a>
+    <a class="pager-next" href="/legacy/COMMENTS_GUIDE.html"><span>下一章</span><strong>代码注释说明</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#目录">📋 目录</a><a class="toc-level-2" href="#项目概述">项目概述</a><a class="toc-level-3" href="#核心特性">核心特性</a><a class="toc-level-3" href="#项目规模">项目规模</a><a class="toc-level-2" href="#核心技术栈">核心技术栈</a><a class="toc-level-3" href="#1-运行时与语言">1. 运行时与语言</a><a class="toc-level-3" href="#2-cli-命令解析-commander-js">2. CLI 命令解析 - Commander.js</a><a class="toc-level-3" href="#3-终端-ui-react-ink">3. 终端 UI - React + Ink</a><a class="toc-level-3" href="#4-状态管理-react-hooks-zustand">4. 状态管理 - React Hooks + Zustand</a><a class="toc-level-2" href="#架构分层">架构分层</a><a class="toc-level-2" href="#cli-命令系统-commander-js">CLI 命令系统 (Commander.js)</a><a class="toc-level-3" href="#1-主命令配置">1. 主命令配置</a><a class="toc-level-3" href="#2-preaction-hook-初始化逻辑">2. PreAction Hook - 初始化逻辑</a><a class="toc-level-3" href="#3-主-action-处理器">3. 主 Action 处理器</a><a class="toc-level-3" href="#4-子命令示例">4. 子命令示例</a><a class="toc-level-2" href="#终端-ui-系统-react-ink">终端 UI 系统 (React + Ink)</a><a class="toc-level-3" href="#1-ink-封装层">1. Ink 封装层</a><a class="toc-level-3" href="#2-主应用组件">2. 主应用组件</a><a class="toc-level-3" href="#3-消息列表组件">3. 消息列表组件</a><a class="toc-level-3" href="#4-用户消息组件">4. 用户消息组件</a><a class="toc-level-3" href="#5-助手消息组件-支持工具调用">5. 助手消息组件（支持工具调用）</a><a class="toc-level-3" href="#6-输入框组件">6. 输入框组件</a><a class="toc-level-3" href="#7-工具调用显示组件">7. 工具调用显示组件</a><a class="toc-level-2" href="#工具调用系统">工具调用系统</a><a class="toc-level-3" href="#1-工具基类">1. 工具基类</a><a class="toc-level-3" href="#2-bash-工具示例">2. Bash 工具示例</a><a class="toc-level-3" href="#3-文件读取工具">3. 文件读取工具</a><a class="toc-level-2" href="#会话管理系统">会话管理系统</a><a class="toc-level-3" href="#1-会话存储">1. 会话存储</a><a class="toc-level-2" href="#插件与-mcp-系统">插件与 MCP 系统</a><a class="toc-level-3" href="#1-mcp-服务器配置">1. MCP 服务器配置</a><a class="toc-level-3" href="#2-mcp-客户端">2. MCP 客户端</a><a class="toc-level-2" href="#完整示例-从启动到交互">完整示例：从启动到交互</a><a class="toc-level-3" href="#启动流程">启动流程</a><a class="toc-level-3" href="#执行流程">执行流程</a><a class="toc-level-2" href="#关键技术点总结">关键技术点总结</a><a class="toc-level-3" href="#1-commander-js-的优势">1. Commander.js 的优势</a><a class="toc-level-3" href="#2-react-ink-的优势">2. React + Ink 的优势</a><a class="toc-level-3" href="#3-架构设计亮点">3. 架构设计亮点</a><a class="toc-level-2" href="#学习路径建议">学习路径建议</a><a class="toc-level-3" href="#week-1-基础理解">Week 1: 基础理解</a><a class="toc-level-3" href="#week-2-核心功能">Week 2: 核心功能</a><a class="toc-level-3" href="#week-3-高级特性">Week 3: 高级特性</a>
+    </aside>
+  </div>
+</body>
+</html>

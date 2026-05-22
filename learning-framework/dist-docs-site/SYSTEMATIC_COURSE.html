@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Code 源码系统课程 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option selected value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a aria-current="page" href="SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="LEARNING_TRACKER.html">学习进度追踪</a><a href="COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="chapters/01-source-map.html">第 1 章：源码全景与学习地图</a><a href="chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a href="chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="legacy/DEPENDENCIES.html">项目依赖说明</a><a href="legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="legacy/QUICKSTART.html">快速开始指南</a><a href="legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="claude-code-源码系统课程">Claude Code 源码系统课程</h1>
+<h2 id="课程定位">课程定位</h2>
+<p>这门课面向已经具备 TypeScript、React、工程化和复杂前端架构经验的高级前端工程师。课程不会重复讲 TypeScript 语法、React Hooks 基础、Commander API 入门或 Ink 基础组件用法，而是把 Claude Code 当作一个真实的 AI CLI runtime 来读。</p>
+<p>目标不是把 Claude Code 的每个文件逐行读完，而是建立一套可迁移的源码理解能力：</p>
+<ul><li>看懂一个大型 AI CLI 项目的运行主线</li><li>理解终端 UI、Agent 循环、工具调用、权限控制如何协作</li><li>学会用“入口 -&gt; 状态 -&gt; 消息 -&gt; 查询循环 -&gt; 工具 -&gt; 扩展”的方式拆解复杂源码</li><li>最终能在 <code>learning-framework</code> 中复刻一个简化版 Claude Code 架构</li></ul>
+<p>建议课程节奏为 <strong>14 章主线课 + 4 个阶段项目 + 补充专题附录</strong>。14 章只承担主链路教学，不代表 Claude Code 的全部知识只需 14 章讲完；大量横切知识会进入附录、专题讲义和阶段项目复盘。</p>
+<p>每章都必须包含源码导读、调用链追踪、概念拆解和实践任务，并尽量落到真实源码符号、文件路径、<code>rg</code> 检索命令和可验证证据链。</p>
+<p>---</p>
+<h2 id="学习前置知识">学习前置知识</h2>
+<h3 id="必备基础">必备基础</h3>
+<ol><li>TypeScript 类型系统和大型项目类型阅读能力</li><li>React 组件、Hooks、Context、external store、渲染性能经验</li><li>Node.js 或 Bun 运行时、进程、文件系统、环境变量经验</li><li>CLI 参数、环境变量、进程退出码和终端交互经验</li><li>async/await、AsyncGenerator、流式处理和取消控制经验</li></ol>
+<h3 id="建议补充">建议补充</h3>
+<ol><li>Commander.js 命令解析源码阅读经验</li><li>Ink 终端 UI 与 React reconciler 心智模型</li><li>Zod schema 校验与 runtime protocol 设计</li><li>LLM tool use、tool result、permission flow 基本概念</li><li>WebSocket、MCP、插件系统、远程会话基础</li></ol>
+<h3 id="本课程不展开的基础内容">本课程不展开的基础内容</h3>
+<ul><li>TypeScript/React/Commander/Ink 的入门语法</li><li>普通 Web 表单、普通组件通信、普通状态管理教程</li><li>“照着 API 文档用库”的说明</li></ul>
+<p>这些内容如果需要补课，应放在附录或课前材料；主线讲义只讨论它们在 Claude Code 源码里的工程作用。</p>
+<p>---</p>
+<h2 id="总体源码地图">总体源码地图</h2>
+<pre><code class="language-text">用户输入
+  ↓
+CLI 入口 main.tsx
+  ↓
+初始化 init.ts + 配置/策略/环境变量
+  ↓
+REPL.tsx 终端交互界面
+  ↓
+AppState 全局状态 + Message 消息流
+  ↓
+query.ts Agent 查询循环
+  ↓
+Claude API 流式响应
+  ↓
+tool_use 检测
+  ↓
+toolOrchestration.ts 调度工具
+  ↓
+Tool.ts / tools/* 具体工具执行
+  ↓
+权限系统 / UI 反馈 / 会话持久化</code></pre>
+<p>核心学习文件：</p>
+<ul><li><code>claudecode-project/src/main.tsx</code></li><li><code>claudecode-project/src/entrypoints/init.ts</code></li><li><code>claudecode-project/src/screens/REPL.tsx</code></li><li><code>claudecode-project/src/state/AppState.tsx</code></li><li><code>claudecode-project/src/query.ts</code></li><li><code>claudecode-project/src/Tool.ts</code></li><li><code>claudecode-project/src/tools.ts</code></li><li><code>claudecode-project/src/services/tools/toolOrchestration.ts</code></li><li><code>claudecode-project/src/commands.ts</code></li></ul>
+<p>---</p>
+<h2 id="四阶段学习路线">四阶段学习路线</h2>
+<h3 id="第一阶段-建立全局地图">第一阶段：建立全局地图</h3>
+<p>目标：知道系统从哪里启动、如何显示界面、用户输入如何进入程序。</p>
+<p>章节：</p>
+<ol><li>源码全景与学习方法</li><li>CLI 启动入口与 Commander 命令解析</li><li>初始化系统与配置加载</li><li>React + Ink 终端 UI</li></ol>
+<p>阶段项目：在 <code>learning-framework</code> 中实现一个可启动的 CLI TUI，支持输入、显示消息、退出程序。</p>
+<h3 id="第二阶段-理解交互主链路">第二阶段：理解交互主链路</h3>
+<p>目标：能追踪“一条用户消息”从输入到模型响应再到 UI 展示的完整路径。</p>
+<p>章节：</p>
+<ol><li>REPL 主交互界面源码导读</li><li>AppState 状态管理机制</li><li>消息系统与对话上下文</li><li>Agent 查询循环</li></ol>
+<p>阶段项目：实现一个简化版消息循环，支持用户输入、模拟模型流式输出、消息持久化。</p>
+<h3 id="第三阶段-掌握工具调用核心">第三阶段：掌握工具调用核心</h3>
+<p>目标：理解 Claude Code 的核心竞争力：模型如何安全地调用本地工具。</p>
+<p>章节：</p>
+<ol><li>Tool 抽象层设计</li><li>内置工具系统</li><li>权限系统与安全边界</li><li>Slash Commands 命令体系</li></ol>
+<p>阶段项目：实现 3 个工具：<code>read</code>、<code>write</code>、<code>bash</code>，并加入权限确认流程。</p>
+<h3 id="第四阶段-进入高级扩展架构">第四阶段：进入高级扩展架构</h3>
+<p>目标：理解大型 AI CLI 如何支持 MCP、插件、远程会话、子 Agent 和性能优化。</p>
+<p>章节：</p>
+<ol><li>MCP、插件与 Skills 扩展系统</li><li>高级系统：远程、子 Agent、压缩、性能与工程化</li></ol>
+<p>阶段项目：实现一个简化插件系统，并把插件工具合并进主工具池。</p>
+<p>---</p>
+<h2 id="第-1-章-源码全景与学习地图">第 1 章：源码全景与学习地图</h2>
+<h3 id="学习目标">学习目标</h3>
+<ul><li>认识 Claude Code 的整体目录结构</li><li>找到主入口、核心循环、工具系统、UI 系统的位置</li><li>学会用调用链而不是文件列表学习大型源码</li></ul>
+<h3 id="核心知识点">核心知识点</h3>
+<ol><li><code>src/main.tsx</code> 是 CLI 主入口</li><li><code>src/screens/REPL.tsx</code> 是交互界面的核心</li><li><code>src/query.ts</code> 是 Agent 查询循环</li><li><code>src/Tool.ts</code> 定义工具抽象</li><li><code>src/tools.ts</code> 组装内置工具池</li><li><code>src/commands.ts</code> 组装斜杠命令</li></ol>
+<h3 id="教学表现形式">教学表现形式</h3>
+<ul><li>目录树速览</li><li>一张“用户输入到工具执行”的链路图</li><li>选 9 个核心文件做源码地图</li></ul>
+<h3 id="实践任务">实践任务</h3>
+<ul><li>使用 <code>rg --files claudecode-project/src</code> 列出文件</li><li>标记 10 个最重要的入口文件</li><li>画出自己的第一版架构图</li></ul>
+<h3 id="本章产出">本章产出</h3>
+<p>一份 <code>docs/notes/ch01-source-map.md</code>，记录学习者对项目结构的第一印象。</p>
+<p>---</p>
+<h2 id="第-2-章-cli-启动入口与-commander-命令解析">第 2 章：CLI 启动入口与 Commander 命令解析</h2>
+<h3 id="学习目标-2">学习目标</h3>
+<ul><li>理解 Claude Code 如何从命令行启动</li><li>掌握 Commander.js 如何定义参数、选项和 action</li><li>看懂交互模式与非交互模式的分流</li></ul>
+<h3 id="核心知识点-2">核心知识点</h3>
+<ol><li>顶层副作用：启动性能优化</li><li><code>CommanderCommand</code> 创建 CLI 程序</li><li>全局参数与 option 定义</li><li><code>preAction</code> 初始化钩子</li><li><code>program.action</code> 主处理器</li><li><code>--print</code> 非交互模式</li><li>session、model、permission 等 CLI 参数如何进入应用状态</li></ol>
+<h3 id="重点源码">重点源码</h3>
+<ul><li><code>claudecode-project/src/main.tsx</code></li><li><code>claudecode-project/src/cli/handlers/*</code></li><li><code>claudecode-project/src/cli/print.ts</code></li></ul>
+<h3 id="教学表现形式-2">教学表现形式</h3>
+<ul><li>用“机场安检”类比 CLI 参数分流：不同参数决定用户走不同通道</li><li>画 <code>main.tsx</code> 的三段结构：导入与预热、命令定义、action 执行</li><li>现场追踪 <code>claude -p &quot;hello&quot;</code> 的执行路径</li></ul>
+<h3 id="实践任务-2">实践任务</h3>
+<ul><li>在 <code>learning-framework</code> 中添加 Commander 入口</li><li>支持 <code>--debug</code>、<code>--print</code>、<code>--model</code></li><li>打印解析后的 options</li></ul>
+<p>---</p>
+<h2 id="第-3-章-初始化系统与配置加载">第 3 章：初始化系统与配置加载</h2>
+<h3 id="学习目标-3">学习目标</h3>
+<ul><li>理解程序启动前需要准备哪些系统资源</li><li>掌握配置、环境变量、远程策略、清理函数的初始化顺序</li></ul>
+<h3 id="核心知识点-3">核心知识点</h3>
+<ol><li><code>init()</code> 使用 memoize 避免重复初始化</li><li>配置系统启用</li><li>safe env 与 full env 的区别</li><li>graceful shutdown</li><li>remote managed settings</li><li>policy limits</li><li>网络、代理、证书、mTLS 初始化</li></ol>
+<h3 id="重点源码-2">重点源码</h3>
+<ul><li><code>claudecode-project/src/entrypoints/init.ts</code></li><li><code>claudecode-project/src/utils/config.js</code></li><li><code>claudecode-project/src/services/remoteManagedSettings/*</code></li><li><code>claudecode-project/src/services/policyLimits/*</code></li></ul>
+<h3 id="教学表现形式-3">教学表现形式</h3>
+<ul><li>用“开店前准备”类比初始化：开门、通电、收银、消防检查</li><li>拆解 fire-and-forget 异步任务</li><li>对比阻塞初始化与非阻塞初始化</li></ul>
+<h3 id="实践任务-3">实践任务</h3>
+<ul><li>在 <code>learning-framework</code> 中实现 <code>init()</code></li><li>加入配置读取、日志输出、退出清理</li><li>故意制造配置错误，观察错误路径</li></ul>
+<p>---</p>
+<h2 id="第-4-章-react-ink-终端-ui">第 4 章：React + Ink 终端 UI</h2>
+<h3 id="学习目标-4">学习目标</h3>
+<ul><li>理解终端应用为什么也能用 React</li><li>掌握 Ink 的组件、布局、输入和刷新机制</li></ul>
+<h3 id="核心知识点-4">核心知识点</h3>
+<ol><li>Ink 的 <code>Box</code>、<code>Text</code></li><li>终端 Flexbox 布局</li><li><code>useInput</code> 键盘事件</li><li>终端尺寸变化</li><li>Dialog 与全屏布局</li><li>消息列表渲染</li><li>Spinner、状态栏、提示信息</li></ol>
+<h3 id="重点源码-3">重点源码</h3>
+<ul><li><code>claudecode-project/src/ink.ts</code></li><li><code>claudecode-project/src/components/App.tsx</code></li><li><code>claudecode-project/src/components/Messages.tsx</code></li><li><code>claudecode-project/src/components/PromptInput/PromptInput.tsx</code></li></ul>
+<h3 id="教学表现形式-4">教学表现形式</h3>
+<ul><li>先做一个最小 Ink demo</li><li>再对照 Claude Code 组件分层</li><li>通过截图或终端录屏展示 UI 状态变化</li></ul>
+<h3 id="实践任务-4">实践任务</h3>
+<ul><li>实现一个两栏终端布局</li><li>支持输入框、消息列表、底部状态栏</li><li>输入 <code>/clear</code> 可以清空消息</li></ul>
+<p>---</p>
+<h2 id="第-5-章-repl-主交互界面源码导读">第 5 章：REPL 主交互界面源码导读</h2>
+<h3 id="学习目标-5">学习目标</h3>
+<ul><li>看懂 REPL 为什么是 Claude Code 最复杂的文件之一</li><li>掌握输入、队列、查询、渲染、权限弹窗如何集中协作</li></ul>
+<h3 id="核心知识点-5">核心知识点</h3>
+<ol><li>REPL 组件职责边界</li><li>用户输入提交</li><li>消息队列处理</li><li>query 调用</li><li>tool permission UI</li><li>中断与取消</li><li>IDE/remote/voice 等能力接入点</li><li>后台任务与子会话</li></ol>
+<h3 id="重点源码-4">重点源码</h3>
+<ul><li><code>claudecode-project/src/screens/REPL.tsx</code></li><li><code>claudecode-project/src/utils/handlePromptSubmit.ts</code></li><li><code>claudecode-project/src/hooks/useQueueProcessor.ts</code></li><li><code>claudecode-project/src/hooks/useCommandQueue.ts</code></li></ul>
+<h3 id="教学表现形式-5">教学表现形式</h3>
+<ul><li>把 REPL 拆成 5 个角色：输入员、调度员、记录员、渲染员、守门员</li><li>只追踪一条消息，不一开始展开全部分支</li><li>用断点式讲解：输入前、输入后、请求中、工具中、结束后</li></ul>
+<h3 id="实践任务-5">实践任务</h3>
+<ul><li>在简化项目中实现 <code>handlePromptSubmit</code></li><li>加入一个消息队列</li><li>支持请求中禁止重复提交</li></ul>
+<p>---</p>
+<h2 id="第-6-章-appstate-状态管理机制">第 6 章：AppState 状态管理机制</h2>
+<h3 id="学习目标-6">学习目标</h3>
+<ul><li>理解 Claude Code 为什么不用简单的 React state</li><li>掌握外部 store + selector 的状态管理方式</li></ul>
+<h3 id="核心知识点-6">核心知识点</h3>
+<ol><li><code>AppStateProvider</code></li><li><code>createStore</code></li><li><code>useSyncExternalStore</code></li><li>selector 避免无效渲染</li><li><code>useSetAppState</code></li><li>设置变更同步到 AppState</li></ol>
+<h3 id="重点源码-5">重点源码</h3>
+<ul><li><code>claudecode-project/src/state/AppState.tsx</code></li><li><code>claudecode-project/src/state/AppStateStore.ts</code></li><li><code>claudecode-project/src/state/store.ts</code></li></ul>
+<h3 id="教学表现形式-6">教学表现形式</h3>
+<ul><li>对比 <code>useState</code>、Context、external store</li><li>用“仓库 + 订阅者”类比状态更新</li><li>演示 selector 返回新对象导致重复渲染的问题</li></ul>
+<h3 id="实践任务-6">实践任务</h3>
+<ul><li>实现一个最小 external store</li><li>添加 <code>useAppState(selector)</code></li><li>用 selector 分别订阅 <code>messages</code> 和 <code>isLoading</code></li></ul>
+<p>---</p>
+<h2 id="第-7-章-消息系统与对话上下文">第 7 章：消息系统与对话上下文</h2>
+<h3 id="学习目标-7">学习目标</h3>
+<ul><li>理解 Claude Code 如何组织对话历史</li><li>掌握消息如何转成 API 可接受的格式</li></ul>
+<h3 id="核心知识点-7">核心知识点</h3>
+<ol><li>UserMessage</li><li>AssistantMessage</li><li>SystemMessage</li><li>Tool result message</li><li>Attachment message</li><li><code>normalizeMessagesForAPI</code></li><li>token 估算与上下文裁剪</li></ol>
+<h3 id="重点源码-6">重点源码</h3>
+<ul><li><code>claudecode-project/src/types/message.js</code>（当前源码大量 import 的类型入口；扩写第 7 章时需要先校验物理文件/生成入口）</li><li><code>claudecode-project/src/utils/messages.ts</code></li><li><code>claudecode-project/src/utils/attachments.ts</code></li><li><code>claudecode-project/src/services/compact/*</code></li></ul>
+<h3 id="教学表现形式-7">教学表现形式</h3>
+<ul><li>用表格列出不同 message 类型</li><li>追踪 tool_use 与 tool_result 如何成对出现</li><li>展示 compact 前后的消息变化</li></ul>
+<h3 id="实践任务-7">实践任务</h3>
+<ul><li>定义简化版 Message 类型</li><li>实现 <code>normalizeMessagesForAPI</code></li><li>加入一个 <code>tool_result</code> 消息</li></ul>
+<p>---</p>
+<h2 id="第-8-章-agent-查询循环">第 8 章：Agent 查询循环</h2>
+<h3 id="学习目标-8">学习目标</h3>
+<ul><li>看懂 Claude Code 的核心 Agent loop</li><li>理解模型响应、工具调用、多轮继续之间的关系</li></ul>
+<h3 id="核心知识点-8">核心知识点</h3>
+<ol><li><code>query()</code> 是 AsyncGenerator</li><li>流式事件如何 yield 给 UI</li><li>API 请求开始事件</li><li>assistant 文本响应</li><li>tool_use 检测</li><li>runTools 后继续下一轮</li><li>prompt too long / max output tokens 恢复</li><li>auto compact</li><li>stop hooks</li></ol>
+<h3 id="重点源码-7">重点源码</h3>
+<ul><li><code>claudecode-project/src/query.ts</code></li><li><code>claudecode-project/src/query/config.ts</code></li><li><code>claudecode-project/src/query/tokenBudget.ts</code></li><li><code>claudecode-project/src/services/api/claude.ts</code></li></ul>
+<h3 id="教学表现形式-8">教学表现形式</h3>
+<ul><li>用“回合制游戏”解释 Agent loop：模型出牌，工具响应，再轮到模型</li><li>画 <code>query -&gt; API -&gt; tool_use -&gt; runTools -&gt; query</code> 循环图</li><li>单独讲 AsyncGenerator 的价值</li></ul>
+<h3 id="实践任务-8">实践任务</h3>
+<ul><li>实现一个模拟 <code>query()</code> 生成器</li><li>先 yield 文本，再 yield tool_use，再 yield tool_result</li><li>UI 逐步消费这些事件</li></ul>
+<p>---</p>
+<h2 id="第-9-章-tool-抽象层设计">第 9 章：Tool 抽象层设计</h2>
+<h3 id="学习目标-9">学习目标</h3>
+<ul><li>理解工具为什么需要统一协议</li><li>掌握工具的 schema、权限、执行、结果、UI 五件套</li></ul>
+<h3 id="核心知识点-9">核心知识点</h3>
+<ol><li>Tool name</li><li>inputSchema</li><li>prompt 描述</li><li>isEnabled</li><li>isConcurrencySafe</li><li>permission check</li><li>call/execute</li><li>result formatting</li></ol>
+<h3 id="重点源码-8">重点源码</h3>
+<ul><li><code>claudecode-project/src/Tool.ts</code></li><li><code>claudecode-project/src/tools/FileReadTool/FileReadTool.ts</code></li><li><code>claudecode-project/src/tools/BashTool/BashTool.tsx</code></li><li><code>claudecode-project/src/tools/FileEditTool/FileEditTool.ts</code></li></ul>
+<h3 id="教学表现形式-9">教学表现形式</h3>
+<ul><li>用“插座标准”类比 Tool 接口：只要符合接口，就能插进 Agent loop</li><li>把一个 Tool 拆成定义层、权限层、执行层、展示层</li><li>对比只读工具和会修改系统的工具</li></ul>
+<h3 id="实践任务-9">实践任务</h3>
+<ul><li>定义 <code>Tool</code> interface</li><li>实现 <code>ReadTool</code></li><li>加入 Zod input 校验</li></ul>
+<p>---</p>
+<h2 id="第-10-章-内置工具系统">第 10 章：内置工具系统</h2>
+<h3 id="学习目标-10">学习目标</h3>
+<ul><li>理解 Claude Code 如何注册、过滤和组合工具</li><li>掌握常见工具的设计差异</li></ul>
+<h3 id="核心知识点-10">核心知识点</h3>
+<ol><li><code>getAllBaseTools</code></li><li><code>getTools</code></li><li>feature gate</li><li>permission deny filter</li><li>MCP tools 合并</li><li>工具去重与排序</li><li>读写工具的风险差异</li><li>并发安全工具批处理</li></ol>
+<h3 id="重点源码-9">重点源码</h3>
+<ul><li><code>claudecode-project/src/tools.ts</code></li><li><code>claudecode-project/src/services/tools/toolOrchestration.ts</code></li><li><code>claudecode-project/src/services/tools/toolExecution.ts</code></li><li><code>claudecode-project/src/tools/*</code></li></ul>
+<h3 id="教学表现形式-10">教学表现形式</h3>
+<ul><li>工具池装配流程图</li><li>表格对比 Read/Edit/Write/Bash/Glob/Grep/Agent</li><li>现场追踪一个 Bash tool_use</li></ul>
+<h3 id="实践任务-10">实践任务</h3>
+<ul><li>实现 <code>getTools(permissionContext)</code></li><li>添加 <code>ReadTool</code>、<code>WriteTool</code>、<code>BashTool</code></li><li>让只读工具可以并发执行</li></ul>
+<p>---</p>
+<h2 id="第-11-章-权限系统与安全边界">第 11 章：权限系统与安全边界</h2>
+<h3 id="学习目标-11">学习目标</h3>
+<ul><li>理解 AI CLI 最大的工程难点：既要有能力，又不能越界</li><li>掌握权限规则如何影响工具暴露和工具执行</li></ul>
+<h3 id="核心知识点-11">核心知识点</h3>
+<ol><li>permission mode</li><li>always allow / always deny / always ask</li><li>workspace directories</li><li>Bash 危险命令识别</li><li>文件写入确认</li><li>权限 UI 弹窗</li><li>后台 Agent 权限约束</li></ol>
+<h3 id="重点源码-10">重点源码</h3>
+<ul><li><code>claudecode-project/src/types/permissions.ts</code></li><li><code>claudecode-project/src/hooks/useCanUseTool.tsx</code></li><li><code>claudecode-project/src/components/permissions/*</code></li><li><code>claudecode-project/src/tools/BashTool/*</code></li></ul>
+<h3 id="教学表现形式-11">教学表现形式</h3>
+<ul><li>用“钥匙串”类比权限上下文：不同钥匙开不同门</li><li>用案例讲解：读文件、改文件、执行删除命令</li><li>对比工具展示前过滤和执行时拦截</li></ul>
+<h3 id="实践任务-11">实践任务</h3>
+<ul><li>实现一个 permission context</li><li>Bash 命令默认 ask</li><li>文件写入必须确认</li></ul>
+<p>---</p>
+<h2 id="第-12-章-slash-commands-命令体系">第 12 章：Slash Commands 命令体系</h2>
+<h3 id="学习目标-12">学习目标</h3>
+<ul><li>理解 <code>/help</code>、<code>/clear</code>、<code>/model</code> 这类命令如何接入</li><li>掌握 prompt command 与本地 command 的区别</li></ul>
+<h3 id="核心知识点-12">核心知识点</h3>
+<ol><li><code>commands.ts</code> 命令注册中心</li><li>command 类型定义</li><li>本地 JSX command</li><li>prompt command</li><li>动态 skills command</li><li>plugin command</li></ol>
+<h3 id="重点源码-11">重点源码</h3>
+<ul><li><code>claudecode-project/src/commands.ts</code></li><li><code>claudecode-project/src/types/command.ts</code></li><li><code>claudecode-project/src/commands/help/*</code></li><li><code>claudecode-project/src/commands/model/*</code></li><li><code>claudecode-project/src/skills/loadSkillsDir.ts</code></li></ul>
+<h3 id="教学表现形式-12">教学表现形式</h3>
+<ul><li>用“前台菜单”和“后厨任务”区分本地命令与 prompt 命令</li><li>现场实现一个 <code>/hello</code></li><li>追踪 <code>/compact</code> 如何变成特殊工作流</li></ul>
+<h3 id="实践任务-12">实践任务</h3>
+<ul><li>实现 command registry</li><li>添加 <code>/help</code>、<code>/clear</code>、<code>/model</code></li><li>支持动态注册命令</li></ul>
+<p>---</p>
+<h2 id="第-13-章-mcp-插件与-skills-扩展系统">第 13 章：MCP、插件与 Skills 扩展系统</h2>
+<h3 id="学习目标-13">学习目标</h3>
+<ul><li>理解 Claude Code 如何从固定工具扩展到开放生态</li><li>掌握 MCP 工具、插件命令、skills 命令如何进入主系统</li></ul>
+<h3 id="核心知识点-13">核心知识点</h3>
+<ol><li>MCP server config</li><li>MCP client connection</li><li>MCP tools/resources</li><li><code>assembleToolPool</code></li><li>plugin command loading</li><li>bundled skills</li><li>dynamic skills</li></ol>
+<h3 id="重点源码-12">重点源码</h3>
+<ul><li><code>claudecode-project/src/services/mcp/*</code></li><li><code>claudecode-project/src/plugins/*</code></li><li><code>claudecode-project/src/skills/*</code></li><li><code>claudecode-project/src/utils/plugins/*</code></li></ul>
+<h3 id="教学表现形式-13">教学表现形式</h3>
+<ul><li>用“USB 外设”类比 MCP：主机不需要提前知道所有设备</li><li>画内置工具 + MCP 工具合并图</li><li>比较 command 扩展和 tool 扩展</li></ul>
+<h3 id="实践任务-13">实践任务</h3>
+<ul><li>实现一个简化 plugin loader</li><li>从插件目录读取工具定义</li><li>合并进主工具池</li></ul>
+<p>---</p>
+<h2 id="第-14-章-高级系统-远程-子-agent-压缩-性能与工程化">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化</h2>
+<h3 id="学习目标-14">学习目标</h3>
+<ul><li>理解 Claude Code 作为大型产品的复杂工程能力</li><li>学会从源码中识别性能优化、远程协作、上下文管理等高级设计</li></ul>
+<h3 id="核心知识点-14">核心知识点</h3>
+<ol><li>bridge 远程通信</li><li>remote session</li><li>AgentTool 子 Agent</li><li>background tasks</li><li>compact 与 micro compact</li><li>session memory</li><li>LSP feedback</li><li>telemetry</li><li>startup profiling</li></ol>
+<h3 id="重点源码-13">重点源码</h3>
+<ul><li><code>claudecode-project/src/bridge/*</code></li><li><code>claudecode-project/src/remote/*</code></li><li><code>claudecode-project/src/tools/AgentTool/*</code></li><li><code>claudecode-project/src/services/compact/*</code></li><li><code>claudecode-project/src/services/lsp/*</code></li><li><code>claudecode-project/src/utils/startupProfiler.ts</code></li></ul>
+<h3 id="教学表现形式-14">教学表现形式</h3>
+<ul><li>用专题课形式讲，不强行串成单一路径</li><li>每个高级系统给一个“为什么需要它”的真实场景</li><li>引导学习者建立大型源码的取舍意识</li></ul>
+<h3 id="实践任务-14">实践任务</h3>
+<ul><li>实现一个简化 background task</li><li>给消息历史增加 compact</li><li>加一个启动耗时 profiler</li></ul>
+<p>---</p>
+<h2 id="95-个知识点清单">95 个知识点清单</h2>
+<p>说明：课程建议按 <strong>86 个必修知识点 + 9 个进阶知识点</strong> 组织。前 86 个用于主线教学，87-95 用于加餐、项目提高或高级源码专题。</p>
+<h3 id="架构与入口">架构与入口</h3>
+<ol><li>项目目录分层</li><li>主入口文件定位</li><li>调用链阅读法</li><li>Commander 程序创建</li><li>CLI argument</li><li>CLI option</li><li>preAction hook</li><li>interactive 与 print 模式分流</li><li>顶层副作用与启动性能</li><li>feature gate</li></ol>
+<h3 id="初始化与配置">初始化与配置</h3>
+<ol><li>memoized init</li><li>配置系统启用</li><li>safe env</li><li>full env</li><li>graceful shutdown</li><li>remote managed settings</li><li>policy limits</li><li>网络代理初始化</li><li>CA/mTLS 设置</li><li>fire-and-forget 预加载</li></ol>
+<h3 id="ui-与状态">UI 与状态</h3>
+<ol><li>Ink 渲染模型</li><li>Box/Text 布局</li><li>终端输入事件</li><li>终端尺寸监听</li><li>PromptInput</li><li>Messages 渲染</li><li>Dialog</li><li>Spinner</li><li>AppStateProvider</li><li>external store</li><li>selector</li><li>useSyncExternalStore</li><li>settings change sync</li></ol>
+<h3 id="repl-与消息">REPL 与消息</h3>
+<ol><li>REPL 职责拆分</li><li>prompt submit</li><li>command queue</li><li>message queue</li><li>cancellation</li><li>early input</li><li>UserMessage</li><li>AssistantMessage</li><li>SystemMessage</li><li>ToolResultMessage</li><li>AttachmentMessage</li><li>normalizeMessagesForAPI</li><li>token estimation</li><li>conversation recovery</li></ol>
+<h3 id="agent-查询循环">Agent 查询循环</h3>
+<ol><li>AsyncGenerator</li><li>stream event</li><li>request start event</li><li>query loop state</li><li>model response handling</li><li>tool_use detection</li><li>tool_result continuation</li><li>max turns</li><li>prompt too long recovery</li><li>max output tokens recovery</li><li>auto compact</li><li>stop hooks</li><li>terminal transition</li></ol>
+<h3 id="tool-系统">Tool 系统</h3>
+<ol><li>Tool interface</li><li>tool input schema</li><li>tool prompt</li><li>isEnabled</li><li>isConcurrencySafe</li><li>ToolUseContext</li><li>built-in tools</li><li>tool pool</li><li>tool dedupe</li><li>MCP tool merge</li><li>runTools serial</li><li>runTools concurrent</li><li>tool result formatting</li><li>tool UI</li></ol>
+<h3 id="权限与安全">权限与安全</h3>
+<ol><li>permission mode</li><li>allow rule</li><li>deny rule</li><li>ask rule</li><li>workspace directories</li><li>Bash command semantics</li><li>destructive command warning</li><li>file edit permission</li><li>permission dialog</li></ol>
+<h3 id="扩展与高级能力">扩展与高级能力</h3>
+<ol><li>slash command</li><li>plugin command</li><li>skills command</li><li>MCP resources</li><li>bridge session</li><li>remote session</li><li>AgentTool</li><li>background task</li><li>session memory</li><li>LSP integration</li><li>telemetry</li><li>startup profiler</li></ol>
+<p>---</p>
+<h2 id="每章讲义模板">每章讲义模板</h2>
+<p>后续扩展每章时，统一使用下面模板。这个模板服务高级前端工程师的源码导读，不写成入门教程：</p>
+<pre><code class="language-markdown"># 第 X 章：标题
+
+## 本章定位
+
+## 面向高级前端工程师的学习价值
+
+## 学习目标
+
+## 前置知识
+
+## 核心概念讲解
+
+## 核心源码地图
+
+## 主调用链 / 主数据流
+
+## 源码阅读路线
+
+## 5 分钟源码速验
+
+## 关键模块逐段导读
+
+## 与前后章节的关系
+
+## 教学可视化表达方式
+
+## 实践任务
+
+## 常见误区
+
+## 本章总结
+
+## 下一章衔接</code></pre>
+<p>每章写作约束：</p>
+<ol><li>保持本文件中 14 章主线、4 个阶段项目和 95 个知识点清单不变。</li><li>每章只扩写当前章节，不在章节讲义中重新规划课程体系。</li><li>所有判断尽量落到真实文件、真实符号、真实调用链和 <code>rg</code> 命令。</li><li>每章都要说明该模块为什么存在、在 AI CLI 主链路中的位置、和前后章节如何串起来。</li><li>每章都要包含可以在 <code>learning-framework</code> 中复刻的能力，不只停留在阅读。</li><li>不修改 <code>claudecode-project/src/assistant/sessionHistory.ts</code>。</li></ol>
+<p>---</p>
+<h2 id="教学风格建议">教学风格建议</h2>
+<h3 id="由浅入深">由浅入深</h3>
+<p>每章按这个顺序推进：</p>
+<ol><li>先讲“这个模块解决什么问题”</li><li>再讲“用户能看到什么现象”</li><li>然后画“调用链”</li><li>最后精读“关键源码”</li></ol>
+<h3 id="表现类型丰富">表现类型丰富</h3>
+<p>建议混合使用：</p>
+<ul><li>架构图：适合讲模块关系</li><li>调用链：适合讲一次请求如何流动</li><li>表格：适合比较工具、命令、消息类型</li><li>类比：适合解释抽象系统</li><li>小实验：适合把概念落到代码</li><li>源码注释：适合讲关键函数</li><li>阶段项目：适合检验掌握程度</li></ul>
+<h3 id="源码精读原则">源码精读原则</h3>
+<ul><li>每章只精读 2-4 个文件</li><li>先读主路径，再读分支</li><li>先理解数据流，再理解异常流</li><li>先看接口，再看实现</li><li>先做简化复刻，再回看原源码</li></ul>
+<p>---</p>
+<h2 id="补充专题与既有-docs-合并策略">补充专题与既有 docs 合并策略</h2>
+<p>14 章主线解决“如何沿着 AI CLI 主链路读懂源码”。但 <code>claudecode-project</code> 的知识密度远超 14 章，以下内容不应该硬塞进单章主线，而应作为补充专题、附录或阶段项目复盘合并进课程。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>既有文档</th><th>合并位置</th><th>使用方式</th><th>不直接照搬的原因</th></tr></thead><tbody><tr><td><code>learning-framework/docs/legacy/ARCHITECTURE_GUIDE.md</code></td><td>第 1 章附录、阶段总复盘</td><td>提取目录地图、核心模块、学习方法</td><td>原文偏概览，需要改成源码证据链</td></tr><tr><td><code>learning-framework/docs/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.md</code></td><td>第 1、2、4、9、13 章补充阅读</td><td>提取启动、TUI、工具、MCP 的架构图素材</td><td>原文覆盖面大，需按 14 章拆分</td></tr><tr><td><code>learning-framework/docs/legacy/PROJECT_COMPARISON.md</code></td><td>每个阶段项目的复刻方法论</td><td>提取“简化版 vs 生产版”对比框架</td><td>原文是通用策略，需要绑定每章实践产出</td></tr><tr><td><code>learning-framework/docs/legacy/QUICKSTART.md</code></td><td>课前准备、学习环境、第一阶段项目</td><td>提取运行命令和首次任务</td><td>对高级前端来说基础讲解要压缩</td></tr><tr><td><code>learning-framework/docs/legacy/DEPENDENCIES.md</code></td><td>附录 A：依赖与运行时地图</td><td>提取 Ink、Commander、React、TypeScript、Bun 角色</td><td>主线不讲依赖入门，只讲源码中承担的工程位置</td></tr><tr><td><code>learning-framework/docs/legacy/COMMENTS_GUIDE.md</code></td><td>附录 B：源码注释与笔记规范</td><td>提取注释风格和学习记录模板</td><td>需改成高级源码阅读笔记模板</td></tr></tbody></table></div>
+<p>建议新增附录方向：</p>
+<ol><li>附录 A：运行时依赖地图，解释 Ink、Commander、Zod、React、Bun 在 Claude Code 中的真实边界。</li><li>附录 B：源码检索与证据链方法，沉淀 <code>rg</code>、调用链、符号追踪、路径校正方法。</li><li>附录 C：learning-framework 复刻路线，把 4 个阶段项目拆成可验收的工程任务。</li><li>附录 D：高级专题索引，收录 remote、bridge、IDE、voice、background task、telemetry、startup profiler 等主线外分支。</li><li>附录 E：常见源码误判清单，专门纠正高级前端开发者容易套用 Web 项目经验造成的误读。</li></ol>
+<p>---</p>
+<h2 id="整课写作与三轮质量闭环">整课写作与三轮质量闭环</h2>
+<p>课程扩写采用整体任务制，而不是“每章写完就局部收工”：</p>
+<pre><code class="language-text">任务 1：写完全部 14 章源码导读型讲义
+  -&gt; 任务 2：整体检查第 1 轮
+  -&gt; 任务 3：按第 1 轮结果整体修改
+  -&gt; 任务 4：整体检查第 2 轮
+  -&gt; 任务 5：按第 2 轮结果整体修改
+  -&gt; 任务 6：整体检查第 3 轮
+  -&gt; 任务 7：按第 3 轮结果最终修改
+  -&gt; 任务 8：生成课程总目录、附录索引和验收报告</code></pre>
+<p>每轮整体检查至少覆盖：</p>
+<ol><li>是否保持 14 章主线、4 个阶段项目、95 个知识点清单不变。</li><li>每章是否面向高级前端工程师，而不是初学者。</li><li>每章是否有真实源码符号、文件路径、调用链和 <code>rg</code> 命令。</li><li>每章是否说明“为什么存在”“在主链路哪里”“和前后章节如何连接”。</li><li>每章是否有 5 分钟源码速验、实践任务、进阶分析题和 learning-framework 复刻任务。</li><li>是否把 <code>docs/</code> 下既有内容合并为补充专题，而不是散落成重复文档。</li><li>是否标明未确认源码点，不把推断伪装成已验证事实。</li></ol>
+<p>---</p>
+<h2 id="最终课程成果">最终课程成果</h2>
+<p>学习者完成课程后，应该能交付：</p>
+<ol><li>一份 Claude Code 架构图</li><li>一套 14 章学习笔记</li><li>一个简化版 AI CLI 框架</li><li>至少 3 个可调用工具</li><li>一个简化权限系统</li><li>一个插件/skills 扩展示例</li><li>一篇源码阅读复盘文章</li></ol><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/COURSE_INDEX.html"><span>上一章</span><strong>Claude Code 源码系统课程总目录</strong></a>
+    <a class="pager-next" href="/LEARNING_TRACKER.html"><span>下一章</span><strong>学习进度追踪</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#课程定位">课程定位</a><a class="toc-level-2" href="#学习前置知识">学习前置知识</a><a class="toc-level-3" href="#必备基础">必备基础</a><a class="toc-level-3" href="#建议补充">建议补充</a><a class="toc-level-3" href="#本课程不展开的基础内容">本课程不展开的基础内容</a><a class="toc-level-2" href="#总体源码地图">总体源码地图</a><a class="toc-level-2" href="#四阶段学习路线">四阶段学习路线</a><a class="toc-level-3" href="#第一阶段-建立全局地图">第一阶段：建立全局地图</a><a class="toc-level-3" href="#第二阶段-理解交互主链路">第二阶段：理解交互主链路</a><a class="toc-level-3" href="#第三阶段-掌握工具调用核心">第三阶段：掌握工具调用核心</a><a class="toc-level-3" href="#第四阶段-进入高级扩展架构">第四阶段：进入高级扩展架构</a><a class="toc-level-2" href="#第-1-章-源码全景与学习地图">第 1 章：源码全景与学习地图</a><a class="toc-level-3" href="#学习目标">学习目标</a><a class="toc-level-3" href="#核心知识点">核心知识点</a><a class="toc-level-3" href="#教学表现形式">教学表现形式</a><a class="toc-level-3" href="#实践任务">实践任务</a><a class="toc-level-3" href="#本章产出">本章产出</a><a class="toc-level-2" href="#第-2-章-cli-启动入口与-commander-命令解析">第 2 章：CLI 启动入口与 Commander 命令解析</a><a class="toc-level-3" href="#学习目标-2">学习目标</a><a class="toc-level-3" href="#核心知识点-2">核心知识点</a><a class="toc-level-3" href="#重点源码">重点源码</a><a class="toc-level-3" href="#教学表现形式-2">教学表现形式</a><a class="toc-level-3" href="#实践任务-2">实践任务</a><a class="toc-level-2" href="#第-3-章-初始化系统与配置加载">第 3 章：初始化系统与配置加载</a><a class="toc-level-3" href="#学习目标-3">学习目标</a><a class="toc-level-3" href="#核心知识点-3">核心知识点</a><a class="toc-level-3" href="#重点源码-2">重点源码</a><a class="toc-level-3" href="#教学表现形式-3">教学表现形式</a><a class="toc-level-3" href="#实践任务-3">实践任务</a><a class="toc-level-2" href="#第-4-章-react-ink-终端-ui">第 4 章：React + Ink 终端 UI</a><a class="toc-level-3" href="#学习目标-4">学习目标</a><a class="toc-level-3" href="#核心知识点-4">核心知识点</a><a class="toc-level-3" href="#重点源码-3">重点源码</a><a class="toc-level-3" href="#教学表现形式-4">教学表现形式</a><a class="toc-level-3" href="#实践任务-4">实践任务</a><a class="toc-level-2" href="#第-5-章-repl-主交互界面源码导读">第 5 章：REPL 主交互界面源码导读</a><a class="toc-level-3" href="#学习目标-5">学习目标</a><a class="toc-level-3" href="#核心知识点-5">核心知识点</a><a class="toc-level-3" href="#重点源码-4">重点源码</a><a class="toc-level-3" href="#教学表现形式-5">教学表现形式</a><a class="toc-level-3" href="#实践任务-5">实践任务</a><a class="toc-level-2" href="#第-6-章-appstate-状态管理机制">第 6 章：AppState 状态管理机制</a><a class="toc-level-3" href="#学习目标-6">学习目标</a><a class="toc-level-3" href="#核心知识点-6">核心知识点</a><a class="toc-level-3" href="#重点源码-5">重点源码</a><a class="toc-level-3" href="#教学表现形式-6">教学表现形式</a><a class="toc-level-3" href="#实践任务-6">实践任务</a><a class="toc-level-2" href="#第-7-章-消息系统与对话上下文">第 7 章：消息系统与对话上下文</a><a class="toc-level-3" href="#学习目标-7">学习目标</a><a class="toc-level-3" href="#核心知识点-7">核心知识点</a><a class="toc-level-3" href="#重点源码-6">重点源码</a><a class="toc-level-3" href="#教学表现形式-7">教学表现形式</a><a class="toc-level-3" href="#实践任务-7">实践任务</a><a class="toc-level-2" href="#第-8-章-agent-查询循环">第 8 章：Agent 查询循环</a><a class="toc-level-3" href="#学习目标-8">学习目标</a><a class="toc-level-3" href="#核心知识点-8">核心知识点</a><a class="toc-level-3" href="#重点源码-7">重点源码</a><a class="toc-level-3" href="#教学表现形式-8">教学表现形式</a><a class="toc-level-3" href="#实践任务-8">实践任务</a><a class="toc-level-2" href="#第-9-章-tool-抽象层设计">第 9 章：Tool 抽象层设计</a><a class="toc-level-3" href="#学习目标-9">学习目标</a><a class="toc-level-3" href="#核心知识点-9">核心知识点</a><a class="toc-level-3" href="#重点源码-8">重点源码</a><a class="toc-level-3" href="#教学表现形式-9">教学表现形式</a><a class="toc-level-3" href="#实践任务-9">实践任务</a><a class="toc-level-2" href="#第-10-章-内置工具系统">第 10 章：内置工具系统</a><a class="toc-level-3" href="#学习目标-10">学习目标</a><a class="toc-level-3" href="#核心知识点-10">核心知识点</a><a class="toc-level-3" href="#重点源码-9">重点源码</a><a class="toc-level-3" href="#教学表现形式-10">教学表现形式</a><a class="toc-level-3" href="#实践任务-10">实践任务</a><a class="toc-level-2" href="#第-11-章-权限系统与安全边界">第 11 章：权限系统与安全边界</a><a class="toc-level-3" href="#学习目标-11">学习目标</a><a class="toc-level-3" href="#核心知识点-11">核心知识点</a><a class="toc-level-3" href="#重点源码-10">重点源码</a><a class="toc-level-3" href="#教学表现形式-11">教学表现形式</a><a class="toc-level-3" href="#实践任务-11">实践任务</a><a class="toc-level-2" href="#第-12-章-slash-commands-命令体系">第 12 章：Slash Commands 命令体系</a><a class="toc-level-3" href="#学习目标-12">学习目标</a><a class="toc-level-3" href="#核心知识点-12">核心知识点</a><a class="toc-level-3" href="#重点源码-11">重点源码</a><a class="toc-level-3" href="#教学表现形式-12">教学表现形式</a><a class="toc-level-3" href="#实践任务-12">实践任务</a><a class="toc-level-2" href="#第-13-章-mcp-插件与-skills-扩展系统">第 13 章：MCP、插件与 Skills 扩展系统</a><a class="toc-level-3" href="#学习目标-13">学习目标</a><a class="toc-level-3" href="#核心知识点-13">核心知识点</a><a class="toc-level-3" href="#重点源码-12">重点源码</a><a class="toc-level-3" href="#教学表现形式-13">教学表现形式</a><a class="toc-level-3" href="#实践任务-13">实践任务</a><a class="toc-level-2" href="#第-14-章-高级系统-远程-子-agent-压缩-性能与工程化">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化</a><a class="toc-level-3" href="#学习目标-14">学习目标</a><a class="toc-level-3" href="#核心知识点-14">核心知识点</a><a class="toc-level-3" href="#重点源码-13">重点源码</a><a class="toc-level-3" href="#教学表现形式-14">教学表现形式</a><a class="toc-level-3" href="#实践任务-14">实践任务</a><a class="toc-level-2" href="#95-个知识点清单">95 个知识点清单</a><a class="toc-level-3" href="#架构与入口">架构与入口</a><a class="toc-level-3" href="#初始化与配置">初始化与配置</a><a class="toc-level-3" href="#ui-与状态">UI 与状态</a><a class="toc-level-3" href="#repl-与消息">REPL 与消息</a><a class="toc-level-3" href="#agent-查询循环">Agent 查询循环</a><a class="toc-level-3" href="#tool-系统">Tool 系统</a><a class="toc-level-3" href="#权限与安全">权限与安全</a><a class="toc-level-3" href="#扩展与高级能力">扩展与高级能力</a><a class="toc-level-2" href="#每章讲义模板">每章讲义模板</a><a class="toc-level-2" href="#教学风格建议">教学风格建议</a><a class="toc-level-3" href="#由浅入深">由浅入深</a><a class="toc-level-3" href="#表现类型丰富">表现类型丰富</a><a class="toc-level-3" href="#源码精读原则">源码精读原则</a><a class="toc-level-2" href="#补充专题与既有-docs-合并策略">补充专题与既有 docs 合并策略</a><a class="toc-level-2" href="#整课写作与三轮质量闭环">整课写作与三轮质量闭环</a><a class="toc-level-2" href="#最终课程成果">最终课程成果</a>
+    </aside>
+  </div>
+</body>
+</html>

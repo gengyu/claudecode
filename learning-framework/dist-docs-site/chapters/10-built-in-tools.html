@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>第 10 章：内置工具系统源码导读 - Claude Code 源码系统课程</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="mobile-jump">
+    <a class="mobile-home" href="/">课程首页</a>
+    <label>
+      <span>章节跳转</span>
+      <select onchange="if (this.value) location.href = this.value">
+        <option value="/COURSE_INDEX.html">Claude Code 源码系统课程总目录</option><option value="/SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</option><option value="/LEARNING_TRACKER.html">学习进度追踪</option><option value="/COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</option><option value="/COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</option><option value="/chapters/01-source-map.html">第 1 章：源码全景与学习地图</option><option value="/chapters/02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</option><option value="/chapters/03-initialization-config.html">第 3 章：初始化系统与配置加载</option><option value="/chapters/04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</option><option value="/chapters/05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</option><option value="/chapters/06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</option><option value="/chapters/07-message-context.html">第 7 章：消息系统与对话上下文源码导读</option><option value="/chapters/08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</option><option value="/chapters/09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</option><option selected value="/chapters/10-built-in-tools.html">第 10 章：内置工具系统源码导读</option><option value="/chapters/11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</option><option value="/chapters/12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</option><option value="/chapters/13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</option><option value="/chapters/14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</option><option value="/appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</option><option value="/appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</option><option value="/appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</option><option value="/appendices/D-advanced-topic-index.html">附录 D：高级专题索引</option><option value="/appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</option><option value="/legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</option><option value="/legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</option><option value="/legacy/COMMENTS_GUIDE.html">代码注释说明</option><option value="/legacy/DEPENDENCIES.html">项目依赖说明</option><option value="/legacy/PROJECT_COMPARISON.html">项目对比说明</option><option value="/legacy/QUICKSTART.html">快速开始指南</option><option value="/legacy/README.html">旧版资料归档</option>
+      </select>
+    </label>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span>Claude Code</span><strong>源码系统课程</strong></a>
+      <nav><section class="nav-group"><h2>课程入口</h2><a href="../COURSE_INDEX.html">Claude Code 源码系统课程总目录</a><a href="../SYSTEMATIC_COURSE.html">Claude Code 源码系统课程</a><a href="../LEARNING_TRACKER.html">学习进度追踪</a><a href="../COURSE_COMPLETION_TASK.html">Claude Code 源码系统课程完成任务书</a><a href="../COURSE_FINAL_REVIEW.html">Claude Code 源码系统课程最终验收报告</a></section><section class="nav-group"><h2>章节讲义</h2><a href="01-source-map.html">第 1 章：源码全景与学习地图</a><a href="02-cli-entry-commander.html">第 2 章：CLI 启动入口与 Commander 命令解析</a><a href="03-initialization-config.html">第 3 章：初始化系统与配置加载</a><a href="04-react-ink-tui.html">第 4 章：React + Ink 终端 UI</a><a href="05-repl-runtime-coordinator.html">第 5 章：REPL 主交互界面源码导读</a><a href="06-appstate-store.html">第 6 章：AppState 状态管理机制源码导读</a><a href="07-message-context.html">第 7 章：消息系统与对话上下文源码导读</a><a href="08-agent-query-loop.html">第 8 章：Agent 查询循环源码导读</a><a href="09-tool-abstraction.html">第 9 章：Tool 抽象层设计源码导读</a><a aria-current="page" href="10-built-in-tools.html">第 10 章：内置工具系统源码导读</a><a href="11-permission-boundary.html">第 11 章：权限系统与安全边界源码导读</a><a href="12-slash-commands.html">第 12 章：Slash Commands 命令体系源码导读</a><a href="13-mcp-plugin-skills.html">第 13 章：MCP、插件与 Skills 扩展系统源码导读</a><a href="14-advanced-systems.html">第 14 章：高级系统：远程、子 Agent、压缩、性能与工程化源码导读</a></section><section class="nav-group"><h2>附录</h2><a href="../appendices/A-runtime-dependencies.html">附录 A：运行时依赖地图</a><a href="../appendices/B-source-evidence-method.html">附录 B：源码检索与证据链方法</a><a href="../appendices/C-rebuild-roadmap.html">附录 C：learning-framework 复刻路线</a><a href="../appendices/D-advanced-topic-index.html">附录 D：高级专题索引</a><a href="../appendices/E-common-misreadings.html">附录 E：高级前端工程师常见源码误判清单</a></section><section class="nav-group"><h2>旧版资料</h2><a href="../legacy/ARCHITECTURE_GUIDE.html">Claude Code 架构学习指南</a><a href="../legacy/CLAUDE_CODE_ARCHITECTURE_OVERVIEW.html">Claude Code 项目架构预览</a><a href="../legacy/COMMENTS_GUIDE.html">代码注释说明</a><a href="../legacy/DEPENDENCIES.html">项目依赖说明</a><a href="../legacy/PROJECT_COMPARISON.html">项目对比说明</a><a href="../legacy/QUICKSTART.html">快速开始指南</a><a href="../legacy/README.html">旧版资料归档</a></section></nav>
+    </aside>
+    <main class="content">
+      <article class="doc"><h1 id="第-10-章-内置工具系统源码导读">第 10 章：内置工具系统源码导读</h1>
+<h2 id="本章定位">本章定位</h2>
+<p>第 10 章承接第 9 章 Tool 协议，开始看工具池如何组装。Tool interface 解决“单个工具长什么样”，<code>tools.ts</code> 和 tool orchestration 解决“当前 turn 到底有哪些工具可用、如何执行”。</p>
+<h2 id="面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</h2>
+<p>这章像大型前端里的 plugin registry + feature gate + capability filtering，但风险更高：工具池直接决定模型能操作本地系统的能力边界。</p>
+<h2 id="学习目标">学习目标</h2>
+<ol><li>找到 <code>getAllBaseTools</code>、<code>getTools</code>、<code>assembleToolPool</code>。</li><li>解释 built-in tools、special tools、MCP tools 的合并边界。</li><li>说明 permission deny filter 为什么在工具暴露前就介入。</li><li>追踪 <code>runTools</code> 如何串/并行执行工具。</li><li>在 learning-framework 中实现工具池和并发安全调度。</li></ol>
+<h2 id="前置知识">前置知识</h2>
+<p>已理解第 9 章 Tool 协议。本章不讲每个工具的业务细节。</p>
+<h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="1-工具池为什么存在">1. 工具池为什么存在</h3>
+<pre><code class="language-bash">rg -n &quot;getAllBaseTools|getTools|assembleToolPool|getToolsForDefaultPreset|filterToolsByDenyRules&quot; claudecode-project/src/tools.ts</code></pre>
+<p>模型每轮可见工具不是固定列表，而由 feature gate、permission mode、deny rules、MCP tools、special tools、isEnabled 共同决定。</p>
+<h3 id="2-getallbasetools-是内置工具源头">2. getAllBaseTools 是内置工具源头</h3>
+<p><code>getAllBaseTools()</code> 是内置工具全集。它不是每轮最终工具池，后面还要过滤。</p>
+<h3 id="3-gettools-是内置工具过滤结果">3. getTools 是内置工具过滤结果</h3>
+<p><code>getTools(permissionContext)</code> 会按 permission 和模式过滤。简单模式、REPL mode、deny rules 都会改变最终暴露。</p>
+<h3 id="4-assembletoolpool-合并-mcp">4. assembleToolPool 合并 MCP</h3>
+<pre><code class="language-bash">rg -n &quot;assembleToolPool|mcpTools|uniqBy|builtInTools take precedence&quot; claudecode-project/src/tools.ts</code></pre>
+<p>内置工具优先，MCP 工具被 deny rules 过滤后再合并去重。这个顺序避免 MCP 工具覆盖内置关键能力。</p>
+<h3 id="5-runtools-管理串并行">5. runTools 管理串并行</h3>
+<pre><code class="language-bash">rg -n &quot;partitionToolCalls|runToolsSerially|runToolsConcurrently|isConcurrencySafe&quot; claudecode-project/src/services/tools/toolOrchestration.ts</code></pre>
+<p>工具执行不是全并发。<code>isConcurrencySafe</code> 决定是否能并发批处理。</p>
+<h2 id="核心源码地图">核心源码地图</h2>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/tools.ts</code></td><td>工具注册、过滤、MCP 合并</td><td>每个工具实现</td><td>第 13 章</td></tr><tr><td><code>src/services/tools/toolOrchestration.ts</code></td><td>串并行调度</td><td>单工具执行细节</td><td>本章重点</td></tr><tr><td><code>src/services/tools/toolExecution.ts</code></td><td>单工具执行 pipeline</td><td>hooks 全量</td><td>第 11 章</td></tr><tr><td><code>src/tools/FileReadTool/*</code></td><td>只读工具样例</td><td>读取边角</td><td>实践参考</td></tr><tr><td><code>src/tools/BashTool/*</code></td><td>高风险工具样例</td><td>bash parser 全量</td><td>第 11 章</td></tr><tr><td><code>src/tools/AgentTool/*</code></td><td>子 Agent 工具</td><td>远程/后台全量</td><td>第 14 章</td></tr></tbody></table></div>
+<h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
+<pre><code class="language-text">REPL getToolUseContext
+  -&gt; assembleToolPool(permissionContext, appState.mcp.tools)
+  -&gt; query receives tools
+  -&gt; model emits tool_use
+  -&gt; runTools(toolUseBlocks)
+  -&gt; partition by isConcurrencySafe
+  -&gt; runToolsConcurrently / runToolsSerially
+  -&gt; tool_result messages</code></pre>
+<h2 id="源码阅读路线">源码阅读路线</h2>
+<pre><code class="language-bash">rg -n &quot;export function getAllBaseTools|export const getTools|export function assembleToolPool&quot; claudecode-project/src/tools.ts
+rg -n &quot;filterToolsByDenyRules|getDenyRuleForTool|specialTools|isEnabled&quot; claudecode-project/src/tools.ts
+rg -n &quot;partitionToolCalls|runToolsSerially|runToolsConcurrently&quot; claudecode-project/src/services/tools/toolOrchestration.ts
+rg -n &quot;StreamingToolExecutor|canExecuteTool|getCompletedResults&quot; claudecode-project/src/services/tools/StreamingToolExecutor.ts</code></pre>
+<h2 id="5-分钟源码速验">5 分钟源码速验</h2>
+<pre><code class="language-bash">rg -n &quot;getAllBaseTools\\(&quot; claudecode-project/src/tools.ts
+rg -n &quot;filterToolsByDenyRules|assembleToolPool&quot; claudecode-project/src/tools.ts
+rg -n &quot;runTools\\(|partitionToolCalls&quot; claudecode-project/src/services/tools/toolOrchestration.ts
+rg -n &quot;FileReadTool|FileWriteTool|BashTool|AgentTool&quot; claudecode-project/src/tools.ts</code></pre>
+<h2 id="关键模块逐段导读">关键模块逐段导读</h2>
+<p><code>tools.ts</code>：</p>
+<ol><li>import 内置工具。</li><li>定义 tool presets。</li><li><code>getAllBaseTools</code> 给出全集。</li><li><code>filterToolsByDenyRules</code> 提前按权限剔除。</li><li><code>getTools</code> 按模式/feature/isEnabled 得出内置池。</li><li><code>assembleToolPool</code> 合并 MCP 并去重。</li></ol>
+<p><code>toolOrchestration.ts</code>：</p>
+<ol><li><code>partitionToolCalls</code> 按 concurrency safe 分批。</li><li>safe 批次并发执行。</li><li>unsafe 工具串行执行。</li><li>每次 update 都 yield message/context。</li></ol>
+<h2 id="与前后章节的关系">与前后章节的关系</h2>
+<p>第 9 章定义单工具协议，本章定义工具池和执行调度。第 11 章深入为什么工具池暴露和执行都要受权限影响。第 13 章解释 MCP 工具如何进入工具池。</p>
+<h2 id="教学可视化表达方式">教学可视化表达方式</h2>
+<pre><code class="language-text">built-in tools
+  -&gt; mode / feature / isEnabled / deny rules
+  -&gt; builtInTools
+  + mcpTools filtered
+  -&gt; assembleToolPool</code></pre>
+<pre><code class="language-text">tool_use blocks
+  -&gt; partition safe / unsafe
+  -&gt; concurrent batch
+  -&gt; serial batch</code></pre>
+<pre><code class="language-text">Read/Grep/Glob: lower risk, often concurrency safe
+Bash/Write/Edit: higher risk, permission heavy
+Agent: orchestration tool, may spawn tasks</code></pre>
+<h2 id="实践任务">实践任务</h2>
+<ol><li>定位 <code>getAllBaseTools</code>、<code>getTools</code>、<code>assembleToolPool</code> 行号。</li><li>记录至少 8 个内置工具名及其文件路径。</li><li>追踪 deny rule 如何在工具池暴露前过滤工具。</li><li>learning-framework 实现 <code>getTools(permissionContext)</code> 和 <code>assembleToolPool(mcpTools)</code>。</li><li>进阶分析：为什么 built-in tools 要优先于 MCP tools 去重？</li></ol>
+<h2 id="常见误区">常见误区</h2>
+<ol><li>以为工具列表固定。实际每轮可能变化。</li><li>只看工具实现，忽略工具暴露前过滤。</li><li>把并发安全当性能优化。它也是状态一致性边界。</li><li>忽略 MCP 合并顺序。去重策略影响模型能调用哪个工具。</li></ol>
+<h2 id="本章总结">本章总结</h2>
+<p>核心证据链：</p>
+<pre><code class="language-text">tools.ts registers/filter tools
+  -&gt; assembleToolPool combines MCP
+  -&gt; query exposes tools
+  -&gt; runTools schedules by concurrency</code></pre>
+<h2 id="下一章衔接">下一章衔接</h2>
+<p>第 11 章进入权限系统：为什么工具池过滤还不够，执行时还要 ask/deny/allow、UI 弹窗、Bash 危险命令识别。</p><nav class="pager" aria-label="章节翻页">
+    <a class="pager-prev" href="/chapters/09-tool-abstraction.html"><span>上一章</span><strong>第 9 章：Tool 抽象层设计源码导读</strong></a>
+    <a class="pager-next" href="/chapters/11-permission-boundary.html"><span>下一章</span><strong>第 11 章：权限系统与安全边界源码导读</strong></a>
+  </nav></article>
+    </main>
+    <aside class="toc">
+      <h2>本页目录</h2>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-工具池为什么存在">1. 工具池为什么存在</a><a class="toc-level-3" href="#2-getallbasetools-是内置工具源头">2. getAllBaseTools 是内置工具源头</a><a class="toc-level-3" href="#3-gettools-是内置工具过滤结果">3. getTools 是内置工具过滤结果</a><a class="toc-level-3" href="#4-assembletoolpool-合并-mcp">4. assembleToolPool 合并 MCP</a><a class="toc-level-3" href="#5-runtools-管理串并行">5. runTools 管理串并行</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+    </aside>
+  </div>
+</body>
+</html>
