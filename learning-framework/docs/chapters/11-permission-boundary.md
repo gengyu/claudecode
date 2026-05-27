@@ -138,6 +138,50 @@ rg -n "BashPermissionRequest|FileWritePermissionRequest|SandboxPermissionRequest
 
 第 10 章说明工具池可被 deny rule 过滤；本章说明即使工具已暴露，执行时仍要权限判断。第 12 章的 `/permissions`、`/config` 等命令会修改权限相关状态。第 14 章 remote/bridge 会让权限请求跨进程/跨端。
 
+## 深度补强：权限不是弹窗，而是 tool runtime 的暂停点
+
+Claude Code 的权限系统不是设置页里的 RBAC，也不是工具内部一个 `if`。它是 tool execution pipeline 中的可暂停边界：模型已经发出 `tool_use`，runtime 必须在执行本地副作用前决定 allow、deny 或 ask。
+
+| 阶段 | 源码角色 | 解决的问题 |
+| --- | --- | --- |
+| 工具自检 | `tool.checkPermissions(input, context)` | 工具基于 input 判断风险，如路径、命令、写操作 |
+| 通用规则 | `canUseTool` / permission utilities | allow/deny/ask rules、permission mode、workspace 规则 |
+| UI 暂停 | `toolUseConfirmQueue` / `PermissionRequest` | 把 ask 变成终端交互，等待用户决策 |
+| 状态更新 | `toolPermissionContext` | 用户选择 always allow/deny 后影响后续工具 |
+| 继续执行 | `toolExecution.ts` | allow 后才进入 `tool.call`，deny 生成 rejected result |
+
+```mermaid
+sequenceDiagram
+  participant Model
+  participant Exec as toolExecution
+  participant Perm as canUseTool
+  participant REPL
+  participant Tool
+  Model-->>Exec: tool_use
+  Exec->>Tool: checkPermissions(input)
+  Exec->>Perm: evaluate rules
+  alt allow
+    Exec->>Tool: call()
+  else deny
+    Exec-->>Model: tool_result rejected
+  else ask
+    Perm-->>REPL: enqueue PermissionRequest
+    REPL-->>Perm: user approve/reject
+    Perm-->>Exec: decision
+    Exec->>Tool: call() only if approved
+  end
+```
+
+为什么 ask 必须由 REPL 协调？因为权限请求不仅是安全判断，也是 UI/focus 问题。终端同一时间只有一个输入焦点，PermissionRequest 出现时要暂停 prompt 输入、展示原因、接收选择，并把结果交回正在等待的 tool execution。
+
+设计取舍：
+
+1. **工具可见不等于工具可执行**：工具池过滤只能减少模型看到的能力，执行时仍要基于具体 input 做权限判断。
+2. **权限读取必须 fresh**：用户可能刚刚选择 always allow，下一次工具判断不能使用旧闭包。
+3. **拒绝也要回写 tool_result**：否则 tool_use/tool_result 配对断裂，下一轮 API context 会坏掉。
+
+这章要和第 10 章连起来看：并发调度决定工具何时执行，权限系统决定工具能否跨过副作用边界。
+
 ## 教学可视化表达方式
 
 ```text

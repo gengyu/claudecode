@@ -68,6 +68,26 @@ rg -n &quot;PluginManifest|loadPluginCommands&quot; claudecode-project/src/utils
 <p>AppState 存扩展结果，<code>commands.ts</code> 合并命令扩展，<code>tools.ts</code> 合并工具扩展，plugin utils 管理 manifest/cache/load，skills loader 把 markdown skill 转成 prompt command 或 SkillTool 可用能力。</p>
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>第 10 章的 <code>assembleToolPool</code> 在这里接入 MCP tools。第 12 章 command registry 在这里接入 skills/plugin commands。第 14 章会看 remote、LSP、background tasks 等高级扩展如何复用这些入口。</p>
+<h2 id="深度补强-mcp-plugin-skill-的扩展边界不同">深度补强：MCP、Plugin、Skill 的扩展边界不同</h2>
+<p>MCP、Plugin、Skill 都是扩展机制，但它们进入 runtime 的位置不同，不能混为“插件系统”。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>机制</th><th>进入点</th><th>提供什么</th><th>主要风险</th></tr></thead><tbody><tr><td>MCP</td><td><code>services/mcp/*</code>、<code>appState.mcp.tools</code></td><td>外部 server tools/resources/prompts</td><td>网络、认证、工具名冲突、pending 状态</td></tr><tr><td>Plugin</td><td><code>services/plugins/*</code></td><td>本地安装包、commands、skills、hooks</td><td>安装来源、版本、启用/禁用</td></tr><tr><td>Skill</td><td>skills 目录/frontmatter</td><td>prompt、allowedTools、model/effort 指令</td><td>作用域泄漏、工具权限扩大</td></tr><tr><td>Slash command</td><td>command registry</td><td>用户输入 DSL</td><td>是否 query、是否 fork、是否改 state</td></tr></tbody></table></div>
+<pre class="mermaid">flowchart TD
+  A[&quot;MCP servers&quot;] --&gt; B[&quot;mcp clients/resources/tools&quot;]
+  C[&quot;Plugins&quot;] --&gt; D[&quot;plugin commands / skills / hooks&quot;]
+  E[&quot;Skills&quot;] --&gt; F[&quot;frontmatter: model effort allowedTools&quot;]
+  B --&gt; G[&quot;assembleToolPool&quot;]
+  D --&gt; H[&quot;command registry / hook registry&quot;]
+  F --&gt; I[&quot;processUserInput / onQuery scoped overrides&quot;]
+  G --&gt; J[&quot;query exposes tools&quot;]
+  H --&gt; J
+  I --&gt; J</pre>
+<p>为什么内置工具要优先于 MCP 工具去重？因为内置工具是产品安全边界的一部分，MCP server 不应该通过同名工具覆盖本地关键能力。MCP 可以扩展能力，但不能悄悄替换基础工具语义。</p>
+<p>为什么 skill 的 allowedTools 要在 turn 级作用域？因为 skill 是一种 prompt 级扩展，它可以为了完成某个命令临时需要更多工具，但这个授权不能变成整个会话的默认权限。</p>
+<p>这章要形成一个判断标准：</p>
+<pre><code class="language-text">MCP 扩展模型可调用能力
+Plugin 扩展本地产品能力
+Skill 扩展 prompt 和 turn 策略
+Slash command 把用户输入路由到这些能力</code></pre>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
 <pre><code class="language-text">MCP server -&gt; tools/resources -&gt; AppState.mcp -&gt; assembleToolPool/query</code></pre>
 <pre><code class="language-text">Plugin -&gt; commands/skills/agents/hooks/LSP -&gt; AppState/plugins registries</code></pre>
@@ -92,8 +112,12 @@ Hook extension: runtime triggers</code></pre>
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-扩展系统为什么存在">1. 扩展系统为什么存在</a><a class="toc-level-3" href="#2-mcp-tools-进入工具池">2. MCP tools 进入工具池</a><a class="toc-level-3" href="#3-plugin-skills-进入命令体系">3. plugin/skills 进入命令体系</a><a class="toc-level-3" href="#4-lsp-agents-hooks-也是插件扩展面">4. LSP/agents/hooks 也是插件扩展面</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-扩展系统为什么存在">1. 扩展系统为什么存在</a><a class="toc-level-3" href="#2-mcp-tools-进入工具池">2. MCP tools 进入工具池</a><a class="toc-level-3" href="#3-plugin-skills-进入命令体系">3. plugin/skills 进入命令体系</a><a class="toc-level-3" href="#4-lsp-agents-hooks-也是插件扩展面">4. LSP/agents/hooks 也是插件扩展面</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#深度补强-mcp-plugin-skill-的扩展边界不同">深度补强：MCP、Plugin、Skill 的扩展边界不同</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

@@ -86,6 +86,30 @@ rg -n &quot;async checkPermissions|async call&quot; claudecode-project/src/tools
 <p><code>toolExecution.ts</code> 是 Tool 协议真正落地处：先找工具，再校验 input，再跑 permission/hooks，最后 call，并把返回结果变成 message。</p>
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>第 8 章 query 发现 tool_use；本章解释 tool_use 如何映射到 Tool 协议。第 10 章看工具池和内置工具差异。第 11 章深入 permission。</p>
+<h2 id="深度补强-tool-为什么是协议对象-不是函数对象">深度补强：Tool 为什么是协议对象，不是函数对象</h2>
+<p>一个普通函数只需要参数和返回值；Claude Code 的 Tool 要同时满足模型协议、本地安全、UI 展示和调度语义。它的字段不是“面向对象装饰”，而是把不可信模型输出变成可控本地行为的边界。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>Tool 字段/能力</th><th>服务的系统</th><th>设计理由</th></tr></thead><tbody><tr><td><code>name</code> / <code>prompt</code></td><td>模型工具选择</td><td>让模型知道何时调用工具，且名称要稳定进入 API schema</td></tr><tr><td><code>inputSchema</code></td><td>API/tool execution 边界</td><td>模型 input 不可信，必须先校验形状</td></tr><tr><td><code>isEnabled</code></td><td>工具池过滤</td><td>feature gate、模式、环境可能让工具本轮不可见</td></tr><tr><td><code>isConcurrencySafe</code></td><td>tool orchestration</td><td>读写/副作用不同，决定并发还是串行</td></tr><tr><td><code>checkPermissions</code></td><td>安全边界</td><td>工具最了解自己的风险，比如 Bash/Edit/Write</td></tr><tr><td><code>call</code></td><td>本地执行</td><td>真正读文件、写文件、跑命令或调用 MCP</td></tr><tr><td><code>renderToolResultMessage</code></td><td>UI 展示</td><td>execution result 和用户可读展示不能混在一起</td></tr></tbody></table></div>
+<pre class="mermaid">flowchart TD
+  A[&quot;assistant tool_use {name,input}&quot;] --&gt; B[&quot;findToolByName&quot;]
+  B --&gt; C[&quot;inputSchema.safeParse&quot;]
+  C --&gt; D{&quot;valid?&quot;}
+  D -- &quot;否&quot; --&gt; E[&quot;tool_result InputValidationError&quot;]
+  D -- &quot;是&quot; --&gt; F[&quot;tool.checkPermissions&quot;]
+  F --&gt; G[&quot;canUseTool / hooks / permission UI&quot;]
+  G --&gt; H{&quot;allow?&quot;}
+  H -- &quot;deny&quot; --&gt; I[&quot;tool_result rejected&quot;]
+  H -- &quot;allow&quot; --&gt; J[&quot;tool.call(input, context)&quot;]
+  J --&gt; K[&quot;ToolResult&quot;]
+  K --&gt; L[&quot;tool_result for API&quot;]
+  K --&gt; M[&quot;renderToolResultMessage for UI&quot;]</pre>
+<p>这里有两个关键取舍：</p>
+<ol><li><strong>schema 不等于安全</strong>：schema 只能说明 <code>{ file_path: string }</code> 形状正确，不能说明这个路径能不能读、写操作是否危险、bash 命令是否破坏性。</li><li><strong>call 不负责一切</strong>：如果把 permission、UI render、API result 包装都塞进 <code>call</code>，工具会变成不可组合的黑盒，调度层也无法统一处理错误、取消、并发和日志。</li></ol>
+<p>类似的协议分层在前端也常见：表单 schema、业务 permission、submit side effect、toast/render 不能揉成一个函数。Claude Code 的特殊之处在于调用方不是可信开发者，而是模型，所以边界更硬。</p>
+<p>核心阅读证据链：</p>
+<pre><code class="language-text">Tool.ts defines protocol
+  -&gt; toolExecution validates permission and calls
+  -&gt; toolOrchestration schedules by isConcurrencySafe
+  -&gt; messages.ts wraps tool_result back to API context</code></pre>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
 <pre><code class="language-text">Tool = prompt + schema + permission + call + render</code></pre>
 <pre><code class="language-text">untrusted model input
@@ -116,8 +140,12 @@ rg -n &quot;async checkPermissions|async call&quot; claudecode-project/src/tools
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-tool-为什么存在">1. Tool 为什么存在</a><a class="toc-level-3" href="#2-toolusecontext-是运行时依赖注入">2. ToolUseContext 是运行时依赖注入</a><a class="toc-level-3" href="#3-schema-是模型输入边界">3. schema 是模型输入边界</a><a class="toc-level-3" href="#4-permission-是工具执行边界">4. permission 是工具执行边界</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-tool-为什么存在">1. Tool 为什么存在</a><a class="toc-level-3" href="#2-toolusecontext-是运行时依赖注入">2. ToolUseContext 是运行时依赖注入</a><a class="toc-level-3" href="#3-schema-是模型输入边界">3. schema 是模型输入边界</a><a class="toc-level-3" href="#4-permission-是工具执行边界">4. permission 是工具执行边界</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#深度补强-tool-为什么是协议对象-不是函数对象">深度补强：Tool 为什么是协议对象，不是函数对象</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

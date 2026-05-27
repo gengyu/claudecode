@@ -619,6 +619,38 @@ main.tsx
 - 第 13 章：remote settings/policy 对插件和 MCP 的约束
 - 第 14 章：graceful shutdown、startup profiling、preconnect、telemetry
 
+## 深度补强：初始化顺序为什么不能随便调换
+
+初始化系统要解决三个边界：信任边界、网络边界、退出边界。顺序不是为了代码整齐，而是为了保证第一轮 query 和第一批 tool 执行前，运行时处在可控状态。
+
+| 初始化动作 | 必须早的原因 | 如果顺序错了 |
+| --- | --- | --- |
+| workspace trust / permission mode | 决定工具是否可执行、是否需要 ask | 模型可能先看到或调用不该暴露的工具 |
+| settings / env / policy | 决定模型、代理、更新、安全策略 | API 请求或 tool subprocess 使用错误配置 |
+| proxy / CA / mTLS / preconnect | 决定首个模型请求网络路径 | 首轮 query 慢、失败或绕过企业网络配置 |
+| cleanup / shutdown hooks | 管理子进程、后台任务、日志 flush | 退出时残留进程或丢 telemetry/session |
+| MCP/plugin discovery | 决定扩展工具和命令 | 首轮缺工具，后续工具池突然变化 |
+
+```mermaid
+flowchart TD
+  A["process starts"] --> B["load config/settings/env"]
+  B --> C["establish trust and permission context"]
+  C --> D["prepare network: proxy / CA / mTLS / preconnect"]
+  D --> E["initialize MCP/plugins/hooks"]
+  E --> F["build initial AppState"]
+  F --> G["enter REPL or print query"]
+```
+
+这里的设计取舍是“启动慢一点也要边界正确”。例如 proxy 和 CA 配置如果晚于 API client 创建，后续 retry 可能也救不回来；permission context 如果晚于 tool pool 构造，模型可见工具就可能和真实可执行工具不一致。
+
+本章读源码时要把 `init()` 当成一个有依赖关系的 DAG，而不是一串 await：
+
+```text
+config/env -> trust/permission -> network -> extensions -> AppState -> query/tool
+```
+
+类似顺序约束后面还会出现：第 8 章 query 先 compact 再 callModel，第 10 章 tool 先 partition 再执行，第 11 章 permission 先 check 再 call。
+
 ## 教学可视化表达方式
 
 ### 1. 初始化阶段图

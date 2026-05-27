@@ -54,6 +54,89 @@ rg -n "partitionToolCalls|runToolsSerially|runToolsConcurrently|isConcurrencySaf
 
 工具执行不是全并发。`isConcurrencySafe` 决定是否能并发批处理。
 
+这个设计的关键不是“并发更快”这么简单，而是把工具分成两类状态语义：
+
+| 工具类型 | 典型例子 | 为什么可以/不可以并发 |
+| --- | --- | --- |
+| 读型、无副作用、结果不依赖执行顺序 | Read、Glob、Grep、部分诊断类工具 | 多个读取之间通常不会修改共享状态，并发可以降低等待时间 |
+| 写型、有副作用、会修改文件/权限/进程/上下文 | Edit、Write、Bash、权限相关工具 | 顺序决定最终状态；并发写可能造成覆盖、diff 基于旧内容、权限弹窗交错 |
+| 混合型或解析失败 | Bash、MCP 工具、输入 schema 失败 | 保守视为不安全，避免把未知副作用并发化 |
+
+核心代码在 `partitionToolCalls`。它不是按工具名硬编码，而是先用工具的 `inputSchema` 解析模型给的 input，再调用工具自己的 `isConcurrencySafe(parsedInput)`：
+
+```ts
+function partitionToolCalls(
+  toolUseMessages: ToolUseBlock[],
+  toolUseContext: ToolUseContext,
+): Batch[] {
+  return toolUseMessages.reduce((acc: Batch[], toolUse) => {
+    const tool = findToolByName(toolUseContext.options.tools, toolUse.name)
+    const parsedInput = tool?.inputSchema.safeParse(toolUse.input)
+    const isConcurrencySafe = parsedInput?.success
+      ? (() => {
+          try {
+            return Boolean(tool?.isConcurrencySafe(parsedInput.data))
+          } catch {
+            return false
+          }
+        })()
+      : false
+
+    if (isConcurrencySafe && acc[acc.length - 1]?.isConcurrencySafe) {
+      acc[acc.length - 1]!.blocks.push(toolUse)
+    } else {
+      acc.push({ isConcurrencySafe, blocks: [toolUse] })
+    }
+    return acc
+  }, [])
+}
+```
+
+这里有三个值得学习的设计点：
+
+1. **并发资格由工具自己判断**：同一个工具可能对某些 input 安全、对另一些 input 不安全。例如命令类工具不能只按名字决定。
+2. **解析失败即不并发**：模型 input 不可信，schema 都过不了时，调度层不应该猜测它是否安全。
+3. **只合并连续 safe 批次**：保留模型给出的 tool_use 顺序。遇到 unsafe 工具就切断批次，保证它前后的状态边界清楚。
+
+`runTools` 的执行策略也体现了这个边界：
+
+```ts
+for (const { isConcurrencySafe, blocks } of partitionToolCalls(...)) {
+  if (isConcurrencySafe) {
+    for await (const update of runToolsConcurrently(blocks, ...)) {
+      yield { message: update.message, newContext: currentContext }
+    }
+    for (const block of blocks) {
+      for (const modifier of queuedContextModifiers[block.id] ?? []) {
+        currentContext = modifier(currentContext)
+      }
+    }
+  } else {
+    for await (const update of runToolsSerially(blocks, ...)) {
+      if (update.newContext) currentContext = update.newContext
+      yield { message: update.message, newContext: currentContext }
+    }
+  }
+}
+```
+
+为什么并发读的 context 修改也要排队到批次结束后再应用？因为并发任务共享同一个 `currentContext` 起点。如果某个并发工具一边运行一边修改上下文，另一个工具可能读到半更新状态，结果就变成竞态。Claude Code 选择“并发执行、顺序合并 contextModifier”，让读取阶段并行，状态提交阶段确定。
+
+```mermaid
+flowchart TD
+  A["assistant tool_use blocks"] --> B["partitionToolCalls"]
+  B --> C{"isConcurrencySafe?"}
+  C -- "连续 safe" --> D["runToolsConcurrently"]
+  D --> E["yield tool progress/result"]
+  E --> F["批次结束后按 tool_use 顺序合并 contextModifier"]
+  C -- "unsafe 或解析失败" --> G["runToolsSerially"]
+  G --> H["每个工具完成后立即更新 currentContext"]
+  F --> I["进入下一批"]
+  H --> I
+```
+
+这就是“读的时候并发，写的时候顺序写”的源码依据。它本质上是在 Agent runtime 里实现一个小型事务调度器：读可以并行，写要按 happens-before 顺序提交。
+
 ## 核心源码地图
 
 | 文件 | 看什么 | 不看什么 | 后续 |
@@ -67,15 +150,27 @@ rg -n "partitionToolCalls|runToolsSerially|runToolsConcurrently|isConcurrencySaf
 
 ## 主调用链 / 主数据流
 
-```text
-REPL getToolUseContext
-  -> assembleToolPool(permissionContext, appState.mcp.tools)
-  -> query receives tools
-  -> model emits tool_use
-  -> runTools(toolUseBlocks)
-  -> partition by isConcurrencySafe
-  -> runToolsConcurrently / runToolsSerially
-  -> tool_result messages
+```mermaid
+sequenceDiagram
+  participant REPL
+  participant Query
+  participant Model
+  participant Orch as toolOrchestration
+  participant Exec as toolExecution
+  REPL->>Query: ToolUseContext(options.tools)
+  Query->>Model: tool schemas
+  Model-->>Query: assistant tool_use blocks
+  Query->>Orch: runTools(toolUseBlocks)
+  Orch->>Orch: partition by isConcurrencySafe(input)
+  alt safe batch
+    Orch->>Exec: runToolUse concurrently
+    Exec-->>Orch: results + context modifiers
+    Orch->>Orch: merge modifiers after batch
+  else unsafe
+    Orch->>Exec: runToolUse serially
+    Exec-->>Orch: result + newContext per tool
+  end
+  Orch-->>Query: user/tool_result messages
 ```
 
 ## 源码阅读路线
@@ -120,19 +215,16 @@ rg -n "FileReadTool|FileWriteTool|BashTool|AgentTool" claudecode-project/src/too
 
 ## 教学可视化表达方式
 
-```text
-built-in tools
-  -> mode / feature / isEnabled / deny rules
-  -> builtInTools
-  + mcpTools filtered
-  -> assembleToolPool
-```
-
-```text
-tool_use blocks
-  -> partition safe / unsafe
-  -> concurrent batch
-  -> serial batch
+```mermaid
+flowchart LR
+  A["getAllBaseTools"] --> B["mode / feature / isEnabled"]
+  B --> C["filterToolsByDenyRules"]
+  C --> D["builtInTools"]
+  E["MCP tools"] --> F["deny rule filter"]
+  D --> G["assembleToolPool"]
+  F --> G
+  G --> H["uniqBy name: built-in 优先"]
+  H --> I["query exposes tools to model"]
 ```
 
 ```text

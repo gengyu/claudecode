@@ -46,6 +46,40 @@ REPL.onQuery
 
 ## 核心概念讲解
 
+### 0. ReAct 循环模式从哪里来
+
+ReAct 是 Reason + Act 的缩写，来自论文 *ReAct: Synergizing Reasoning and Acting in Language Models*。它的核心不是某个框架 API，而是一种 Agent 控制模式：
+
+```text
+模型先基于上下文推理
+  -> 需要外部信息或副作用时发出 action/tool_use
+  -> 运行环境执行 action
+  -> observation/tool_result 回到上下文
+  -> 模型继续推理或给最终回答
+```
+
+Claude Code 没有把源码里的函数命名成 `reactLoop()`，但 `queryLoop()` 做的正是这个控制模式。这里的 `Thought` 不一定以明文暴露；在支持 thinking 的模型上可能存在 thinking block，在普通路径上则体现在模型根据 messages、system prompt、tool schema 选择是否发出 `tool_use`。这里的 `Act` 是 assistant message 里的 `tool_use` content block，`Observation` 是后续 user message 里的 `tool_result` block。
+
+```mermaid
+flowchart TD
+  A["REPL 收到用户输入"] --> B["queryLoop 组装 messages/system/tools"]
+  B --> C["模型流式输出 assistant message"]
+  C --> D{"是否包含 tool_use"}
+  D -- "否" --> E["本轮结束，展示最终回答"]
+  D -- "是" --> F["runTools 执行工具"]
+  F --> G["生成 user/tool_result 消息"]
+  G --> B
+```
+
+类似模式在源码里还有几类：
+
+| 模式 | 源码位置 | 共同点 | 差异 |
+| --- | --- | --- | --- |
+| 主 Agent loop | `src/query.ts` | 模型输出驱动下一步动作 | 面向用户会话，维护完整 messages |
+| tool orchestration | `src/services/tools/toolOrchestration.ts` | action 执行后回传结果 | 只负责工具批次，不直接请求模型 |
+| compact / session memory forked agent | `src/services/compact/*`、`src/services/SessionMemory/*` | 用子任务读取上下文并产出结果 | 不是用户主循环，权限和上下文更窄 |
+| stop hooks | `src/query/stopHooks.ts` | turn 结束后可能触发继续或阻断 | 属于控制面，不是模型 tool_use |
+
 ### 1. query 为什么存在
 
 源码锚点：
@@ -83,6 +117,35 @@ assistant(tool_use)
   -> queryLoop(next turn)
 ```
 
+核心源码形状如下。重点看三件事：每轮先准备 `messagesForQuery`；流式响应中收集 `toolUseBlocks`；工具结果再追加回下一轮上下文。
+
+```ts
+let messagesForQuery = [...getMessagesAfterCompactBoundary(messages)]
+
+for await (const message of deps.callModel({
+  messages: prependUserContext(messagesForQuery, userContext),
+  systemPrompt: fullSystemPrompt,
+  tools: toolUseContext.options.tools,
+  options: {
+    model: currentModel,
+    async getToolPermissionContext() {
+      return toolUseContext.getAppState().toolPermissionContext
+    },
+    mcpTools: appState.mcp.tools,
+    queryTracking,
+  },
+})) {
+  if (message.type === 'assistant') {
+    assistantMessages.push(message)
+    toolUseBlocks.push(
+      ...message.message.content.filter(block => block.type === 'tool_use'),
+    )
+  }
+}
+```
+
+这段代码解释了为什么 Claude Code 的 Agent loop 不是“一次 request 返回最终文本”。它必须允许模型在中途把“我需要读文件/跑命令/改文件”的动作交给 runtime，再把 observation 回灌给模型继续。
+
 ### 4. query 也负责上下文压力
 
 源码锚点：
@@ -106,19 +169,25 @@ Agent loop 不能只处理 happy path。它还要在上下文过长、输出过�
 
 ## 主调用链 / 主数据流
 
-```text
-REPL.onQueryImpl
-  -> for await (event of query(...))
-  -> query()
-  -> queryLoop()
-  -> yield stream_request_start
-  -> deps.callModel(normalizeMessagesForAPI(...))
-  -> yield assistant stream messages
-  -> collect toolUseBlocks
-  -> runTools(toolUseBlocks)
-  -> yield tool progress/result messages
-  -> append tool_result to messages
-  -> loop next turn or stop
+```mermaid
+sequenceDiagram
+  participant REPL
+  participant Query as queryLoop
+  participant API as callModel
+  participant Tools as runTools
+  REPL->>Query: messages + systemPrompt + userContext + ToolUseContext
+  Query->>Query: compact/microcompact/token budget
+  Query->>API: messages + system + tools + options
+  API-->>Query: assistant stream
+  Query-->>REPL: yield assistant/progress
+  alt assistant has tool_use
+    Query->>Tools: toolUseBlocks + assistantMessages
+    Tools-->>Query: tool_result user messages
+    Query-->>REPL: yield tool_result
+    Query->>Query: append results and continue
+  else no tool_use
+    Query-->>REPL: final assistant message
+  end
 ```
 
 ## 源码阅读路线
@@ -172,6 +241,68 @@ rg -n "maxTurns|handleStopHooks|autocompact|microcompact" claudecode-project/src
 5. 请求后：收集 tool_use，决定是否 runTools。
 6. 工具后：tool_result 作为 user message 回到 messages，触发下一轮。
 7. 退出条件：无 tool_use、maxTurns、abort、stop hooks、recoverable error 处理结束。
+
+### API 入参到底从哪里来
+
+一次模型请求不是只把用户输入传给 API。`REPL.tsx` 和 `query.ts` 分层拼出了这些入参：
+
+| API 入参 | 来源 | 为什么在这里放入 |
+| --- | --- | --- |
+| `messages` | REPL 当前消息数组，经 compact 边界、tool result budget、`prependUserContext`、`normalizeMessagesForAPI` 处理 | 保证模型看到的是协议合法、上下文可控的会话 |
+| `system` / `systemPrompt` | `getSystemPrompt(...)` + `buildEffectiveSystemPrompt(...)` + `appendSystemContext(...)` | 把产品规则、工具说明、用户追加 system prompt、系统上下文合并 |
+| `tools` | `getToolUseContext(...).options.tools`，来自内置工具、MCP、权限过滤 | 决定模型本轮能发出哪些 `tool_use` |
+| `model` | `getRuntimeMainLoopModel(...)` | permission mode、plan mode、上下文长度可能改变主循环模型 |
+| `tool permission context` | `options.getToolPermissionContext()` 运行时读取 AppState | 权限可能在异步工具执行期间变化，不能只用旧闭包 |
+| `mcpTools` / `hasPendingMcpServers` | `appState.mcp` | 让 API 层知道 MCP 工具状态和动态工具信息 |
+| `queryTracking` | query loop 每轮创建/递增 | 追踪一次 ReAct 链路的深度和日志归因 |
+
+`REPL.tsx` 负责准备 prompt/context：
+
+```ts
+const [,, defaultSystemPrompt, baseUserContext, systemContext] =
+  await Promise.all([
+    checkAndDisableBypassPermissionsIfNeeded(...),
+    checkAndDisableAutoModeIfNeeded(...),
+    getSystemPrompt(freshTools, mainLoopModelParam, directories, freshMcpClients),
+    getUserContext(),
+    getSystemContext(),
+  ])
+
+const userContext = {
+  ...baseUserContext,
+  ...getCoordinatorUserContext(freshMcpClients, scratchpadDir),
+}
+
+const systemPrompt = buildEffectiveSystemPrompt({
+  toolUseContext,
+  customSystemPrompt,
+  defaultSystemPrompt,
+  appendSystemPrompt,
+})
+```
+
+`services/api/claude.ts` 再做 API 边界处理：
+
+```ts
+let messagesForAPI = normalizeMessagesForAPI(messages, filteredTools)
+messagesForAPI = ensureToolResultPairing(messagesForAPI)
+
+const system = buildSystemPromptBlocks(systemPrompt, enablePromptCaching, {
+  querySource: options.querySource,
+})
+
+return {
+  model: normalizeModelStringForAPI(options.model),
+  messages: addCacheBreakpoints(messagesForAPI, enablePromptCaching, ...),
+  system,
+  tools: allTools,
+  tool_choice: options.toolChoice,
+  max_tokens: maxOutputTokens,
+  thinking,
+}
+```
+
+这里的设计取舍是：REPL 负责收集“当前 turn 的运行时上下文”，query 负责维护“Agent loop 的连续性”，API 层负责“把内部表示转成模型供应商接受的请求体”。这样做避免了一个巨型函数同时懂 UI、权限、消息修复、缓存和 API 细节。
 
 ## 与前后章节的关系
 

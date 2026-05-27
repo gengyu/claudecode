@@ -68,6 +68,22 @@ rg -n &quot;loadSkillsDir|dynamic skills&quot; claudecode-project/src/commands.t
 <p><code>types/command.ts</code> 定义 command 协议。<code>commands.ts</code> 汇总内置命令、插件命令、skills 命令，并提供 lookup/filter。具体命令目录只需要抽样读：<code>help</code> 看 local UI，<code>commit/review/init</code> 看 prompt command，<code>compact</code> 看特殊工作流。</p>
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>第 5 章的输入提交会进入 command 分流；第 13 章的 skills/plugin 会扩展 command；第 14 章 remote/bridge 要过滤本地 UI command。</p>
+<h2 id="深度补强-slash-command-是输入层-dsl-不只是快捷命令">深度补强：Slash Command 是输入层 DSL，不只是快捷命令</h2>
+<p>Slash command 的本质是把用户输入转换成一段更结构化的运行时动作。它可能只在本地渲染 JSX，也可能改写 prompt、附加 allowedTools、指定 model/effort，甚至触发 forked agent。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>命令类型</th><th>典型行为</th><th>是否进入 query</th><th>设计重点</th></tr></thead><tbody><tr><td>本地 UI 命令</td><td><code>/help</code>、选择器、配置类</td><td>通常不进入</td><td>直接渲染本地 JSX 或更新状态</td></tr><tr><td>prompt 扩展命令</td><td><code>/commit</code>、prompt skill</td><td>进入</td><td>把命令转换成 user message / command message</td></tr><tr><td>工具约束命令</td><td>skill frontmatter allowedTools</td><td>进入</td><td>本 turn 临时扩大/收窄工具权限</td></tr><tr><td>forked command</td><td>子任务或独立执行</td><td>可能不进入主 query</td><td>隔离上下文和权限，避免污染主会话</td></tr></tbody></table></div>
+<pre class="mermaid">flowchart TD
+  A[&quot;用户输入 /command args&quot;] --&gt; B[&quot;command registry lookup&quot;]
+  B --&gt; C{&quot;命令类型&quot;}
+  C -- &quot;local JSX&quot; --&gt; D[&quot;render command UI / update AppState&quot;]
+  C -- &quot;prompt expansion&quot; --&gt; E[&quot;create command/user message&quot;]
+  C -- &quot;skill command&quot; --&gt; F[&quot;apply model/effort/allowedTools scope&quot;]
+  C -- &quot;forked&quot; --&gt; G[&quot;run isolated agent/context&quot;]
+  E --&gt; H[&quot;shouldQuery=true&quot;]
+  F --&gt; H
+  H --&gt; I[&quot;REPL onQuery&quot;]</pre>
+<p>设计取舍：</p>
+<ol><li><strong>命令解析在 query 前</strong>：slash command 是用户输入协议的一部分，必须先决定是否需要模型。</li><li><strong>allowedTools 只作用当前 turn</strong>：技能命令可以临时授权工具，但下一轮要清掉，避免权限泄漏。</li><li><strong>命令输出也要进入消息体系</strong>：否则 transcript、resume、context、UI 都无法解释这次输入做了什么。</li></ol>
+<p>类似机制：CLI option 是进程级运行时契约，slash command 是会话内/turn 内运行时契约，skills frontmatter 是命令携带的局部策略。</p>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
 <pre><code class="language-text">/command
   -&gt; local-jsx: 本地 UI
@@ -99,8 +115,12 @@ rg -n &quot;loadSkillsDir|dynamic skills&quot; claudecode-project/src/commands.t
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-slash-command-为什么存在">1. Slash command 为什么存在</a><a class="toc-level-3" href="#2-local-jsx-与-prompt-是两条路径">2. local-jsx 与 prompt 是两条路径</a><a class="toc-level-3" href="#3-commands-ts-是注册和过滤中心">3. commands.ts 是注册和过滤中心</a><a class="toc-level-3" href="#4-skills-也可以变成-command">4. skills 也可以变成 command</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-slash-command-为什么存在">1. Slash command 为什么存在</a><a class="toc-level-3" href="#2-local-jsx-与-prompt-是两条路径">2. local-jsx 与 prompt 是两条路径</a><a class="toc-level-3" href="#3-commands-ts-是注册和过滤中心">3. commands.ts 是注册和过滤中心</a><a class="toc-level-3" href="#4-skills-也可以变成-command">4. skills 也可以变成 command</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#深度补强-slash-command-是输入层-dsl-不只是快捷命令">深度补强：Slash Command 是输入层 DSL，不只是快捷命令</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

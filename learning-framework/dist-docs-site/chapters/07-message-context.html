@@ -58,30 +58,92 @@
 <p>源码锚点：</p>
 <pre><code class="language-bash">rg -n &quot;normalizeMessagesForAPI|ensureToolResultPairing|tool_use|tool_result&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts</code></pre>
 <p>UI 消息可以包含系统提示、compact boundary、progress、local command output 等信息。API 上下文必须满足模型协议。<code>normalizeMessagesForAPI</code> 的价值是把内部消息流整理成 API 能接受的结构。</p>
+<p>更准确地说，Claude Code 里至少有三种“上下文”同时存在：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>上下文</th><th>代表数据</th><th>生命周期</th><th>进入 API 的方式</th></tr></thead><tbody><tr><td>UI/runtime messages</td><td><code>Message[]</code>、progress、compact boundary、attachment</td><td>REPL 当前会话全程维护</td><td>先被过滤/修复/压缩，再 normalize</td></tr><tr><td>userContext/systemContext</td><td><code>getUserContext()</code>、<code>getSystemContext()</code>、coordinator context</td><td>每轮 query 前重新读取</td><td>userContext 通过 <code>prependUserContext</code> 进入 messages；systemContext append 到 system prompt</td></tr><tr><td>memory/compact context</td><td>compact summary、session memory file、context collapse projection</td><td>长会话或阈值触发</td><td>以 summary message、forked agent 产物或 compact boundary 形式回到 messages</td></tr></tbody></table></div>
+<p>这也是为什么“接口调用入参”不能只看 <code>deps.callModel(...)</code> 那一行。真正的入参构造分三层：</p>
+<pre class="mermaid">flowchart TD
+  A[&quot;REPL messages&quot;] --&gt; B[&quot;getMessagesAfterCompactBoundary&quot;]
+  B --&gt; C[&quot;tool result budget / snip / microcompact / collapse&quot;]
+  C --&gt; D[&quot;prependUserContext&quot;]
+  D --&gt; E[&quot;normalizeMessagesForAPI&quot;]
+  E --&gt; F[&quot;ensureToolResultPairing&quot;]
+  G[&quot;getSystemPrompt + appendSystemPrompt&quot;] --&gt; H[&quot;buildSystemPromptBlocks&quot;]
+  I[&quot;tools / MCP / permissions&quot;] --&gt; J[&quot;toolSchemas&quot;]
+  F --&gt; K[&quot;API request.messages&quot;]
+  H --&gt; K2[&quot;API request.system&quot;]
+  J --&gt; K3[&quot;API request.tools&quot;]</pre>
 <h3 id="3-tool-use-tool-result-是成对约束">3. tool_use/tool_result 是成对约束</h3>
 <p>源码锚点：</p>
 <pre><code class="language-bash">rg -n &quot;ensureToolResultPairing|missing tool_result|orphaned tool_result|tool_use_id|yieldMissingToolResultBlocks&quot; claudecode-project/src/utils/messages.ts claudecode-project/src/query.ts</code></pre>
 <p>如果 assistant 产生 tool_use，但后续没有对应 tool_result，API 会拒绝或会话会卡死。Claude Code 在消息层做防御修复：补 synthetic error result、移除 orphan result、去重重复 id。</p>
+<p>这不是“为了显示工具结果”的 UI 约定，而是模型协议约束。assistant 发出：</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_123&quot;, &quot;name&quot;: &quot;Read&quot;, &quot;input&quot;: { &quot;file_path&quot;: &quot;...&quot; } }</code></pre>
+<p>下一轮 API messages 中必须出现 user role 的：</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;tool_result&quot;, &quot;tool_use_id&quot;: &quot;toolu_123&quot;, &quot;content&quot;: &quot;...&quot; }</code></pre>
+<p>所以消息系统要维护 <code>tool_use_id</code> 的配对关系。否则下一次 <code>normalizeMessagesForAPI</code> 后，API 看到的是“模型要求执行一个工具，但运行环境没有给 observation”，这会破坏 ReAct 循环。</p>
+<pre class="mermaid">sequenceDiagram
+  participant Model
+  participant Runtime
+  participant APIContext
+  Model--&gt;&gt;Runtime: assistant(tool_use id=A)
+  Runtime-&gt;&gt;Runtime: runToolUse(A)
+  Runtime--&gt;&gt;APIContext: user(tool_result tool_use_id=A)
+  APIContext-&gt;&gt;Model: next request includes A result</pre>
 <h3 id="4-token-与-compact-依赖消息结构">4. token 与 compact 依赖消息结构</h3>
 <p>源码锚点：</p>
 <pre><code class="language-bash">rg -n &quot;tokenCountWithEstimation|tokenCountFromLastAPIResponse|compact_boundary|microcompact|isCompactBoundaryMessage|getMessagesAfterCompactBoundary&quot; claudecode-project/src/utils/tokens.ts claudecode-project/src/utils/messages.ts</code></pre>
 <p>上下文管理不是简单按数组长度裁剪，而是结合 API usage、tool_result、compact boundary、snip/microcompact/autocompact 的多层策略。</p>
+<h3 id="5-记忆相关机制有哪些">5. 记忆相关机制有哪些</h3>
+<p>本课程里容易把 memory 混成一个概念。源码里至少要分开看：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>机制</th><th>目的</th><th>触发点</th><th>关键源码</th></tr></thead><tbody><tr><td>compact boundary</td><td>长上下文压缩后保留摘要和边界</td><td>token pressure、手动/自动 compact</td><td><code>services/compact/*</code>、<code>createCompactBoundaryMessage</code></td></tr><tr><td>microcompact / cached microcompact</td><td>局部压缩工具结果和长内容</td><td>query 前预算检查</td><td><code>query.ts</code> 中 <code>deps.microcompact(...)</code></td></tr><tr><td>session memory</td><td>把当前会话要点写入专门 memory 文件</td><td>post-sampling hook，token 阈值 + tool call 阈值</td><td><code>services/SessionMemory/sessionMemory.ts</code></td></tr><tr><td>relevant memory prefetch</td><td>query 开始时预取相关记忆</td><td>query loop 入口</td><td><code>startRelevantMemoryPrefetch(...)</code></td></tr><tr><td>tool readFileState / file history</td><td>工具执行期间缓存读文件状态、防止 diff 基于错误版本</td><td>tool execution context</td><td><code>ToolUseContext</code></td></tr></tbody></table></div>
+<p>session memory 的触发条件不是“每轮都总结”。它要求 token 增长达到阈值，并结合 tool call 数或自然对话断点：</p>
+<pre><code class="language-ts">const hasMetTokenThreshold = hasMetUpdateThreshold(currentTokenCount)
+const toolCallsSinceLastUpdate = countToolCallsSince(messages, lastMemoryMessageUuid)
+const hasMetToolCallThreshold =
+  toolCallsSinceLastUpdate &gt;= getToolCallsBetweenUpdates()
+const hasToolCallsInLastTurn = hasToolCallsInLastAssistantTurn(messages)
+
+const shouldExtract =
+  (hasMetTokenThreshold &amp;&amp; hasMetToolCallThreshold) ||
+  (hasMetTokenThreshold &amp;&amp; !hasToolCallsInLastTurn)</code></pre>
+<p>设计理由：</p>
+<ol><li><strong>token 阈值是硬门槛</strong>：避免每次工具调用都启动总结 agent，污染主会话性能。</li><li><strong>tool call 阈值捕获“操作密度”</strong>：大量工具调用通常意味着会话状态变化多，值得沉淀。</li><li><strong>最后一轮有 tool call 时谨慎</strong>：避免在 tool_use/tool_result 尚处于复杂配对附近时写记忆。</li><li><strong>forked agent 隔离执行</strong>：session memory 用 <code>runForkedAgent</code>，并用 <code>createMemoryFileCanUseTool(memoryPath)</code> 限制只允许编辑 memory 文件，避免总结任务改到用户工程文件。</li></ol>
+<pre class="mermaid">flowchart TD
+  A[&quot;post-sampling hook&quot;] --&gt; B{&quot;主 REPL 线程?&quot;}
+  B -- &quot;否&quot; --&gt; Z[&quot;跳过&quot;]
+  B -- &quot;是&quot; --&gt; C{&quot;feature gate enabled?&quot;}
+  C -- &quot;否&quot; --&gt; Z
+  C -- &quot;是&quot; --&gt; D{&quot;token 阈值 + tool call/自然断点满足?&quot;}
+  D -- &quot;否&quot; --&gt; Z
+  D -- &quot;是&quot; --&gt; E[&quot;setupSessionMemoryFile&quot;]
+  E --&gt; F[&quot;buildSessionMemoryUpdatePrompt&quot;]
+  F --&gt; G[&quot;runForkedAgent&quot;]
+  G --&gt; H[&quot;只允许 Edit memoryPath&quot;]</pre>
 <h2 id="核心源码地图">核心源码地图</h2>
 <div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/utils/messages.ts</code></td><td>create/normalize/pairing/compact boundary</td><td>每个 formatter 细节</td><td>第 8、14 章回看</td></tr><tr><td><code>src/screens/REPL.tsx</code></td><td><code>messages</code>、<code>messagesRef</code>、stream event 如何 append</td><td>REPL 全部逻辑</td><td>第 5 章已讲</td></tr><tr><td><code>src/query.ts</code></td><td>query 如何消费 normalized messages，如何产生 tool_result continuation</td><td>query loop 全量</td><td>第 8 章深入</td></tr><tr><td><code>src/utils/tokens.ts</code></td><td>token estimation 与上下文大小</td><td>计费细节</td><td>第 8、14 章</td></tr><tr><td><code>src/utils/contextAnalysis.ts</code></td><td>按 block 类型统计上下文</td><td>指标上报细节</td><td>附录/高级专题</td></tr><tr><td><code>src/services/compact/*</code></td><td>compact 对消息的改写</td><td>compact 算法全量</td><td>第 14 章</td></tr></tbody></table></div>
 <h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
-<pre><code class="language-text">PromptInput submit
-  -&gt; handlePromptSubmit
-  -&gt; processUserInput
-  -&gt; createUserMessage
-  -&gt; REPL.setMessages / messagesRef
-  -&gt; onQuery
-  -&gt; query(messages)
-  -&gt; normalizeMessagesForAPI(messages)
-  -&gt; API stream assistant message
-  -&gt; assistant tool_use?
-  -&gt; runTools
-  -&gt; createUserMessage(tool_result)
-  -&gt; next query turn</code></pre>
+<pre class="mermaid">sequenceDiagram
+  participant Input as PromptInput
+  participant REPL
+  participant Msg as messages.ts
+  participant Query
+  participant API
+  participant Tools
+  Input-&gt;&gt;Msg: createUserMessage
+  Msg--&gt;&gt;REPL: internal Message
+  REPL-&gt;&gt;Query: query(messages)
+  Query-&gt;&gt;Msg: normalizeMessagesForAPI
+  Msg--&gt;&gt;Query: API-safe messages
+  Query-&gt;&gt;API: callModel
+  API--&gt;&gt;Query: assistant stream
+  alt tool_use
+    Query-&gt;&gt;Tools: runTools
+    Tools--&gt;&gt;Msg: createUserMessage(tool_result)
+    Msg--&gt;&gt;Query: append result
+    Query-&gt;&gt;API: next model request
+  else final text
+    Query--&gt;&gt;REPL: assistant message
+  end</pre>
 <h2 id="源码阅读路线">源码阅读路线</h2>
 <h3 id="路线一-消息创建">路线一：消息创建</h3>
 <pre><code class="language-bash">rg -n &quot;createUserMessage|createAssistantMessage|createSystemMessage&quot; claudecode-project/src/utils/messages.ts
@@ -110,21 +172,14 @@ rg -n &quot;messagesRef|deferredMessages|displayedMessages|&lt;Messages&quot; cl
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>第 6 章解释了 AppState；本章说明消息为什么没有简单全部塞进 AppState。第 8 章会沿着 normalized messages 进入 <code>query()</code>。第 9-11 章会继续展开 tool_use/tool_result 与工具协议、权限的关系。第 14 章会回到 compact、session memory、remote message adapter。</p>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
-<pre><code class="language-text">UI message stream
-  -&gt; normalize
-  -&gt; API messages
-  -&gt; assistant tool_use
-  -&gt; tool_result user message
-  -&gt; normalize again</code></pre>
-<pre><code class="language-text">assistant(tool_use id=A)
-  -&gt; runTools(A)
-  -&gt; user(tool_result tool_use_id=A)
-  -&gt; next assistant</code></pre>
-<pre><code class="language-text">long context
-  -&gt; token estimation
-  -&gt; microcompact / autocompact
-  -&gt; compact boundary
-  -&gt; getMessagesAfterCompactBoundary</code></pre>
+<pre class="mermaid">flowchart LR
+  A[&quot;long context&quot;] --&gt; B[&quot;token estimation&quot;]
+  B --&gt; C{&quot;over threshold?&quot;}
+  C -- &quot;no&quot; --&gt; D[&quot;normal query&quot;]
+  C -- &quot;yes&quot; --&gt; E[&quot;microcompact / autocompact / snip&quot;]
+  E --&gt; F[&quot;compact boundary or projected summary&quot;]
+  F --&gt; G[&quot;getMessagesAfterCompactBoundary&quot;]
+  G --&gt; D</pre>
 <h2 id="实践任务">实践任务</h2>
 <ol><li>源码定位：记录 <code>createUserMessage</code>、<code>normalizeMessagesForAPI</code>、<code>ensureToolResultPairing</code> 的文件名和行号。</li><li>调用链追踪：画出一次 tool_use 到 tool_result 的消息链，产出 <code>tool_use_id</code> 配对图。</li><li>行号任务：找出 <code>query.ts</code> 中调用 <code>normalizeMessagesForAPI</code> 和 <code>runTools</code> 的位置。</li><li>learning-framework 复刻：实现 <code>Message</code> union、<code>normalizeMessagesForAPI</code>、<code>ensureToolResultPairing</code>。</li><li>进阶分析：解释为什么 UI message 和 API message 不能共用完全相同的数据结构。</li></ol>
 <p>产出格式统一写入 <code>docs/notes/ch07-message-context.md</code>。</p>
@@ -148,8 +203,12 @@ rg -n &quot;messagesRef|deferredMessages|displayedMessages|&lt;Messages&quot; cl
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-消息为什么存在">1. 消息为什么存在</a><a class="toc-level-3" href="#2-normalizemessagesforapi-是协议边界">2. normalizeMessagesForAPI 是协议边界</a><a class="toc-level-3" href="#3-tool-use-tool-result-是成对约束">3. tool_use/tool_result 是成对约束</a><a class="toc-level-3" href="#4-token-与-compact-依赖消息结构">4. token 与 compact 依赖消息结构</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-消息创建">路线一：消息创建</a><a class="toc-level-3" href="#路线二-api-normalize">路线二：API normalize</a><a class="toc-level-3" href="#路线三-工具消息配对">路线三：工具消息配对</a><a class="toc-level-3" href="#路线四-上下文与压缩">路线四：上下文与压缩</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-消息为什么存在">1. 消息为什么存在</a><a class="toc-level-3" href="#2-normalizemessagesforapi-是协议边界">2. normalizeMessagesForAPI 是协议边界</a><a class="toc-level-3" href="#3-tool-use-tool-result-是成对约束">3. tool_use/tool_result 是成对约束</a><a class="toc-level-3" href="#4-token-与-compact-依赖消息结构">4. token 与 compact 依赖消息结构</a><a class="toc-level-3" href="#5-记忆相关机制有哪些">5. 记忆相关机制有哪些</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-3" href="#路线一-消息创建">路线一：消息创建</a><a class="toc-level-3" href="#路线二-api-normalize">路线二：API normalize</a><a class="toc-level-3" href="#路线三-工具消息配对">路线三：工具消息配对</a><a class="toc-level-3" href="#路线四-上下文与压缩">路线四：上下文与压缩</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

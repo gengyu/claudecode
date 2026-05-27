@@ -103,6 +103,43 @@ AppState 存扩展结果，`commands.ts` 合并命令扩展，`tools.ts` 合并�
 
 第 10 章的 `assembleToolPool` 在这里接入 MCP tools。第 12 章 command registry 在这里接入 skills/plugin commands。第 14 章会看 remote、LSP、background tasks 等高级扩展如何复用这些入口。
 
+## 深度补强：MCP、Plugin、Skill 的扩展边界不同
+
+MCP、Plugin、Skill 都是扩展机制，但它们进入 runtime 的位置不同，不能混为“插件系统”。
+
+| 机制 | 进入点 | 提供什么 | 主要风险 |
+| --- | --- | --- | --- |
+| MCP | `services/mcp/*`、`appState.mcp.tools` | 外部 server tools/resources/prompts | 网络、认证、工具名冲突、pending 状态 |
+| Plugin | `services/plugins/*` | 本地安装包、commands、skills、hooks | 安装来源、版本、启用/禁用 |
+| Skill | skills 目录/frontmatter | prompt、allowedTools、model/effort 指令 | 作用域泄漏、工具权限扩大 |
+| Slash command | command registry | 用户输入 DSL | 是否 query、是否 fork、是否改 state |
+
+```mermaid
+flowchart TD
+  A["MCP servers"] --> B["mcp clients/resources/tools"]
+  C["Plugins"] --> D["plugin commands / skills / hooks"]
+  E["Skills"] --> F["frontmatter: model effort allowedTools"]
+  B --> G["assembleToolPool"]
+  D --> H["command registry / hook registry"]
+  F --> I["processUserInput / onQuery scoped overrides"]
+  G --> J["query exposes tools"]
+  H --> J
+  I --> J
+```
+
+为什么内置工具要优先于 MCP 工具去重？因为内置工具是产品安全边界的一部分，MCP server 不应该通过同名工具覆盖本地关键能力。MCP 可以扩展能力，但不能悄悄替换基础工具语义。
+
+为什么 skill 的 allowedTools 要在 turn 级作用域？因为 skill 是一种 prompt 级扩展，它可以为了完成某个命令临时需要更多工具，但这个授权不能变成整个会话的默认权限。
+
+这章要形成一个判断标准：
+
+```text
+MCP 扩展模型可调用能力
+Plugin 扩展本地产品能力
+Skill 扩展 prompt 和 turn 策略
+Slash command 把用户输入路由到这些能力
+```
+
 ## 教学可视化表达方式
 
 ```text

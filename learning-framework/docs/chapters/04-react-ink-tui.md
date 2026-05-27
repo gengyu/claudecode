@@ -618,6 +618,46 @@ init completed
 - command：PromptInput 和 queued commands 连接 slash command，第 12 章深入。
 - MCP：PromptInput footer/MCP 状态、tools/resources 后续会进入第 13 章。
 
+## 深度补强：为什么 TUI 不是普通 React 页面
+
+React + Ink 让源码看起来像前端组件树，但终端 UI 的约束和浏览器完全不同：
+
+| 浏览器 React | Ink/TUI 中的差异 |
+| --- | --- |
+| DOM 自动布局 | Yoga + terminal cell，宽度/高度都要显式考虑 |
+| CSS overflow | ScrollBox/VirtualMessageList 自己管理可视区域 |
+| 鼠标/键盘事件 | terminal keybinding、focus dialog、prompt input 共享输入流 |
+| repaint 成本较低 | terminal 重绘昂贵，长消息和 streaming 要虚拟化 |
+| modal 独立层 | 权限弹窗、slash command、tool UI 会抢占 prompt 区域 |
+
+复杂点在于 UI 不是静态渲染结果，而是 Agent runtime 的实时投影：
+
+```mermaid
+flowchart TD
+  A["query stream event"] --> B["REPL handleMessageFromStream"]
+  B --> C{"message type"}
+  C -- "assistant text/thinking" --> D["Messages / streaming row"]
+  C -- "tool progress" --> E["toolJSX / progress row"]
+  C -- "permission ask" --> F["PermissionRequest dialog"]
+  C -- "compact boundary" --> G["reset visible message window"]
+  D --> H["Ink render"]
+  E --> H
+  F --> H
+  G --> H
+```
+
+设计取舍：
+
+1. **streaming 和渲染解耦**：query 持续 yield，REPL 决定哪些消息 append、哪些 ephemeral progress 替换，避免 sleep/bash 这类高频进度把 transcript 撑爆。
+2. **权限 UI 放在 REPL 层协调**：tool 内部不能直接渲染弹窗，因为终端只有一个输入焦点，必须由 REPL 管理 prompt 隐藏、dialog focus、approve/reject 恢复。
+3. **虚拟化不是性能锦上添花**：长会话、tool result、thinking block、compact 都会让消息列表膨胀，没有虚拟化就会影响每次 keypress。
+
+读 TUI 代码时不要只看 JSX，要追“事件如何改变渲染策略”：
+
+```text
+query/tool event -> message/progress/dialog state -> virtualized render -> terminal cells
+```
+
 ## 教学可视化表达方式
 
 ### 1. TUI 挂载图

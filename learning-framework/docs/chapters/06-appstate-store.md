@@ -634,6 +634,43 @@ query loop 需要读取 model、tools、MCP clients、permission context、setti
 
 `mcp`、`plugins`、`tasks`、`replBridge*`、`remote*`、`speculation` 等字段会在后续高级章节继续展开。本章只建立它们的状态入口位置。
 
+## 深度补强：为什么要在异步 runtime 里读 fresh AppState
+
+普通前端组件里，过度使用 `store.getState()` 往往是坏味道。但 Claude Code 的 query/tool/permission 会跨越多个异步边界：模型流式输出、工具执行、权限弹窗、MCP 连接变化、slash command scoped tools、background task 都可能在同一 turn 内改变运行时条件。
+
+```mermaid
+sequenceDiagram
+  participant REPL
+  participant Store as AppStateStore
+  participant Query
+  participant Tool
+  REPL->>Store: render reads selected slices
+  REPL->>Query: getToolUseContext includes getAppState
+  Query->>Store: before API call read current permission/MCP/tools
+  Query->>Tool: runToolUse
+  Tool->>Store: permission callback reads latest state
+  Store-->>REPL: selector-driven re-render
+```
+
+关键取舍：
+
+| 问题 | 如果只用 React closure | AppState 设计如何解决 |
+| --- | --- | --- |
+| MCP client 在 render 后连接完成 | 工具池缺新 MCP tools | `getToolUseContext` 从 store 读 fresh clients |
+| 用户在权限弹窗里选择 always allow | 后续 tool 仍按旧权限判断 | `canUseTool` / options callback 读最新 permission context |
+| slash command 临时 allowedTools | 可能泄漏到下一轮或 forked agent | turn 开始显式写入，下一轮清空 |
+| compact 后消息窗口改变 | UI 和 API 上下文不一致 | compact boundary 进入 messages，AppState 管控制状态 |
+
+所以本章的重点不是“自制 store 比 Redux 简单”，而是它给 React 外部 runtime 提供一致的读写入口：
+
+```text
+React render uses selector
+async runtime uses getState/setState
+query/tool/permission share ToolUseContext accessors
+```
+
+类似模式在第 8 章 API 入参、第 10 章工具 context modifier、第 11 章权限规则更新都会再次出现：执行时读取最新状态，比创建闭包时捕获旧状态更重要。
+
 ## 教学可视化表达方式
 
 ### 1. AppState 分层图

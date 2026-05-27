@@ -75,6 +75,30 @@ rg -n "normalizeMessagesForAPI|ensureToolResultPairing|tool_use|tool_result" cla
 
 UI 消息可以包含系统提示、compact boundary、progress、local command output 等信息。API 上下文必须满足模型协议。`normalizeMessagesForAPI` 的价值是把内部消息流整理成 API 能接受的结构。
 
+更准确地说，Claude Code 里至少有三种“上下文”同时存在：
+
+| 上下文 | 代表数据 | 生命周期 | 进入 API 的方式 |
+| --- | --- | --- | --- |
+| UI/runtime messages | `Message[]`、progress、compact boundary、attachment | REPL 当前会话全程维护 | 先被过滤/修复/压缩，再 normalize |
+| userContext/systemContext | `getUserContext()`、`getSystemContext()`、coordinator context | 每轮 query 前重新读取 | userContext 通过 `prependUserContext` 进入 messages；systemContext append 到 system prompt |
+| memory/compact context | compact summary、session memory file、context collapse projection | 长会话或阈值触发 | 以 summary message、forked agent 产物或 compact boundary 形式回到 messages |
+
+这也是为什么“接口调用入参”不能只看 `deps.callModel(...)` 那一行。真正的入参构造分三层：
+
+```mermaid
+flowchart TD
+  A["REPL messages"] --> B["getMessagesAfterCompactBoundary"]
+  B --> C["tool result budget / snip / microcompact / collapse"]
+  C --> D["prependUserContext"]
+  D --> E["normalizeMessagesForAPI"]
+  E --> F["ensureToolResultPairing"]
+  G["getSystemPrompt + appendSystemPrompt"] --> H["buildSystemPromptBlocks"]
+  I["tools / MCP / permissions"] --> J["toolSchemas"]
+  F --> K["API request.messages"]
+  H --> K2["API request.system"]
+  J --> K3["API request.tools"]
+```
+
 ### 3. tool_use/tool_result 是成对约束
 
 源码锚点：
@@ -85,6 +109,31 @@ rg -n "ensureToolResultPairing|missing tool_result|orphaned tool_result|tool_use
 
 如果 assistant 产生 tool_use，但后续没有对应 tool_result，API 会拒绝或会话会卡死。Claude Code 在消息层做防御修复：补 synthetic error result、移除 orphan result、去重重复 id。
 
+这不是“为了显示工具结果”的 UI 约定，而是模型协议约束。assistant 发出：
+
+```json
+{ "type": "tool_use", "id": "toolu_123", "name": "Read", "input": { "file_path": "..." } }
+```
+
+下一轮 API messages 中必须出现 user role 的：
+
+```json
+{ "type": "tool_result", "tool_use_id": "toolu_123", "content": "..." }
+```
+
+所以消息系统要维护 `tool_use_id` 的配对关系。否则下一次 `normalizeMessagesForAPI` 后，API 看到的是“模型要求执行一个工具，但运行环境没有给 observation”，这会破坏 ReAct 循环。
+
+```mermaid
+sequenceDiagram
+  participant Model
+  participant Runtime
+  participant APIContext
+  Model-->>Runtime: assistant(tool_use id=A)
+  Runtime->>Runtime: runToolUse(A)
+  Runtime-->>APIContext: user(tool_result tool_use_id=A)
+  APIContext->>Model: next request includes A result
+```
+
 ### 4. token 与 compact 依赖消息结构
 
 源码锚点：
@@ -94,6 +143,53 @@ rg -n "tokenCountWithEstimation|tokenCountFromLastAPIResponse|compact_boundary|m
 ```
 
 上下文管理不是简单按数组长度裁剪，而是结合 API usage、tool_result、compact boundary、snip/microcompact/autocompact 的多层策略。
+
+### 5. 记忆相关机制有哪些
+
+本课程里容易把 memory 混成一个概念。源码里至少要分开看：
+
+| 机制 | 目的 | 触发点 | 关键源码 |
+| --- | --- | --- | --- |
+| compact boundary | 长上下文压缩后保留摘要和边界 | token pressure、手动/自动 compact | `services/compact/*`、`createCompactBoundaryMessage` |
+| microcompact / cached microcompact | 局部压缩工具结果和长内容 | query 前预算检查 | `query.ts` 中 `deps.microcompact(...)` |
+| session memory | 把当前会话要点写入专门 memory 文件 | post-sampling hook，token 阈值 + tool call 阈值 | `services/SessionMemory/sessionMemory.ts` |
+| relevant memory prefetch | query 开始时预取相关记忆 | query loop 入口 | `startRelevantMemoryPrefetch(...)` |
+| tool readFileState / file history | 工具执行期间缓存读文件状态、防止 diff 基于错误版本 | tool execution context | `ToolUseContext` |
+
+session memory 的触发条件不是“每轮都总结”。它要求 token 增长达到阈值，并结合 tool call 数或自然对话断点：
+
+```ts
+const hasMetTokenThreshold = hasMetUpdateThreshold(currentTokenCount)
+const toolCallsSinceLastUpdate = countToolCallsSince(messages, lastMemoryMessageUuid)
+const hasMetToolCallThreshold =
+  toolCallsSinceLastUpdate >= getToolCallsBetweenUpdates()
+const hasToolCallsInLastTurn = hasToolCallsInLastAssistantTurn(messages)
+
+const shouldExtract =
+  (hasMetTokenThreshold && hasMetToolCallThreshold) ||
+  (hasMetTokenThreshold && !hasToolCallsInLastTurn)
+```
+
+设计理由：
+
+1. **token 阈值是硬门槛**：避免每次工具调用都启动总结 agent，污染主会话性能。
+2. **tool call 阈值捕获“操作密度”**：大量工具调用通常意味着会话状态变化多，值得沉淀。
+3. **最后一轮有 tool call 时谨慎**：避免在 tool_use/tool_result 尚处于复杂配对附近时写记忆。
+4. **forked agent 隔离执行**：session memory 用 `runForkedAgent`，并用 `createMemoryFileCanUseTool(memoryPath)` 限制只允许编辑 memory 文件，避免总结任务改到用户工程文件。
+
+```mermaid
+flowchart TD
+  A["post-sampling hook"] --> B{"主 REPL 线程?"}
+  B -- "否" --> Z["跳过"]
+  B -- "是" --> C{"feature gate enabled?"}
+  C -- "否" --> Z
+  C -- "是" --> D{"token 阈值 + tool call/自然断点满足?"}
+  D -- "否" --> Z
+  D -- "是" --> E["setupSessionMemoryFile"]
+  E --> F["buildSessionMemoryUpdatePrompt"]
+  F --> G["runForkedAgent"]
+  G --> H["只允许 Edit memoryPath"]
+```
 
 ## 核心源码地图
 
@@ -108,20 +204,29 @@ rg -n "tokenCountWithEstimation|tokenCountFromLastAPIResponse|compact_boundary|m
 
 ## 主调用链 / 主数据流
 
-```text
-PromptInput submit
-  -> handlePromptSubmit
-  -> processUserInput
-  -> createUserMessage
-  -> REPL.setMessages / messagesRef
-  -> onQuery
-  -> query(messages)
-  -> normalizeMessagesForAPI(messages)
-  -> API stream assistant message
-  -> assistant tool_use?
-  -> runTools
-  -> createUserMessage(tool_result)
-  -> next query turn
+```mermaid
+sequenceDiagram
+  participant Input as PromptInput
+  participant REPL
+  participant Msg as messages.ts
+  participant Query
+  participant API
+  participant Tools
+  Input->>Msg: createUserMessage
+  Msg-->>REPL: internal Message
+  REPL->>Query: query(messages)
+  Query->>Msg: normalizeMessagesForAPI
+  Msg-->>Query: API-safe messages
+  Query->>API: callModel
+  API-->>Query: assistant stream
+  alt tool_use
+    Query->>Tools: runTools
+    Tools-->>Msg: createUserMessage(tool_result)
+    Msg-->>Query: append result
+    Query->>API: next model request
+  else final text
+    Query-->>REPL: assistant message
+  end
 ```
 
 ## 源码阅读路线
@@ -188,28 +293,15 @@ rg -n "messagesRef|deferredMessages|displayedMessages|<Messages" claudecode-proj
 
 ## 教学可视化表达方式
 
-```text
-UI message stream
-  -> normalize
-  -> API messages
-  -> assistant tool_use
-  -> tool_result user message
-  -> normalize again
-```
-
-```text
-assistant(tool_use id=A)
-  -> runTools(A)
-  -> user(tool_result tool_use_id=A)
-  -> next assistant
-```
-
-```text
-long context
-  -> token estimation
-  -> microcompact / autocompact
-  -> compact boundary
-  -> getMessagesAfterCompactBoundary
+```mermaid
+flowchart LR
+  A["long context"] --> B["token estimation"]
+  B --> C{"over threshold?"}
+  C -- "no" --> D["normal query"]
+  C -- "yes" --> E["microcompact / autocompact / snip"]
+  E --> F["compact boundary or projected summary"]
+  F --> G["getMessagesAfterCompactBoundary"]
+  G --> D
 ```
 
 ## 实践任务

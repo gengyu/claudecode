@@ -453,6 +453,48 @@ CLI options
 
 这和前端应用中把 URL/query/env/settings 转成初始 store 很像，只是这里还混入了模型、工具、权限和 MCP 维度。
 
+## 深度补强：CLI 参数如何变成运行时约束
+
+Claude Code 的 CLI 不是“解析参数后调用一个函数”这么简单。它把用户在命令行声明的约束转成后续 Agent loop、Tool pool、Permission mode、MCP 连接的运行时输入。
+
+| CLI 参数/模式 | 进入的运行时位置 | 后续影响 |
+| --- | --- | --- |
+| `--print` | `runHeadless(...)` | 不进入交互式 REPL，但仍走 query/tool/permission 主链 |
+| `--model` | main loop model 初始化 | 影响 `query.ts` 里 `getRuntimeMainLoopModel(...)` |
+| `--permission-mode` | `toolPermissionContext` | 影响工具可见性、执行权限、ask/deny/allow |
+| `--allowedTools` / `--disallowedTools` | tool list / deny rules | 影响 `getTools`、`assembleToolPool`、MCP 工具过滤 |
+| `--mcp-config` | MCP clients/tools/commands | 影响工具池、slash command、resources |
+| `--plugin-dir` | plugin discovery | 影响 plugin commands、skills、tools |
+
+可以把入口阶段看成“把外部命令行协议翻译成内部运行时上下文”：
+
+```mermaid
+flowchart TD
+  A["process.argv"] --> B["commander program"]
+  B --> C{"选择模式"}
+  C -- "--print" --> D["runHeadless"]
+  C -- "interactive" --> E["launchRepl"]
+  B --> F["parse model / permission / tool / MCP options"]
+  F --> G["initial AppState + ToolPermissionContext"]
+  G --> H["REPL / query / tools"]
+  D --> H
+  E --> H
+```
+
+为什么这些解析不能延迟到 `query.ts` 里做？
+
+1. **权限必须早于工具暴露**：模型看到工具 schema 前，deny/allow 就应该影响工具池，否则模型会尝试调用本不该出现的工具。
+2. **MCP 初始化有时是首轮阻塞条件**：headless 模式常常只有一轮请求，MCP tools 必须尽量在第一轮前准备好。
+3. **print 和 REPL 共享核心 runtime**：两种模式 UI 不同，但 query/tool/permission 语义应一致。
+
+核心阅读时要追三条线：
+
+```text
+CLI option -> parsed config -> AppState / ToolUseContext -> query/tool behavior
+```
+
+这也是本章的设计重点：CLI 是用户修改 runtime 的外部契约，不是 main 函数里的装饰性参数。
+
 ## 教学可视化表达方式
 
 ### 1. `main.tsx` 三段结构图

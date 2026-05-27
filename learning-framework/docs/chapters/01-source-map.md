@@ -295,6 +295,42 @@ rg -n "PermissionRequest|useCanUseTool|toolPermissionContext" claudecode-project
 
 你要确认权限不是独立设置页，而是和 REPL、工具执行、状态上下文直接相关。
 
+## 深度补强：源码地图不是目录树，而是运行时分层
+
+读 Claude Code 源码时，第一章最容易犯的错误是把 `src/` 当成普通前端项目目录来背。更有效的方法是按运行时责任分层：
+
+| 层级 | 代表目录/文件 | 解决的问题 | 后续章节 |
+| --- | --- | --- | --- |
+| 启动层 | `main.tsx`、`entrypoints/init.ts`、`cli/*` | 进程启动、参数解析、初始化、进入 REPL/print | 第 2-3 章 |
+| 交互层 | `screens/REPL.tsx`、`components/*`、`ink/*` | 终端 UI、输入、消息渲染、权限弹窗 | 第 4-5 章 |
+| 状态层 | `state/*`、`context.ts`、`settings/*` | 全局 AppState、用户/系统上下文、配置 | 第 6-7 章 |
+| Agent 层 | `query.ts`、`services/api/*`、`services/compact/*` | ReAct loop、API 请求、上下文恢复 | 第 8、14 章 |
+| Tool 层 | `Tool.ts`、`tools/*`、`services/tools/*` | tool schema、权限、执行、结果回流 | 第 9-11 章 |
+| 扩展层 | `services/mcp/*`、`services/plugins/*`、`skills/*` | MCP、插件、skills、slash command | 第 12-13 章 |
+
+源码地图的核心问题不是“文件在哪里”，而是“一个用户动作如何跨层流动”。例如一次普通提问会经过：
+
+```mermaid
+flowchart TD
+  A["main.tsx 解析 CLI"] --> B["entrypoints/init.ts 初始化运行时"]
+  B --> C["REPL.tsx 接收输入"]
+  C --> D["messages.ts 创建 UserMessage"]
+  D --> E["query.ts 进入 Agent loop"]
+  E --> F["services/api/claude.ts 构造 API 请求"]
+  F --> G{"assistant 是否 tool_use"}
+  G -- "否" --> H["Messages 渲染回答"]
+  G -- "是" --> I["services/tools 执行工具"]
+  I --> J["tool_result 回到 messages"]
+  J --> E
+```
+
+这里有两个设计取舍：
+
+1. **按运行时边界读，而不是按目录顺序读**：`REPL.tsx` 同时连接 UI、state、query、tool、permission；如果只看 components，会误判它只是“大组件”。
+2. **按证据链记录源码**：每个概念必须至少能落到入口、核心函数、数据结构、退出条件四类证据。比如“工具调用”不能只引用 `Tool.ts`，还要连到 `query.ts -> runTools -> toolExecution -> messages.ts`。
+
+类似的分层思路也适用于后续所有章节：每章都不要只回答“是什么”，还要回答“为什么放在这里、为什么这个顺序、和相邻系统怎么交界”。
+
 ## 教学可视化表达方式
 
 ### 1. 高级前端视角的系统分层图

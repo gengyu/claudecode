@@ -677,6 +677,39 @@ REPL 大量使用 store、setAppState、getAppState、toolPermissionContext。�
 
 slash command、queue、remote session、agent/background tasks 在 REPL 中都有入口。后续章节会逐个拆。
 
+## 深度补强：REPL 为什么是 runtime coordinator
+
+`REPL.tsx` 大不是偶然，它是交互式 AI CLI 的协调层。关键是：一次用户输入可能不是一次模型请求，而是一串本地命令、hook、permission、tool、background task、compact 的组合。
+
+```mermaid
+flowchart TD
+  A["PromptInput submit"] --> B["handlePromptSubmit / processUserInput"]
+  B --> C{"shouldQuery?"}
+  C -- "否: slash/local command" --> D["render local JSX or system message"]
+  C -- "是" --> E["getToolUseContext"]
+  E --> F["load systemPrompt / userContext / systemContext"]
+  F --> G["for await query(...)"]
+  G --> H{"event type"}
+  H -- "assistant/message" --> I["append messages"]
+  H -- "tool permission" --> J["queue PermissionRequest"]
+  H -- "progress" --> K["replace or append progress"]
+  H -- "compact boundary" --> L["reset message window"]
+```
+
+REPL 层承担的设计责任：
+
+| 责任 | 为什么不能放到 query/tool 内部 |
+| --- | --- |
+| 输入焦点管理 | terminal 只有一个 prompt，permission/slash/tool UI 都会抢焦点 |
+| messagesRef 与 setMessages | streaming 异步事件需要最新消息，React 闭包可能过期 |
+| QueryGuard | 用户可能连续提交、远程任务可能唤醒，必须有 turn 级并发边界 |
+| getToolUseContext | 工具需要最新 AppState、MCP clients、permission context |
+| background/session handoff | REPL 是前台会话和后台会话的交接点 |
+
+核心设计取舍是“REPL 协调运行时，但不实现每个运行时细节”。它只负责拿到最新上下文并消费 generator 事件；真正的 Agent loop 在 `query.ts`，工具执行在 `services/tools/*`，权限规则在 `useCanUseTool` 和 permissions utilities。
+
+这类 coordinator 模式在大型前端里也常见：页面容器不该写所有业务，但它必须拥有跨子系统的状态和焦点边界。Claude Code 的差异是这些子系统包含真实文件系统、进程、API stream 和权限决策。
+
 ## 教学可视化表达方式
 
 ### 1. REPL 五角色图

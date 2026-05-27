@@ -86,14 +86,21 @@ const rewriteLinks = (href, currentRel) => {
 };
 
 const renderInline = (value, currentRel) => {
-  let text = escapeHtml(value);
-  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  const codeSpans = [];
+  let text = escapeHtml(value).replace(/`([^`]+)`/g, (_, code) => {
+    const token = `@@CODE_SPAN_${codeSpans.length}@@`;
+    codeSpans.push(`<code>${code}</code>`);
+    return token;
+  });
   text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
   text = text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     (_, label, href) => `<a href="${escapeHtml(rewriteLinks(href, currentRel))}">${label}</a>`,
   );
+  for (const [index, code] of codeSpans.entries()) {
+    text = text.replace(`@@CODE_SPAN_${index}@@`, code);
+  }
   return text;
 };
 
@@ -165,9 +172,13 @@ const renderMarkdown = (markdown, currentRel) => {
         i += 1;
       }
       if (i < lines.length) i += 1;
-      html.push(
-        `<pre><code class="language-${escapeHtml(lang)}">${escapeHtml(code.join('\n'))}</code></pre>`,
-      );
+      if (lang === 'mermaid') {
+        html.push(`<pre class="mermaid">${escapeHtml(code.join('\n'))}</pre>`);
+      } else {
+        html.push(
+          `<pre><code class="language-${escapeHtml(lang)}">${escapeHtml(code.join('\n'))}</code></pre>`,
+        );
+      }
       continue;
     }
 
@@ -319,6 +330,10 @@ const layout = ({ title, body, headings, currentRel }) => {
       ${toc || '<p>本页没有二级目录。</p>'}
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>`;
 };
@@ -440,6 +455,14 @@ a:hover { text-decoration: underline; }
   padding: 0;
   font-size: 14px;
   line-height: 1.65;
+}
+.doc pre.mermaid {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 18px;
+  color: var(--ink);
+  text-align: center;
 }
 .table-wrap {
   width: 100%;

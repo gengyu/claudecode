@@ -84,6 +84,32 @@ rg -n &quot;BashPermissionRequest|FileWritePermissionRequest|SandboxPermissionRe
 <ol><li>类型层：定义 mode、rule、decision。</li><li>工具层：每个工具可给出自己的 <code>checkPermissions</code>。</li><li>通用判断层：<code>useCanUseTool</code> 整合 permission result 和 UI queue。</li><li>UI 层：<code>PermissionRequest</code> 分发到 Bash/File/Web/Sandbox 等具体请求组件。</li><li>状态层：用户选择可能更新 AppState 的 <code>toolPermissionContext</code>。</li></ol>
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>第 10 章说明工具池可被 deny rule 过滤；本章说明即使工具已暴露，执行时仍要权限判断。第 12 章的 <code>/permissions</code>、<code>/config</code> 等命令会修改权限相关状态。第 14 章 remote/bridge 会让权限请求跨进程/跨端。</p>
+<h2 id="深度补强-权限不是弹窗-而是-tool-runtime-的暂停点">深度补强：权限不是弹窗，而是 tool runtime 的暂停点</h2>
+<p>Claude Code 的权限系统不是设置页里的 RBAC，也不是工具内部一个 <code>if</code>。它是 tool execution pipeline 中的可暂停边界：模型已经发出 <code>tool_use</code>，runtime 必须在执行本地副作用前决定 allow、deny 或 ask。</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>阶段</th><th>源码角色</th><th>解决的问题</th></tr></thead><tbody><tr><td>工具自检</td><td><code>tool.checkPermissions(input, context)</code></td><td>工具基于 input 判断风险，如路径、命令、写操作</td></tr><tr><td>通用规则</td><td><code>canUseTool</code> / permission utilities</td><td>allow/deny/ask rules、permission mode、workspace 规则</td></tr><tr><td>UI 暂停</td><td><code>toolUseConfirmQueue</code> / <code>PermissionRequest</code></td><td>把 ask 变成终端交互，等待用户决策</td></tr><tr><td>状态更新</td><td><code>toolPermissionContext</code></td><td>用户选择 always allow/deny 后影响后续工具</td></tr><tr><td>继续执行</td><td><code>toolExecution.ts</code></td><td>allow 后才进入 <code>tool.call</code>，deny 生成 rejected result</td></tr></tbody></table></div>
+<pre class="mermaid">sequenceDiagram
+  participant Model
+  participant Exec as toolExecution
+  participant Perm as canUseTool
+  participant REPL
+  participant Tool
+  Model--&gt;&gt;Exec: tool_use
+  Exec-&gt;&gt;Tool: checkPermissions(input)
+  Exec-&gt;&gt;Perm: evaluate rules
+  alt allow
+    Exec-&gt;&gt;Tool: call()
+  else deny
+    Exec--&gt;&gt;Model: tool_result rejected
+  else ask
+    Perm--&gt;&gt;REPL: enqueue PermissionRequest
+    REPL--&gt;&gt;Perm: user approve/reject
+    Perm--&gt;&gt;Exec: decision
+    Exec-&gt;&gt;Tool: call() only if approved
+  end</pre>
+<p>为什么 ask 必须由 REPL 协调？因为权限请求不仅是安全判断，也是 UI/focus 问题。终端同一时间只有一个输入焦点，PermissionRequest 出现时要暂停 prompt 输入、展示原因、接收选择，并把结果交回正在等待的 tool execution。</p>
+<p>设计取舍：</p>
+<ol><li><strong>工具可见不等于工具可执行</strong>：工具池过滤只能减少模型看到的能力，执行时仍要基于具体 input 做权限判断。</li><li><strong>权限读取必须 fresh</strong>：用户可能刚刚选择 always allow，下一次工具判断不能使用旧闭包。</li><li><strong>拒绝也要回写 tool_result</strong>：否则 tool_use/tool_result 配对断裂，下一轮 API context 会坏掉。</li></ol>
+<p>这章要和第 10 章连起来看：并发调度决定工具何时执行，权限系统决定工具能否跨过副作用边界。</p>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
 <pre><code class="language-text">tool visible != tool executable</code></pre>
 <pre><code class="language-text">allow -&gt; call
@@ -114,8 +140,12 @@ ask   -&gt; UI/remote prompt -&gt; decision</code></pre>
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-权限为什么存在">1. 权限为什么存在</a><a class="toc-level-3" href="#2-allow-deny-ask-是执行决策">2. allow/deny/ask 是执行决策</a><a class="toc-level-3" href="#3-usecanusetool-连接-runtime-和-ui">3. useCanUseTool 连接 runtime 和 UI</a><a class="toc-level-3" href="#4-permissionrequest-是运行时暂停点">4. PermissionRequest 是运行时暂停点</a><a class="toc-level-3" href="#5-bash-是权限复杂度最高的工具">5. Bash 是权限复杂度最高的工具</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-权限为什么存在">1. 权限为什么存在</a><a class="toc-level-3" href="#2-allow-deny-ask-是执行决策">2. allow/deny/ask 是执行决策</a><a class="toc-level-3" href="#3-usecanusetool-连接-runtime-和-ui">3. useCanUseTool 连接 runtime 和 UI</a><a class="toc-level-3" href="#4-permissionrequest-是运行时暂停点">4. PermissionRequest 是运行时暂停点</a><a class="toc-level-3" href="#5-bash-是权限复杂度最高的工具">5. Bash 是权限复杂度最高的工具</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#深度补强-权限不是弹窗-而是-tool-runtime-的暂停点">深度补强：权限不是弹窗，而是 tool runtime 的暂停点</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

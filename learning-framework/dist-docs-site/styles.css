@@ -116,6 +116,14 @@ a:hover { text-decoration: underline; }
   font-size: 14px;
   line-height: 1.65;
 }
+.doc pre.mermaid {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 18px;
+  color: var(--ink);
+  text-align: center;
+}
 .table-wrap {
   width: 100%;
   overflow: auto;

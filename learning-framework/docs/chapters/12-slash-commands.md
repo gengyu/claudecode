@@ -103,6 +103,38 @@ rg -n "loadSkillsDir|dynamic skills" claudecode-project/src/commands.ts claudeco
 
 第 5 章的输入提交会进入 command 分流；第 13 章的 skills/plugin 会扩展 command；第 14 章 remote/bridge 要过滤本地 UI command。
 
+## 深度补强：Slash Command 是输入层 DSL，不只是快捷命令
+
+Slash command 的本质是把用户输入转换成一段更结构化的运行时动作。它可能只在本地渲染 JSX，也可能改写 prompt、附加 allowedTools、指定 model/effort，甚至触发 forked agent。
+
+| 命令类型 | 典型行为 | 是否进入 query | 设计重点 |
+| --- | --- | --- | --- |
+| 本地 UI 命令 | `/help`、选择器、配置类 | 通常不进入 | 直接渲染本地 JSX 或更新状态 |
+| prompt 扩展命令 | `/commit`、prompt skill | 进入 | 把命令转换成 user message / command message |
+| 工具约束命令 | skill frontmatter allowedTools | 进入 | 本 turn 临时扩大/收窄工具权限 |
+| forked command | 子任务或独立执行 | 可能不进入主 query | 隔离上下文和权限，避免污染主会话 |
+
+```mermaid
+flowchart TD
+  A["用户输入 /command args"] --> B["command registry lookup"]
+  B --> C{"命令类型"}
+  C -- "local JSX" --> D["render command UI / update AppState"]
+  C -- "prompt expansion" --> E["create command/user message"]
+  C -- "skill command" --> F["apply model/effort/allowedTools scope"]
+  C -- "forked" --> G["run isolated agent/context"]
+  E --> H["shouldQuery=true"]
+  F --> H
+  H --> I["REPL onQuery"]
+```
+
+设计取舍：
+
+1. **命令解析在 query 前**：slash command 是用户输入协议的一部分，必须先决定是否需要模型。
+2. **allowedTools 只作用当前 turn**：技能命令可以临时授权工具，但下一轮要清掉，避免权限泄漏。
+3. **命令输出也要进入消息体系**：否则 transcript、resume、context、UI 都无法解释这次输入做了什么。
+
+类似机制：CLI option 是进程级运行时契约，slash command 是会话内/turn 内运行时契约，skills frontmatter 是命令携带的局部策略。
+
 ## 教学可视化表达方式
 
 ```text

@@ -44,6 +44,24 @@
 <h2 id="前置知识">前置知识</h2>
 <p>需要理解 AsyncGenerator、streaming response、tool use 协议、AbortController。不会展开 API client、模型参数、token 算法细节。</p>
 <h2 id="核心概念讲解">核心概念讲解</h2>
+<h3 id="0-react-循环模式从哪里来">0. ReAct 循环模式从哪里来</h3>
+<p>ReAct 是 Reason + Act 的缩写，来自论文 <em>ReAct: Synergizing Reasoning and Acting in Language Models</em>。它的核心不是某个框架 API，而是一种 Agent 控制模式：</p>
+<pre><code class="language-text">模型先基于上下文推理
+  -&gt; 需要外部信息或副作用时发出 action/tool_use
+  -&gt; 运行环境执行 action
+  -&gt; observation/tool_result 回到上下文
+  -&gt; 模型继续推理或给最终回答</code></pre>
+<p>Claude Code 没有把源码里的函数命名成 <code>reactLoop()</code>，但 <code>queryLoop()</code> 做的正是这个控制模式。这里的 <code>Thought</code> 不一定以明文暴露；在支持 thinking 的模型上可能存在 thinking block，在普通路径上则体现在模型根据 messages、system prompt、tool schema 选择是否发出 <code>tool_use</code>。这里的 <code>Act</code> 是 assistant message 里的 <code>tool_use</code> content block，<code>Observation</code> 是后续 user message 里的 <code>tool_result</code> block。</p>
+<pre class="mermaid">flowchart TD
+  A[&quot;REPL 收到用户输入&quot;] --&gt; B[&quot;queryLoop 组装 messages/system/tools&quot;]
+  B --&gt; C[&quot;模型流式输出 assistant message&quot;]
+  C --&gt; D{&quot;是否包含 tool_use&quot;}
+  D -- &quot;否&quot; --&gt; E[&quot;本轮结束，展示最终回答&quot;]
+  D -- &quot;是&quot; --&gt; F[&quot;runTools 执行工具&quot;]
+  F --&gt; G[&quot;生成 user/tool_result 消息&quot;]
+  G --&gt; B</pre>
+<p>类似模式在源码里还有几类：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>模式</th><th>源码位置</th><th>共同点</th><th>差异</th></tr></thead><tbody><tr><td>主 Agent loop</td><td><code>src/query.ts</code></td><td>模型输出驱动下一步动作</td><td>面向用户会话，维护完整 messages</td></tr><tr><td>tool orchestration</td><td><code>src/services/tools/toolOrchestration.ts</code></td><td>action 执行后回传结果</td><td>只负责工具批次，不直接请求模型</td></tr><tr><td>compact / session memory forked agent</td><td><code>src/services/compact/*</code>、<code>src/services/SessionMemory/*</code></td><td>用子任务读取上下文并产出结果</td><td>不是用户主循环，权限和上下文更窄</td></tr><tr><td>stop hooks</td><td><code>src/query/stopHooks.ts</code></td><td>turn 结束后可能触发继续或阻断</td><td>属于控制面，不是模型 tool_use</td></tr></tbody></table></div>
 <h3 id="1-query-为什么存在">1. query 为什么存在</h3>
 <p>源码锚点：</p>
 <pre><code class="language-bash">rg -n &quot;export async function\\* query|async function\\* queryLoop|yield \\{ type: &#39;stream_request_start&#39; \\}|deps.callModel|runTools&quot; claudecode-project/src/query.ts</code></pre>
@@ -60,6 +78,30 @@
   -&gt; runTools
   -&gt; user(tool_result)
   -&gt; queryLoop(next turn)</code></pre>
+<p>核心源码形状如下。重点看三件事：每轮先准备 <code>messagesForQuery</code>；流式响应中收集 <code>toolUseBlocks</code>；工具结果再追加回下一轮上下文。</p>
+<pre><code class="language-ts">let messagesForQuery = [...getMessagesAfterCompactBoundary(messages)]
+
+for await (const message of deps.callModel({
+  messages: prependUserContext(messagesForQuery, userContext),
+  systemPrompt: fullSystemPrompt,
+  tools: toolUseContext.options.tools,
+  options: {
+    model: currentModel,
+    async getToolPermissionContext() {
+      return toolUseContext.getAppState().toolPermissionContext
+    },
+    mcpTools: appState.mcp.tools,
+    queryTracking,
+  },
+})) {
+  if (message.type === &#39;assistant&#39;) {
+    assistantMessages.push(message)
+    toolUseBlocks.push(
+      ...message.message.content.filter(block =&gt; block.type === &#39;tool_use&#39;),
+    )
+  }
+}</code></pre>
+<p>这段代码解释了为什么 Claude Code 的 Agent loop 不是“一次 request 返回最终文本”。它必须允许模型在中途把“我需要读文件/跑命令/改文件”的动作交给 runtime，再把 observation 回灌给模型继续。</p>
 <h3 id="4-query-也负责上下文压力">4. query 也负责上下文压力</h3>
 <p>源码锚点：</p>
 <pre><code class="language-bash">rg -n &quot;microcompact|autocompact|tokenBudget|prompt too long|max_output_tokens|buildPostCompactMessages&quot; claudecode-project/src/query.ts claudecode-project/src/query/*.ts</code></pre>
@@ -67,18 +109,24 @@
 <h2 id="核心源码地图">核心源码地图</h2>
 <div class="table-wrap" tabindex="0"><table><thead><tr><th>文件</th><th>本章看什么</th><th>不看什么</th><th>后续</th></tr></thead><tbody><tr><td><code>src/query.ts</code></td><td>query generator、loop、tool continuation、recovery</td><td>每个 feature gate 分支</td><td>第 14 章回看 compact</td></tr><tr><td><code>src/query/config.ts</code></td><td>query 配置组织</td><td>模型策略细节</td><td>高级专题</td></tr><tr><td><code>src/query/tokenBudget.ts</code></td><td>budget 检查入口</td><td>算法细节</td><td>第 14 章</td></tr><tr><td><code>src/services/api/claude.ts</code></td><td>callModel 边界</td><td>API SDK 细节</td><td>API 专题</td></tr><tr><td><code>src/services/tools/toolOrchestration.ts</code></td><td>runTools 与 query 的连接</td><td>工具执行细节</td><td>第 10 章</td></tr><tr><td><code>src/query/stopHooks.ts</code></td><td>turn end hooks</td><td>hook 生态全量</td><td>第 14 章</td></tr></tbody></table></div>
 <h2 id="主调用链-主数据流">主调用链 / 主数据流</h2>
-<pre><code class="language-text">REPL.onQueryImpl
-  -&gt; for await (event of query(...))
-  -&gt; query()
-  -&gt; queryLoop()
-  -&gt; yield stream_request_start
-  -&gt; deps.callModel(normalizeMessagesForAPI(...))
-  -&gt; yield assistant stream messages
-  -&gt; collect toolUseBlocks
-  -&gt; runTools(toolUseBlocks)
-  -&gt; yield tool progress/result messages
-  -&gt; append tool_result to messages
-  -&gt; loop next turn or stop</code></pre>
+<pre class="mermaid">sequenceDiagram
+  participant REPL
+  participant Query as queryLoop
+  participant API as callModel
+  participant Tools as runTools
+  REPL-&gt;&gt;Query: messages + systemPrompt + userContext + ToolUseContext
+  Query-&gt;&gt;Query: compact/microcompact/token budget
+  Query-&gt;&gt;API: messages + system + tools + options
+  API--&gt;&gt;Query: assistant stream
+  Query--&gt;&gt;REPL: yield assistant/progress
+  alt assistant has tool_use
+    Query-&gt;&gt;Tools: toolUseBlocks + assistantMessages
+    Tools--&gt;&gt;Query: tool_result user messages
+    Query--&gt;&gt;REPL: yield tool_result
+    Query-&gt;&gt;Query: append results and continue
+  else no tool_use
+    Query--&gt;&gt;REPL: final assistant message
+  end</pre>
 <h2 id="源码阅读路线">源码阅读路线</h2>
 <ol><li>query 入口：</li></ol>
 <pre><code class="language-bash">rg -n &quot;export async function\\* query|async function\\* queryLoop|yield\\* queryLoop&quot; claudecode-project/src/query.ts</code></pre>
@@ -98,6 +146,48 @@ rg -n &quot;for await \\(const update of toolUpdates\\)&quot; claudecode-project
 rg -n &quot;maxTurns|handleStopHooks|autocompact|microcompact&quot; claudecode-project/src/query.ts</code></pre>
 <h2 id="关键模块逐段导读">关键模块逐段导读</h2>
 <ol><li><code>query()</code>：外部入口，包住 queryLoop，负责 generator 生命周期。</li><li><code>queryLoop()</code>：真正主循环，管理轮次、messagesForQuery、tracking、stop hook 状态。</li><li>请求前：normalize、token budget、compact/microcompact。</li><li>请求中：<code>deps.callModel</code> stream yield assistant message。</li><li>请求后：收集 tool_use，决定是否 runTools。</li><li>工具后：tool_result 作为 user message 回到 messages，触发下一轮。</li><li>退出条件：无 tool_use、maxTurns、abort、stop hooks、recoverable error 处理结束。</li></ol>
+<h3 id="api-入参到底从哪里来">API 入参到底从哪里来</h3>
+<p>一次模型请求不是只把用户输入传给 API。<code>REPL.tsx</code> 和 <code>query.ts</code> 分层拼出了这些入参：</p>
+<div class="table-wrap" tabindex="0"><table><thead><tr><th>API 入参</th><th>来源</th><th>为什么在这里放入</th></tr></thead><tbody><tr><td><code>messages</code></td><td>REPL 当前消息数组，经 compact 边界、tool result budget、<code>prependUserContext</code>、<code>normalizeMessagesForAPI</code> 处理</td><td>保证模型看到的是协议合法、上下文可控的会话</td></tr><tr><td><code>system</code> / <code>systemPrompt</code></td><td><code>getSystemPrompt(...)</code> + <code>buildEffectiveSystemPrompt(...)</code> + <code>appendSystemContext(...)</code></td><td>把产品规则、工具说明、用户追加 system prompt、系统上下文合并</td></tr><tr><td><code>tools</code></td><td><code>getToolUseContext(...).options.tools</code>，来自内置工具、MCP、权限过滤</td><td>决定模型本轮能发出哪些 <code>tool_use</code></td></tr><tr><td><code>model</code></td><td><code>getRuntimeMainLoopModel(...)</code></td><td>permission mode、plan mode、上下文长度可能改变主循环模型</td></tr><tr><td><code>tool permission context</code></td><td><code>options.getToolPermissionContext()</code> 运行时读取 AppState</td><td>权限可能在异步工具执行期间变化，不能只用旧闭包</td></tr><tr><td><code>mcpTools</code> / <code>hasPendingMcpServers</code></td><td><code>appState.mcp</code></td><td>让 API 层知道 MCP 工具状态和动态工具信息</td></tr><tr><td><code>queryTracking</code></td><td>query loop 每轮创建/递增</td><td>追踪一次 ReAct 链路的深度和日志归因</td></tr></tbody></table></div>
+<p><code>REPL.tsx</code> 负责准备 prompt/context：</p>
+<pre><code class="language-ts">const [,, defaultSystemPrompt, baseUserContext, systemContext] =
+  await Promise.all([
+    checkAndDisableBypassPermissionsIfNeeded(...),
+    checkAndDisableAutoModeIfNeeded(...),
+    getSystemPrompt(freshTools, mainLoopModelParam, directories, freshMcpClients),
+    getUserContext(),
+    getSystemContext(),
+  ])
+
+const userContext = {
+  ...baseUserContext,
+  ...getCoordinatorUserContext(freshMcpClients, scratchpadDir),
+}
+
+const systemPrompt = buildEffectiveSystemPrompt({
+  toolUseContext,
+  customSystemPrompt,
+  defaultSystemPrompt,
+  appendSystemPrompt,
+})</code></pre>
+<p><code>services/api/claude.ts</code> 再做 API 边界处理：</p>
+<pre><code class="language-ts">let messagesForAPI = normalizeMessagesForAPI(messages, filteredTools)
+messagesForAPI = ensureToolResultPairing(messagesForAPI)
+
+const system = buildSystemPromptBlocks(systemPrompt, enablePromptCaching, {
+  querySource: options.querySource,
+})
+
+return {
+  model: normalizeModelStringForAPI(options.model),
+  messages: addCacheBreakpoints(messagesForAPI, enablePromptCaching, ...),
+  system,
+  tools: allTools,
+  tool_choice: options.toolChoice,
+  max_tokens: maxOutputTokens,
+  thinking,
+}</code></pre>
+<p>这里的设计取舍是：REPL 负责收集“当前 turn 的运行时上下文”，query 负责维护“Agent loop 的连续性”，API 层负责“把内部表示转成模型供应商接受的请求体”。这样做避免了一个巨型函数同时懂 UI、权限、消息修复、缓存和 API 细节。</p>
 <h2 id="与前后章节的关系">与前后章节的关系</h2>
 <p>承接第 7 章 normalized messages，连接第 9-10 章 tool 抽象和内置工具。第 11 章的 permission 会在 runTools/checkPermissions 路径介入。第 14 章会回看 compact、stop hooks、telemetry、performance。</p>
 <h2 id="教学可视化表达方式">教学可视化表达方式</h2>
@@ -134,8 +224,12 @@ rg -n &quot;maxTurns|handleStopHooks|autocompact|microcompact&quot; claudecode-p
     </main>
     <aside class="toc">
       <h2>本页目录</h2>
-      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#1-query-为什么存在">1. query 为什么存在</a><a class="toc-level-3" href="#2-asyncgenerator-是-ui-和-runtime-的桥">2. AsyncGenerator 是 UI 和 runtime 的桥</a><a class="toc-level-3" href="#3-tool-use-让-query-从单轮变成多轮">3. tool_use 让 query 从单轮变成多轮</a><a class="toc-level-3" href="#4-query-也负责上下文压力">4. query 也负责上下文压力</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
+      <a class="toc-level-2" href="#本章定位">本章定位</a><a class="toc-level-2" href="#面向高级前端工程师的学习价值">面向高级前端工程师的学习价值</a><a class="toc-level-2" href="#学习目标">学习目标</a><a class="toc-level-2" href="#前置知识">前置知识</a><a class="toc-level-2" href="#核心概念讲解">核心概念讲解</a><a class="toc-level-3" href="#0-react-循环模式从哪里来">0. ReAct 循环模式从哪里来</a><a class="toc-level-3" href="#1-query-为什么存在">1. query 为什么存在</a><a class="toc-level-3" href="#2-asyncgenerator-是-ui-和-runtime-的桥">2. AsyncGenerator 是 UI 和 runtime 的桥</a><a class="toc-level-3" href="#3-tool-use-让-query-从单轮变成多轮">3. tool_use 让 query 从单轮变成多轮</a><a class="toc-level-3" href="#4-query-也负责上下文压力">4. query 也负责上下文压力</a><a class="toc-level-2" href="#核心源码地图">核心源码地图</a><a class="toc-level-2" href="#主调用链-主数据流">主调用链 / 主数据流</a><a class="toc-level-2" href="#源码阅读路线">源码阅读路线</a><a class="toc-level-2" href="#5-分钟源码速验">5 分钟源码速验</a><a class="toc-level-2" href="#关键模块逐段导读">关键模块逐段导读</a><a class="toc-level-3" href="#api-入参到底从哪里来">API 入参到底从哪里来</a><a class="toc-level-2" href="#与前后章节的关系">与前后章节的关系</a><a class="toc-level-2" href="#教学可视化表达方式">教学可视化表达方式</a><a class="toc-level-2" href="#实践任务">实践任务</a><a class="toc-level-2" href="#常见误区">常见误区</a><a class="toc-level-2" href="#本章总结">本章总结</a><a class="toc-level-2" href="#下一章衔接">下一章衔接</a>
     </aside>
   </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', securityLevel: 'loose' });
+  </script>
 </body>
 </html>

@@ -143,6 +143,51 @@ rg -n "profileCheckpoint|profileReport" claudecode-project/src/utils/startupProf
 
 本章回收前面所有概念：REPL 提供入口，AppState 保存运行时状态，Message 承载事件，query loop 调度，Tool/permission 保证执行边界，commands/MCP/plugins 提供扩展入口。
 
+## 深度补强：高级系统都在解决“长时间运行”的问题
+
+第 14 章的专题看似分散：remote、bridge、AgentTool、background tasks、compact、session memory、LSP、telemetry。它们共同解决的是同一个产品现实：Claude Code 不是一次性脚本，而是长时间运行的 Agent runtime。
+
+| 高级系统 | 解决的长运行问题 | 和主链路的关系 |
+| --- | --- | --- |
+| remote / bridge | 输入输出不一定来自本地终端 | 改变 REPL 的 IO 边界 |
+| AgentTool / subagent | 一个工具调用可能派生独立任务 | 把 Tool 扩展成多 Agent 调度 |
+| background tasks | 前台 query 可能让位给后台继续执行 | 需要 session handoff 和通知 |
+| compact / microcompact | messages 不能无限增长 | query 前后持续维护上下文窗口 |
+| session memory | 长任务要保留跨压缩的操作要点 | post-sampling hook + forked agent |
+| LSP passive feedback | 外部诊断会影响后续行动 | 把编辑器状态注入 Agent 判断 |
+| telemetry/profiling | 长链路性能和错误要可观测 | 每个边界打点和归因 |
+
+```mermaid
+flowchart TD
+  A["主 REPL 会话"] --> B["query loop"]
+  B --> C["Tool / AgentTool"]
+  C --> D{"是否派生子任务"}
+  D -- "是" --> E["subagent / background task"]
+  D -- "否" --> F["normal tool_result"]
+  B --> G{"context pressure"}
+  G -- "高" --> H["microcompact / autocompact / session memory"]
+  A --> I{"IO 来源变化"}
+  I -- "remote/bridge" --> J["remote session adapter"]
+  A --> K["telemetry / startup profiler / LSP feedback"]
+```
+
+设计取舍：
+
+1. **子 Agent 要隔离上下文和权限**：否则一个工具调用可能污染主会话 messages、readFileState 或 permission state。
+2. **compact 是 query 的核心能力，不是外围清理任务**：上下文窗口决定下一次 API 能否成功，必须在 query loop 内处理。
+3. **remote/bridge 改的是 IO，不应该重写 Agent loop**：远程会话仍应复用 query/tool/message 协议，否则行为会分叉。
+4. **telemetry 是理解系统的源码线索**：复杂 runtime 里，logEvent/checkpoint 往往暴露作者认为重要的边界。
+
+这一章读法要从“专题列表”升级为“主链路变体”：
+
+```text
+本地 REPL 主链路
+  -> remote 改 IO
+  -> AgentTool 改 tool 执行形态
+  -> compact/session memory 改上下文生命周期
+  -> telemetry/LSP 改观测和反馈输入
+```
+
 ## 教学可视化表达方式
 
 ```text

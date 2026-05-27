@@ -140,6 +140,52 @@ rg -n "async checkPermissions|async call" claudecode-project/src/tools/FileReadT
 
 第 8 章 query 发现 tool_use；本章解释 tool_use 如何映射到 Tool 协议。第 10 章看工具池和内置工具差异。第 11 章深入 permission。
 
+## 深度补强：Tool 为什么是协议对象，不是函数对象
+
+一个普通函数只需要参数和返回值；Claude Code 的 Tool 要同时满足模型协议、本地安全、UI 展示和调度语义。它的字段不是“面向对象装饰”，而是把不可信模型输出变成可控本地行为的边界。
+
+| Tool 字段/能力 | 服务的系统 | 设计理由 |
+| --- | --- | --- |
+| `name` / `prompt` | 模型工具选择 | 让模型知道何时调用工具，且名称要稳定进入 API schema |
+| `inputSchema` | API/tool execution 边界 | 模型 input 不可信，必须先校验形状 |
+| `isEnabled` | 工具池过滤 | feature gate、模式、环境可能让工具本轮不可见 |
+| `isConcurrencySafe` | tool orchestration | 读写/副作用不同，决定并发还是串行 |
+| `checkPermissions` | 安全边界 | 工具最了解自己的风险，比如 Bash/Edit/Write |
+| `call` | 本地执行 | 真正读文件、写文件、跑命令或调用 MCP |
+| `renderToolResultMessage` | UI 展示 | execution result 和用户可读展示不能混在一起 |
+
+```mermaid
+flowchart TD
+  A["assistant tool_use {name,input}"] --> B["findToolByName"]
+  B --> C["inputSchema.safeParse"]
+  C --> D{"valid?"}
+  D -- "否" --> E["tool_result InputValidationError"]
+  D -- "是" --> F["tool.checkPermissions"]
+  F --> G["canUseTool / hooks / permission UI"]
+  G --> H{"allow?"}
+  H -- "deny" --> I["tool_result rejected"]
+  H -- "allow" --> J["tool.call(input, context)"]
+  J --> K["ToolResult"]
+  K --> L["tool_result for API"]
+  K --> M["renderToolResultMessage for UI"]
+```
+
+这里有两个关键取舍：
+
+1. **schema 不等于安全**：schema 只能说明 `{ file_path: string }` 形状正确，不能说明这个路径能不能读、写操作是否危险、bash 命令是否破坏性。
+2. **call 不负责一切**：如果把 permission、UI render、API result 包装都塞进 `call`，工具会变成不可组合的黑盒，调度层也无法统一处理错误、取消、并发和日志。
+
+类似的协议分层在前端也常见：表单 schema、业务 permission、submit side effect、toast/render 不能揉成一个函数。Claude Code 的特殊之处在于调用方不是可信开发者，而是模型，所以边界更硬。
+
+核心阅读证据链：
+
+```text
+Tool.ts defines protocol
+  -> toolExecution validates permission and calls
+  -> toolOrchestration schedules by isConcurrencySafe
+  -> messages.ts wraps tool_result back to API context
+```
+
 ## 教学可视化表达方式
 
 ```text
